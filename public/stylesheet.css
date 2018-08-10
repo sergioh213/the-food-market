@@ -1,0 +1,68 @@
+* {
+    box-sizing: border-box;
+    font-family: helvetica;
+    font-weight: 100;
+}
+body {
+    margin: 0;
+    background-color: red;
+    height: 100vh;
+}
+html, body {
+    max-width: 100%;
+    overflow-x: hidden;
+}
+/* ////////////////////////////////  REGISTRATION /////////////////////////////////// */
+/* #registration{
+    display: block;
+    width: auto;
+    background-color: blue;
+} */
+#registration-style-div{
+    float: right;
+    width: 130px;
+    background-color: cyan;
+}
+#registration-header{
+    text-align: right;
+    background-color: pink;
+    width: 130px;
+}
+#registration-error-box{
+    text-align: right;
+}
+#registration-form{
+    display: block;
+    width: 130px;
+    background-color: green;
+}
+#registration-input-box{
+    text-align: right;
+}
+#submit-button-registration{
+    width: 130px;
+}
+#log-out{
+    background-color: yellow;
+    display: block;
+    width: 130px;
+    text-align: right;
+}
+/* ////////////////////////////////  PANE1 /////////////////////////////////// */
+#registration-style-div{
+    position: absolute;
+    background-color: white;
+}
+#diagonal-pane{
+    right: 300px;
+    position: relative;
+    top: 800px;
+    width: 200%;
+    height: 800px;
+    background-color: green;
+    /* background-color:black; */
+    color:white;
+    transform:rotate(-60deg);
+    -ms-transform: rotate(-60deg); /* IE 9 */
+    -webkit-transform: rotate(35deg); /* Chrome, Safari, Opera */
+}
