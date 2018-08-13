@@ -42,32 +42,27 @@ class Login extends Component {
 
     render() {
         return (
-            <div className="registration">
-                {/*<div className="contex-box">*/}
-                    <h1 className="header">Log In</h1>
-                {/*</div>*/}
-                
-                {
-                    this.state.error
-                        ? <div className="contex-box"><div id="error">ERROR:<br />{this.state.error}</div></div>
-                        : null
-                }
+            <div id="registration">
+                <div id="registration-style-div">
+                    <div id="registration-header">Log in</div>
+                    {
+                        this.state.error
+                            ? <div id="registration-error-box">ERROR:<br />{this.state.error}</div>
+                            : null
+                    }
+                    <form id="registration-form" onSubmit={ this.handleSubmit }>
 
-                <form id="login-form" onSubmit={ this.handleSubmit }>
-
-                    <div className="contex-box">
-                        <input onChange={ this.handleChange } name="email" placeholder=' Email' type='text'/>
-                    </div>
-                    <div className="contex-box">
-                        <input onChange={ this.handleChange } name="password" placeholder=' Password' type='text'/>
-                    </div>
-                    <div className="contex-box">
-                        <button>Submit</button>
-                    </div>
-                </form>
-
-                <div className="contex-box">
-                    <h3>Not a member yet? <a href="/welcome">Sign up</a></h3>
+                        <div className="registration-input-box">
+                            <input onChange={ this.handleChange } name="email" placeholder='Email' type='text'/>
+                        </div>
+                        <div className="registration-input-box">
+                            <input onChange={ this.handleChange } name="password" placeholder='Password' type='text'/>
+                        </div>
+                        <div className="registration-input-box">
+                            <button id="submit-button-login">Submit</button>
+                        </div>
+                    </form>
+                    <div id="log-in">Not a member yet? <Link to="/">Sign up</Link></div>
                 </div>
             </div>
         )

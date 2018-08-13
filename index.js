@@ -69,7 +69,6 @@ if (process.env.NODE_ENV != 'production') {
 }
 
 app.post("/registration", (req, res) => {
-    console.log("inside POST /Registration", req.body)
     const {first_name, last_name, email, password} = req.body
     if (
         first_name == ""
@@ -85,16 +84,13 @@ app.post("/registration", (req, res) => {
         .then(hashedPassword => {
             db.newUser(first_name, last_name, email, hashedPassword)
             .then(userInfo => {
-                console.log("NEW USER SAVED!");
-                req.session.user = {id: userInfo.id, first_name: first_name, last_name: last_name, email: email, hashedPassword: hashedPassword}
-                console.log("logging req.session.user.id when it is created: ", req.session.user.id);
+                req.session.user = {id: userInfo.id, first_name: first_name, last_name: last_name, email: email}
                 res.json({
                     success: true,
                     id: userInfo.id,
                     first_name: first_name,
                     last_name: last_name,
-                    email: email,
-                    hashedPassword: hashedPassword
+                    email: email
                 })
             }).catch(err => {
                 console.log(err);
@@ -117,14 +113,13 @@ app.post("/login", (req, res) => {
             bcrypt.checkPassword(req.body.password, userInfo.hashed_password)
                 .then(passwordsMatch => {
                     if(passwordsMatch) {
-                        req.session.user = {id: userInfo.id, firstName: userInfo.first_name, lastName: userInfo.last_name, email: userInfo.email, hashedPassword: userInfo.hashed_password}
+                        req.session.user = {id: userInfo.id, firstName: userInfo.first_name, lastName: userInfo.last_name, email: userInfo.email}
                         res.json({
                             success: true,
                             id: userInfo.id,
                             first_name: userInfo.first_name,
                             last_name: userInfo.last_name,
-                            email: userInfo.email,
-                            hashedPassword: userInfo.hashed_password
+                            email: userInfo.email
                         })
                     } else {
                         res.json({
@@ -149,6 +144,54 @@ app.post("/login", (req, res) => {
     })
 })
 
+app.get("/user", (req, res) => {
+    db.getUserById(req.session.user.id).then(userInfo => {
+        res.json({
+            ...userInfo,
+            profile_image_url: userInfo.profile_image_url || '/content/default_profile_picture.png'
+        })
+    }).catch((err) => {
+        console.log("logging error", err);
+        res.sendStatus(500)
+    })
+})
+
+app.post("/upload", uploader.single('file'), s3.upload, (req, res) => {
+    console.log("we are here, and the file is: ", req.file.filename);
+    db.changeUserProfilePic(req.session.user.id, config.s3Url + req.file.filename).then(imgUrl => {
+        res.json({
+            success: true,
+            profile_image_url: imgUrl
+        })
+    })
+})
+
+app.post("/editprofile.json", (req, res) => {
+    const {age, birth_city, birth_country, password, email, last_name, first_name} = req.body
+    console.log("current user's ID: ", req.session.user.id);
+    console.log("receiving req.body in server: ", req.body);
+    if ((password == "" || null) || !password) {
+        console.log("No pasword inputted");
+        db.updateUserNoPassword(req.session.user.id, first_name, last_name, email, birth_city, birth_country).then(userInfo => {
+            console.log("ADDITIONAL INFO SAVED NO Password!");
+            res.json({userInfo})
+        })
+    } else {
+        bcrypt.hashPassword(password).then(hashedPassword => {
+            db.updateUser(req.session.user.id, first_name, last_name, email, hashedPassword, birth_city, birth_country).then(userInfo => {
+                console.log("ADDITIONAL INFO SAVED!");
+                res.json({userInfo})
+            })
+        })
+    }
+})
+
+app.post("/bio", (req, res) => {
+    db.saveBio(req.session.user.id, req.body.bio).then(bio => {
+        res.json({bio})
+    })
+})
+
 app.get("/welcome", (req, res) => {
     if(req.session.user){
         res.redirect("/")
@@ -163,6 +206,7 @@ app.get('/logout', (req, res) => {
 })
 
 app.get('*', function(req, res) {
+    console.log("Is this happening tho");
     if(!req.session.user) {
         res.redirect("/welcome")
     } else {

@@ -9,8 +9,7 @@ import { HashRouter, Route, Link } from 'react-router-dom'
 
 function Welcome() {
     return (
-        <div className="big-momma-component">
-            {/*<Nav />*/}
+        <div id="Welcome">
             <HashRouter>
                 <div>
                     <Route exact path="/" component={Registration}></Route>

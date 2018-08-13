@@ -1,33 +1,44 @@
 import React, {Component} from 'react'
+import axios from './axios'
 
-function Nav() {
-    return (
-        <div className="big-momma-component">
-            <div id="navheader">
-                {/*<div className="nav-item">
-                  <a href="/signers">SIGNER'S LIST</a>
-                </div>*/}
-                <div className="nav-item">
-                  <a href="/profile">PROFILE</a>
-                </div>
-                <div className="nav-item">
-                  <a href="https://sergio-petition.herokuapp.com/logIn">PETITION</a>
-                </div>
-                {/*<div className="nav-item">
-                  <a href="/chat">CHAT</a>
-                </div>*/}
-                <div className="nav-item">
-                  <a href="/friends">FRIENDS</a>
-                </div>
-                {/*<div className="nav-item">
-                  <a href="/online-now">ONLINE NOW</a>
-                </div>*/}
-                <div className="nav-item">
-                  <a href="/logout">LOGOUT</a>
+class Nav extends Component {
+    constructor(props) {
+        super(props)
+
+        this.state = {}
+    }
+    componentDidMount() {
+        axios.get("/user").then(
+            ({data}) => {
+                this.setState(data)
+                console.log("state in nav bar: ", this.state);
+            }
+        )
+    }
+    render() {
+        return (
+            <div id="nav">
+                <div id="navheader">
+                    <div id="nav-home-box">
+                        <a id="nav-home-link" href="/"><i className="fas fa-home"></i></a>
+                    </div>
+                    <div id="nav-home-box">
+                        <a id="nav-home-link" href="/your-hostel"><i className="fas fa-bed"></i></a>
+                    </div>
+                    <div id="nav-home-box">
+                        <a id="nav-home-link" href={`/events/berlin`}><i className="fas fa-exclamation"></i></a>
+                    </div>
+                    <div id="nav-home-box">
+                        <a id="nav-home-link" href="/"><i className="fas fa-search"></i></a>
+                    </div>
+                    <div id="nav-home-box">
+                        <div id="city-name-nav">{ this.state.currently_at }</div>
+                    </div>
+                    <a id="nav-profile-pic-link" href="/profile"><img id="nav-profile-pic" src={ this.state.profile_image_url } alt=""></img></a>
                 </div>
             </div>
-        </div>
-    )
+        )
+    }
 }
 
 export default Nav

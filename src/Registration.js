@@ -46,30 +46,27 @@ class Registration extends Component {
             <div id="registration">
                 <div id="registration-style-div">
                     <div id="registration-header">Registration</div>
-
                     {
                         this.state.error
-                        ? <div className="registration-error-box">ERROR:<br />{this.state.error}</div>
+                        ? <div id="registration-error-box">ERROR:<br />{this.state.error}</div>
                         : null
                     }
-
                     <form id="registration-form" onSubmit={ this.handleSubmit }>
                         <div className="registration-input-box">
-                            <input onChange={ this.handleChange } name="first_name" placeholder=' First name' type='text'/>
+                            <input onChange={ this.handleChange } name="first_name" placeholder='First name' type='text'/>
                         </div>
                         <div className="registration-input-box">
-                            <input onChange={ this.handleChange } name="last_name" placeholder=' Last name' type='text'/>
+                            <input onChange={ this.handleChange } name="last_name" placeholder='Last name' type='text'/>
                         </div>
                         <div className="registration-input-box">
-                            <input onChange={ this.handleChange } name="email" placeholder=' Email' type='text'/>
+                            <input onChange={ this.handleChange } name="email" placeholder='Email' type='text'/>
                         </div>
                         <div className="registration-input-box">
-                            <input onChange={ this.handleChange } name="password" placeholder=' Password' type='text'/>
+                            <input onChange={ this.handleChange } name="password" placeholder='Password' type='text'/>
                         </div>
                         <button id="submit-button-registration">Submit</button>
                     </form>
-
-                    <div id="log-out">Already a member? <Link to="/login">Log in</Link></div>
+                    <div id="log-in">Already a member? <Link to="/login">Log in</Link></div>
                 </div>
             </div>
         )

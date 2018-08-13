@@ -1,6 +1,11 @@
 import React, {Component} from 'react'
 import axios from './axios'
 import Nav from './Nav'
+import Profile from './Profile'
+import Home from './Home'
+import Events from './Events'
+import CurHostel from './CurHostel'
+import EditProfile from './EditProfile'
 import { BrowserRouter, Route, Link } from 'react-router-dom'
 
 class App extends Component {
@@ -30,9 +35,11 @@ class App extends Component {
                 <Nav />
                 <BrowserRouter>
                     <div>
-                        <Route exact path='/' render={ () => (
-                            <div>logged in experience</div>
-                        ) } />
+                        <Route exact path='/' component={Home} />
+                        <Route exact path='/profile' component={Profile} />
+                        <Route exact path='/events/berlin' component={Events} />
+                        <Route exact path='/your-hostel' component={CurHostel} />
+                        <Route exact path='/edit-profile' component={EditProfile} />
                     </div>
                 </BrowserRouter>
             </div>
