@@ -101,9 +101,7 @@ exports.updateUserNoPassword = function(id, first_name, last_name, email, birth_
 exports.updateUser = function(id, first_name, last_name, email, hashed_password, birth_city, birth_country) {
     const q = `
         INSERT INTO users (id, first_name, last_name, email, hashed_password, birth_city, birth_country)
-        VALUES ($1, $2, $3, $4, $5, $6, $7)
-        ON CONFLICT (id)
-        DO UPDATE SET first_name = $2, last_name = $3, email = $4, hashed_password = $5, birth_city = $6, birth_country = $7;
+    7 first_name = $2, last_name = $3, email = $4, hashed_password = $5, birth_city = $6, birth_country = $7;
     `;
     const params = [id, first_name, last_name, email, hashed_password, birth_city || null, birth_country || null];
     return db.query(q, params).then(updatedProfile => {
@@ -124,4 +122,17 @@ exports.saveBio = function(id, bio) {
         // console.log("bio on the db: ", userInfo.rows[0].bio);
         return userInfo.rows[0].bio
     })
+}
+
+exports.checkInOut = function(id, status) {
+    const q = `
+        UPDATE users SET checked_in = $2
+        WHERE id = $1
+        RETURNING *;
+    `;
+    const params = [id, status];
+    return db.query(q, params).then(status => {
+        console.log('returning from db: ', status.rows[0].checked_in)
+        return status.rows[0].checked_in;
+    });
 }

@@ -192,6 +192,16 @@ app.post("/bio", (req, res) => {
     })
 })
 
+app.post("/check-in-out.json", (req, res) => {
+    console.log("req.body.checked_in in server: ", req.body.checked_in);
+    db.checkInOut(req.session.user.id, !req.body.checked_in).then( newStatus => {
+        console.log("newStatus returned from db: ", newStatus);
+        res.json({
+            checked_in: newStatus
+        })
+    })
+})
+
 app.get("/welcome", (req, res) => {
     if(req.session.user){
         res.redirect("/")

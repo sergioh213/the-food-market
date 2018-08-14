@@ -29,6 +29,7 @@ CREATE TABLE users (
     user_score INT DEFAULT 50 CHECK (user_score >= 0 AND user_score <= 100),
     birth_city VARCHAR(100),
     birth_country VARCHAR(100),
+    payment_info VARCHAR(200),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 

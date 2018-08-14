@@ -60,14 +60,10 @@ class EditProfile extends Component {
         return (
             <div id="edit-profile">
                 <div id="edit-profile-style-div" className="effect1">
-                    <div id="edit-profile-title">Edit your profile</div>
+                    <div className="section-header">Edit your profile</div>
                     <div id="profile-pic-wrapper">
                         <img id="edit-profile-profileimage" onClick={ this.showUploader } src={ this.state.profile_image_url } alt=""/>
                     </div>
-                    { this.state.uploaderIsVisible
-                        ? <div id="dim-background" onClick={ this.hideUploader }></div>
-                        : null
-                    }
                     { this.state.uploaderIsVisible
                         ? <Uploader hideUploader={ this.hideUploader } setImage={ this.setImage }/>
                         : null
@@ -101,6 +97,10 @@ class EditProfile extends Component {
                         <button className="button" id="submit-button-edit-profile">Submit</button>
                     </form>
                 </div>
+                { this.state.uploaderIsVisible
+                    ? <div id="dim-background" onClick={ this.hideUploader }></div>
+                    : null
+                }
             </div>
         )
     }

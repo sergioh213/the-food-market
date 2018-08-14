@@ -33,6 +33,21 @@ html, body {
        -moz-box-shadow: 0 10px 6px -6px #777;
             box-shadow: 0 10px 6px -6px #777;
 }
+.section-header{
+    font-weight: bold;
+    text-align: center;
+}
+.dim-background{
+    position: absolute;
+    bottom: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+#darker{
+    background-color: rgba(0, 0, 0, 0.75);
+}
 /* ////////////////////////////////  REGISTRATION /////////////////////////////////// */
 /* #registration{
     display: block;
@@ -258,14 +273,6 @@ html, body {
     border: grey solid 2px;
 }
 /* //////////////////////////////// PROFILE PAGE /////////////////////////////////// */
-#dim-background{
-    position: absolute;
-    bottom: 0;
-    top: 0;
-    left: 0;
-    right: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-}
 #profile-style-div{
     position: relative;
     width: 50%;
@@ -276,6 +283,7 @@ html, body {
     padding: 20px;
 }
 #profilepage-profileimage{
+    padding-top: 15px;
     width: 100%;
     height: auto;
     object-fit: cover;
@@ -306,7 +314,7 @@ html, body {
     width: 400px;
     height: 135px;
     text-align: center;
-    background-color: #e0e0e0;
+    background-color: white;
 }
 #close-x{
     position: absolute;
@@ -346,12 +354,6 @@ html, body {
     background-color: white;
     margin-top: 50px;
     padding: 20px;
-}
-#edit-profile-title{
-    margin-top: 10px;
-    text-align: center;
-    width: 260px;
-    margin: 0 auto;
 }
 #profile-pic-wrapper{
     padding: 10px;
@@ -405,13 +407,13 @@ html, body {
     width: 100%;
     margin-top: 10px;
 }
-/* //////////////////////////////// HOME /////////////////////////////////// */
-#home-style-div{
+/* //////////////////////////////// HEADER /////////////////////////////////// */
+#header{
     position: relative;
-    /* top: 0; */
+    height: 0;
 }
 /* .main-header-pane-wrapper{
-    position: absolute;
+position: absolute;
 } */
 .main-header-pane{
     position: absolute;
@@ -471,16 +473,22 @@ html, body {
     margin-left: 130px;
     top: 60px;
 } */
+/* //////////////////////////////// HOME /////////////////////////////////// */
+#home-style-div{
+    position: relative;
+    /* top: 0; */
+}
 #hostels-in-city{
     display: block;
-    position: relative;
+    position: static;
     text-align: right;
     float: right;
-    background-color: #FFFFFF;
     height: auto;
     width: auto;
 }
 .hostel-div{
+    background-color: #FFFFFF;
+    position: relative;
     padding: 10px;
     padding-right: 50px;
     padding-left: 20px;
@@ -511,7 +519,7 @@ html, body {
     background-color: rgba(0, 0, 0, 0.7);
     border-radius: 10px;
     margin-left: 90px;
-    margin-top: 150px;
+    margin-top: 200px;
     width: 500px;
     padding: 30px;
     font-size: 22px;
@@ -535,35 +543,202 @@ html, body {
     border-radius: 100%;
     cursor: pointer;
 }
-/* #map-dot-1{
-    right: 420px;
-    top: 620px;
-}
-#map-dot-2{
-    right: 395px;
-    top: 480px;
-}
-#map-dot-3{
-    right: 555px;
-    top: 390px;
-} */
-/* .wrapper-box{
-    z-index: 300;
-    position: absolute;
-    padding-bottom: 20px;
-    background: green;
-    width: 30px;
-    height: 30px;
-} */
 .dot-lable{
     /* position: relative; */
     position: absolute;
     background-color: white;
     transform: translate(50%, -100%);
     z-index: 1;
+    text-align: center;
 }
 .map-label-img{
     width: 200px;
     object-fit: cover;
     object-position: center;
+}
+#reserve-bed-button{
+    margin: 0 auto;
+    margin-top: 10px;
+    margin-bottom: 6px;
+    display: block;
+}
+#beds-left-text{
+    font-size: 10px;
+    display: inline-block;
+    margin-bottom: 6px;
+}
+#num-beds-left{
+    font-size: 14px;
+    color: #3F88C5;
+    font-weight: bold;
+    display: inline-block;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+/* //////////////////////////////// CURRENT HOSTAL /////////////////////////////////// */
+#current-hostel{
+    /* position: relative; */
+    /* right: 0; */
+}
+#current-hostel-subtitle{
+    font-size: 20px;
+    position: relative;
+    margin-left: 125px;
+    top: 140px;
+    color: white;
+    display: inline-block;
+}
+#subtitle{
+    display: inline-block;
+}
+#subtitle-keyword{
+    font-weight: bold;
+    width: 100%;
+    padding-right: 3px;
+    text-align: right;
+}
+#check-in-button{
+    position: absolute;
+    transform: translateX(-50%);
+    /* margin-right: 500px; */
+    right: 200px;
+    top: 100px;
+    width: 400px;
+    height: 50px;
+}
+/* //////////////////////////////// RESERVATION /////////////////////////////////// */
+#reservation{
+    position: absolute;
+    text-align: center;
+    background-color: white;
+    width: auto;
+    height: auto;
+    top: 200px;
+    transform: translateX(-50%);
+    left: 50%;
+    z-index: 3;
+    padding: 10px;
+}
+.reservation-input-box{
+    display: inline-block;
+}
+.arrive-date{
+    display: inline-block;
+    width: 100%;
+}
+.date-input{
+    text-align: center;
+    padding-left: 43px;
+    height: 25px;
+    font-size: 16px;
+    display: inline-block;
+    width: 100%;
+    text-align: center;
+    color: #3F88C5;
+}
+.date-subheader{
+    margin-top: 10px;
+}
+.date-section{
+    margin-top: 5px;
+}
+#submit-button-reservation{
+    font-size: 14px;
+    height: 30px;
+    width: 100%;
+    margin-top: 5px;
+    /* padding-bottom: 10px; */
+}
+/* #reservation-hostel-info-box{
+} */
+#reservation-hostel-text-box{
+    /* z-index: 400; */
+    /* position: relative; */
+    /* top: -100px; */
+    margin-top: 5px;
+    padding-top: 10px;
+    background-color: #e0e0e0;
+    margin-bottom: 10px;
+    /* display: inline-block; */
+    /* height: 100%; */
+}
+#reservation-img{
+    /* position: relative; */
+    /* height: 170px; */
+    /* display: inline-block; */
+}
+/* //////////////////////////////// PAYMENT /////////////////////////////////// */
+#payment{
+    position: absolute;
+    text-align: left;
+    background-color: white;
+    width: auto;
+    height: auto;
+    top: 200px;
+    transform: translateX(-50%);
+    left: 50%;
+    z-index: 3;
+    padding: 20px;
+}
+.payment-title{
+    width: 100%;
+    text-align: left;
+    /* padding-left: 20px; */
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+#payment-logo-wrapper{
+    width: 100%;
+    margin-bottom: 20px;
+}
+.credit-card-logos{
+    display: inline-block;
+    width: 60px;
+    height: auto;
+    margin-right: 15px;
+}
+/* #mastercard-logo{
+    max-height: 63px;
+} */
+#card-details{
+    padding-bottom: 14px;
+    border-bottom: 1px solid #bfbfbf;
+}
+.payment-subtitle{
+    margin-bottom: 10px;
+}
+.payment-input-wrapper{
+    display: inline-block;
+}
+#card-number-input{
+    padding-left: 4px;
+    width: 100%;
+}
+#payment-form input{
+    margin-bottom: 10px;
+    height: 25px;
+    font-size: 16px;
+}
+#payment button{
+    display: inline-block;
+    width: 120px;
+    margin-top: 10px;
+}
+#payment-bottom-wrapper{
+    width: 100%;
+}
+#payment-button-wrapper{
+    /* width: 100%; */
+    text-align: center;
+    margin: 0 auto;
+}
+#payment-left-button{
+    margin-right: 30px;
+}
+#payment-bottom-wrapper input{
+    width: 150px;
+    padding-left: 6px;
+}
+#payment-input-left-side{
+    margin-right: 20px;
 }

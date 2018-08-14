@@ -64,10 +64,10 @@ class Profile extends Component {
         return (
             <div id="profile">
                 <div id="profile-style-div" className="effect1">
+                <div className="section-header">This is what people see on your profile</div>
                     <img id="profilepage-profileimage" onClick={ this.showUploader } src={ profile_image_url } alt=""/>
                     <div id="text-box">
                         <div id="edit-profile-icon"><a href="/edit-profile"><i className="fas fa-pencil-alt"></i></a></div>
-                        <h3 id="section-header">This is what people see on your profile</h3>
                         <h1>{ `${ first_name } ${ last_name }` }</h1>
                         <div id="bio-section">
                             { bio
@@ -90,7 +90,7 @@ class Profile extends Component {
                     <a href="/logout">logout</a>
                 </div>
                 { uploaderIsVisible
-                    ? <div id="dim-background" onClick={ this.hideUploader }></div>
+                    ? <div className="dim-background" onClick={ this.hideUploader }></div>
                     : null
                 }
                 { uploaderIsVisible

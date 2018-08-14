@@ -11,7 +11,7 @@ class Nav extends Component {
         axios.get("/user").then(
             ({data}) => {
                 this.setState(data)
-                console.log("state in nav bar: ", this.state);
+                // console.log("state in nav bar: ", this.state);
             }
         )
     }
