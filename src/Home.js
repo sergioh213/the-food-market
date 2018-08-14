@@ -13,13 +13,16 @@ class Home extends Component {
         this.state = {
             showReservation: false,
             showPopUp: false,
-            showPayment: false
+            showPayment: false,
+            showMessage: false
         }
 
         this.enlargeDots = this.enlargeDots.bind(this)
         this.shrinkDots = this.shrinkDots.bind(this)
         this.toggleShowReservation = this.toggleShowReservation.bind(this)
         this.toggleShowPayment = this.toggleShowPayment.bind(this)
+        this.makeReservation = this.makeReservation.bind(this)
+        this.toggleShowMessage = this.toggleShowMessage.bind(this)
     }
     componentDidMount() {
         console.log("showPayment starts. Show: ", this.state.showPayment);
@@ -37,7 +40,7 @@ class Home extends Component {
                     city_name: "Berlin",
                     area: 'KREUZBERG',
                     enlarged: false,
-                    map_placement: {
+                    coordinates: {
                         right: 420,
                         top: 620
                     },
@@ -52,7 +55,7 @@ class Home extends Component {
                     city_name: "Berlin",
                     area: 'EAST MITTE',
                     enlarged: false,
-                    map_placement: {
+                    coordinates: {
                         right: 395,
                         top: 480
                     },
@@ -67,7 +70,7 @@ class Home extends Component {
                     city_name: "Berlin",
                     area: 'NORTH MITTE',
                     enlarged: false,
-                    map_placement: {
+                    coordinates: {
                         right: 555,
                         top: 390
                     },
@@ -150,6 +153,27 @@ class Home extends Component {
         })
         console.log("payment state switched. Show: ", this.state.showPayment);
     }
+    toggleShowMessage() {
+        this.setState({
+            showMessage: !this.state.showMessage
+        })
+    }
+    makeReservation(stateFromComponent) {
+        console.log('stateFromComponent: ', stateFromComponent);
+        axios.post("/newReservation.json", stateFromComponent)
+            .then(({data}) => {
+                console.log("DATA after newReservation", data);
+                this.setState({
+                    data
+                }, () => {
+                    console.log("this.state.data.success: ", this.state.data.success);
+                    if (this.state.data.success) {
+                        this.toggleShowReservation()
+                        this.toggleShowMessage()
+                    }
+                })
+            })
+    }
     render() {
         if (!this.state.locations) {
             return null
@@ -159,6 +183,9 @@ class Home extends Component {
                 <div id="home-style-div">
                     <img id="map" src="/content/berlin-map-wide.png" alt=""/>
                     <Header text={`Home page`}/>
+                    {
+                        this.state.showMessage && <div id="reservation">Your reservation was SUCCESFULLY made</div>
+                    }
                     <div id="hostels-in-city">
                         {
                             this.state.locations.map(item => {
@@ -168,8 +195,24 @@ class Home extends Component {
                                             <i id="location-icon" className="fas fa-map-marker-alt"></i>
                                             <div className="address">{ item.area }</div>
                                         </div>
-                                        { this.state.showReservation && <Reservation hostelInfo={ item } toggleShowReservation={ this.toggleShowReservation } toggleShowPayment={ this.toggleShowPayment } showPayment={ this.state.showPayment } showReservation={ this.state.showReservation } /> }
-                                        { this.state.showPayment && <Payment toggleShowPayment={ this.toggleShowPayment } toggleShowReservation={ this.toggleShowReservation } showPayment={ this.state.showPayment } showReservation={ this.state.showReservation } /> }
+                                        { this.state.showReservation &&
+                                            <Reservation
+                                                hostelInfo={ item }
+                                                toggleShowReservation={ this.toggleShowReservation }
+                                                toggleShowPayment={ this.toggleShowPayment }
+                                                showPayment={ this.state.showPayment }
+                                                showReservation={ this.state.showReservation }
+                                                makeReservation={ this.makeReservation }
+                                            />
+                                        }
+                                        { this.state.showPayment &&
+                                            <Payment
+                                                toggleShowPayment={ this.toggleShowPayment }
+                                                toggleShowReservation={ this.toggleShowReservation }
+                                                showPayment={ this.state.showPayment }
+                                                showReservation={ this.state.showReservation }
+                                            />
+                                        }
                                     </div>
                                 )
                             })
@@ -180,7 +223,7 @@ class Home extends Component {
                             return (
                                 <div key={item.id}>
                                     { item.enlarged &&
-                                        <div style={{ right: item.map_placement.right, top: item.map_placement.top - 10 }} onMouseEnter={ () => this.enlargeDots(item.id) } onMouseLeave={ () => this.shrinkDots(item.id) } className="dot-lable">
+                                        <div style={{ right: item.coordinates.right, top: item.coordinates.top - 10 }} onMouseEnter={ () => this.enlargeDots(item.id) } onMouseLeave={ () => this.shrinkDots(item.id) } className="dot-lable">
                                             <img className="map-label-img" src={`${ item.hostel_main_img }`} alt=""/>
                                             <div>{`${ item.street } ${ item.num }`}</div>
                                             <div>{`${ item.postal_code }, ${ item.city_name }`}</div>
@@ -192,13 +235,17 @@ class Home extends Component {
                                             </div>
                                         </div>
                                     }
-                                    <div style={{ transform: item.enlarged && 'scale(1.5)', right: item.map_placement.right, top: item.map_placement.top }} onMouseEnter={ () => this.enlargeDots(item.id) } onMouseLeave={ () => this.shrinkDots(item.id) } className="map-dot" id={`map-dot-${ item.id }`}></div>
+                                    <div style={{ transform: item.enlarged && 'scale(1.5)', right: item.coordinates.right, top: item.coordinates.top }} onMouseEnter={ () => this.enlargeDots(item.id) } onMouseLeave={ () => this.shrinkDots(item.id) } className="map-dot" id={`map-dot-${ item.id }`}></div>
                                 </div>
                             )
                         })
                     }
                     <div id="home-paragraph">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</div>
                 </div>
+                { this.state.showMessage
+                    ? <div className="dim-background" id="darker" onClick={ this.toggleShowMessage }></div>
+                    : null
+                }
                 { this.state.showPayment
                     ? <div className="dim-background" id="darker" onClick={ this.toggleShowPayment }></div>
                     : null

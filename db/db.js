@@ -12,7 +12,7 @@ exports.newUser = function(first_name, last_name, email, hashed_password) {
         VALUES ($1, $2, $3, $4, $5)
         RETURNING *;
         `
-    const params = [first_name, last_name, email, hashed_password, 'Berlin']
+    const params = [first_name, last_name, email, hashed_password, 1]
     return db.query(q, params).then(results => {
         return results.rows[0]
     })
@@ -38,6 +38,7 @@ exports.getUserById = function(id) {
     const params = [id]
     return db.query('SELECT * FROM users WHERE id = $1;', params)
         .then(results => {
+            console.log("in db results: ", results.rows[0]);
             return results.rows[0]
         })
 }
@@ -70,21 +71,6 @@ exports.changeUserProfilePic = function(user_id, profile_image_url) {
     })
 }
 
-// exports.updateUser = function(id, name, lastname, email, password) {
-//     const q = `
-//     UPDATE users
-//     SET first_name = $2,
-//     last_name = $3,
-//     email = $4,
-//     hashed_password = $5
-//     WHERE id = $1;
-//     `;
-//     const params = [id, name, lastname, email, password];
-//     return db.query(q, params).then(updatedProfile => {
-//         return updatedProfile.rows;
-//     });
-// };
-
 exports.updateUserNoPassword = function(id, first_name, last_name, email, birth_city, birth_country) {
     console.log("db query NO-Password");
     const q = `
@@ -100,8 +86,9 @@ exports.updateUserNoPassword = function(id, first_name, last_name, email, birth_
 
 exports.updateUser = function(id, first_name, last_name, email, hashed_password, birth_city, birth_country) {
     const q = `
-        INSERT INTO users (id, first_name, last_name, email, hashed_password, birth_city, birth_country)
-    7 first_name = $2, last_name = $3, email = $4, hashed_password = $5, birth_city = $6, birth_country = $7;
+        UPDATE users SET first_name = $2, last_name = $3, email = $4, hashed_password = $5, birth_city = $6, birth_country = $7
+        WHERE id = $1
+        RETURNING *;
     `;
     const params = [id, first_name, last_name, email, hashed_password, birth_city || null, birth_country || null];
     return db.query(q, params).then(updatedProfile => {
@@ -136,3 +123,46 @@ exports.checkInOut = function(id, status) {
         return status.rows[0].checked_in;
     });
 }
+
+exports.savePaymentInfo = function(id, card_number, expiration_month, expiration_year, CCV) {
+    const params = [id, card_number, expiration_month, expiration_year, CCV]
+    const q = `
+        UPDATE users SET card_number = $2, expiration_month = $3, expiration_year = $4, CCV = $5
+        WHERE id = $1
+        RETURNING *;
+        `
+    return db.query(q, params).then(newPaymentInfo => {
+        return newPaymentInfo.rows[0]
+    })
+}
+
+exports.newReservation = function(user_id, location_id, arrival_date, departure_date) {
+    const params = [user_id, location_id, arrival_date, departure_date]
+    const q = `
+        INSERT INTO user_reservations (user_id, location_id, arrival_date, departure_date)
+        VALUES ($1, $2, $3, $4)
+        RETURNING *;
+        `
+    return db.query(q, params).then(reservationInfo => {
+        console.log("new reservation at db: ", reservationInfo.rows[0]);
+        return reservationInfo.rows[0]
+    })
+}
+
+exports.newHostel = function(city_name, area, coordinates, street, num, postal_code, hostel_main_img, total_num_beds, num_beds_left) {
+    const params = [city_name, area, coordinates, street, num, postal_code, hostel_main_img, total_num_beds, num_beds_left]
+    const q = `
+        INSERT INTO locations (city_name, area, coordinates, street, num, postal_code, hostel_main_img, total_num_beds, num_beds_left)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+        RETURNING *;
+        `
+    return db.query(q, params).then(newHostelInfo => {
+        return newHostelInfo.rows[0]
+    })
+}
+
+// INSERT INTO locations (city_name, area, coordinates, street, num, postal_code, hostel_main_img, total_num_beds, num_beds_left) VALUES ('Berlin', 'KREUZBERG', '420-620', 'Erkelenzdamm', '35-21', '10999', '/content/header-pic-1.jpg', 8, 8);
+
+// INSERT INTO locations (city_name, area, coordinates, street, num, postal_code, hostel_main_img, total_num_beds, num_beds_left) VALUES ('Berlin', 'EAST MITTE', '395-480', 'Alexanderstraße', '7', '10178', '/content/header-pic-2.jpg', 3, 3);
+
+// INSERT INTO locations (city_name, area, coordinates, street, num, postal_code, hostel_main_img, total_num_beds, num_beds_left) VALUES ('Berlin', 'NORTH MITTE', '555-390', 'Chausseestraße', '61', '10115', '/content/header-pic-3.jpg', 14, 14);

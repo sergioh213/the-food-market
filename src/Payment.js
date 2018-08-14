@@ -12,18 +12,35 @@ class Payment extends Component {
 
         this.handleSubmit = this.handleSubmit.bind(this)
         this.handleCancel = this.handleCancel.bind(this)
+        this.handleChange = this.handleChange.bind(this)
     }
     componentDidMount() {
         axios.get("/user").then(
             ({data}) => {
-                // console.log("data as the component mounts: ", data);
                 this.setState(data)
             }
         )
     }
-    handleSubmit(){
-        axios.post("/payment-info", this.state.payment_info)
-        console.log("payment info submitted, switching state. Show: ", );
+    handleChange(e) {
+        this.setState({
+            [ e.target.name ]: e.target.value
+        }, () => {
+            // console.log(e.target.name, e.target.value);
+        })
+    }
+    handleSubmit(e){
+        e.preventDefault()
+        axios.post("/savePaymentInfo.json", this.state)
+            .then(({data}) => {
+                console.log("DATA after savePaymentInfo", data);
+                this.setState({
+                    data
+                }, () => {
+                    console.log("this.state.data after savePaymentInfo", this.state.data);
+                })
+                this.props.toggleShowPayment()
+                this.props.toggleShowReservation()
+            })
     }
     handleCancel() {
         this.props.toggleShowPayment()
@@ -41,16 +58,16 @@ class Payment extends Component {
                 <div className="payment-title" id="card-details">Card Details</div>
                 <form id="payment-form" onSubmit={ this.handleSubmit }>
                     <div className="payment-subtitle">Card number</div>
-                    <input id="card-number-input" name="card_number" placeholder="" type="number"/>
+                    <input onChange={ this.handleChange } id="card-number-input" name="card_number" placeholder="" type="number"/>
                     <div id="payment-bottom-wrapper">
                         <div id="payment-input-left-side" className="payment-input-wrapper">
                             <div className="payment-subtitle">Expiration date?</div>
-                            <input type="number" placeholder="Month" name="expiration_month" min="1" max="12" />
-                            <input type="number" placeholder="Year" name="expiration_year" min="2018" />
+                            <input onChange={ this.handleChange } type="number" placeholder="Month" name="expiration_month" min="1" max="12" />
+                            <input onChange={ this.handleChange } type="number" placeholder="Year" name="expiration_year" min="2018" />
                         </div>
                         <div className="payment-input-wrapper">
                             <div className="payment-subtitle">CCV</div>
-                            <input name="CCV" placeholder="CCV" type="number"/>
+                            <input onChange={ this.handleChange } name="CCV" placeholder="CCV" type="number"/>
                         </div>
                     </div>
                     <div id="payment-button-wrapper">

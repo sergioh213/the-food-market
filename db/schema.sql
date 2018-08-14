@@ -1,17 +1,23 @@
+-- DROP TABLE IF EXISTS user_reservations;
+-- DROP TABLE IF EXISTS users;
 -- DROP TABLE IF EXISTS locations;
 -- DROP TABLE IF EXISTS connections;
 -- DROP TABLE IF EXISTS chat;
 -- DROP TABLE IF EXISTS user_lenguages;
 -- DROP TABLE IF EXISTS user_images;
 -- DROP TABLE IF EXISTS user_notes;
--- DROP TABLE IF EXISTS users;
 
 CREATE TABLE locations (
     id SERIAL PRIMARY KEY,
     city_name VARCHAR(100),
+    area VARCHAR(100),
+    coordinates VARCHAR(400),
     street VARCHAR(400),
     num VARCHAR(10),
     postal_code VARCHAR(20),
+    hostel_main_img VARCHAR(300),
+    total_num_beds INT,
+    num_beds_left INT CHECK (num_beds_left >= 0 AND num_beds_left <= total_num_beds),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -23,13 +29,24 @@ CREATE TABLE users (
     hashed_password VARCHAR(100) NOT NULL,
     profile_image_url VARCHAR(300),
     bio VARCHAR(400),
-    currently_at VARCHAR(100) REFERENCES locations(city_name),
+    currently_at INT REFERENCES locations(id),
     checked_in BOOLEAN DEFAULT false,
-    -- checked_in status 1 = currently there // status 2 = not in location
     user_score INT DEFAULT 50 CHECK (user_score >= 0 AND user_score <= 100),
     birth_city VARCHAR(100),
     birth_country VARCHAR(100),
-    payment_info VARCHAR(200),
+    card_number INT,
+    expiration_month INT,
+    expiration_year INT,
+    CCV INT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE user_reservations (
+    id SERIAL PRIMARY KEY,
+    user_id INT NOT NULL REFERENCES users(id),
+    location_id INT NOT NULL REFERENCES locations(id),
+    arrival_date VARCHAR(400) NOT NULL,
+    departure_date VARCHAR(400) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 

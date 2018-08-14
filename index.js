@@ -146,6 +146,7 @@ app.post("/login", (req, res) => {
 
 app.get("/user", (req, res) => {
     db.getUserById(req.session.user.id).then(userInfo => {
+        console.log("userInfo: ", userInfo);
         res.json({
             ...userInfo,
             profile_image_url: userInfo.profile_image_url || '/content/default_profile_picture.png'
@@ -168,18 +169,14 @@ app.post("/upload", uploader.single('file'), s3.upload, (req, res) => {
 
 app.post("/editprofile.json", (req, res) => {
     const {age, birth_city, birth_country, password, email, last_name, first_name} = req.body
-    console.log("current user's ID: ", req.session.user.id);
-    console.log("receiving req.body in server: ", req.body);
     if ((password == "" || null) || !password) {
         console.log("No pasword inputted");
         db.updateUserNoPassword(req.session.user.id, first_name, last_name, email, birth_city, birth_country).then(userInfo => {
-            console.log("ADDITIONAL INFO SAVED NO Password!");
             res.json({userInfo})
         })
     } else {
         bcrypt.hashPassword(password).then(hashedPassword => {
             db.updateUser(req.session.user.id, first_name, last_name, email, hashedPassword, birth_city, birth_country).then(userInfo => {
-                console.log("ADDITIONAL INFO SAVED!");
                 res.json({userInfo})
             })
         })
@@ -193,13 +190,40 @@ app.post("/bio", (req, res) => {
 })
 
 app.post("/check-in-out.json", (req, res) => {
-    console.log("req.body.checked_in in server: ", req.body.checked_in);
     db.checkInOut(req.session.user.id, !req.body.checked_in).then( newStatus => {
-        console.log("newStatus returned from db: ", newStatus);
         res.json({
             checked_in: newStatus
         })
     })
+})
+
+app.post("/savePaymentInfo.json", (req, res) => {
+    db.savePaymentInfo(req.session.user.id, req.body.card_number, req.body.expiration_month, req.body.expiration_year, req.body.CCV)
+        .then( payment_info => {
+            res.json({
+                success: true,
+                payment_info: payment_info
+            })
+        })
+})
+
+app.post("/newReservation.json", (req, res) => {
+    db.newReservation(req.session.user.id, req.body.location_id, req.body.arrival_date, req.body.departure_date)
+        .then(userInfo => {
+            res.json({
+                success: true,
+                userInfo: userInfo
+            })
+        })
+})
+
+app.post("/new-hostel.json", (req, res) => {
+    db.newHostel(city_name, area, coordinates, street, num, postal_code, hostel_main_img, total_num_beds, num_beds_left)
+        .then(newHostelInfo => {
+            res.json({
+                newHostelInfo: newHostelInfo
+            })
+        })
 })
 
 app.get("/welcome", (req, res) => {
