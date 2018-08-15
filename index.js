@@ -84,13 +84,14 @@ app.post("/registration", (req, res) => {
         .then(hashedPassword => {
             db.newUser(first_name, last_name, email, hashedPassword)
             .then(userInfo => {
-                req.session.user = {id: userInfo.id, first_name: first_name, last_name: last_name, email: email}
+                req.session.user = {id: userInfo.id, first_name: first_name, last_name: last_name, email: email, currently_at: userInfo.currently_at}
                 res.json({
                     success: true,
                     id: userInfo.id,
                     first_name: first_name,
                     last_name: last_name,
-                    email: email
+                    email: email,
+                    currently_at: userInfo.currently_at
                 })
             }).catch(err => {
                 console.log(err);
@@ -113,13 +114,14 @@ app.post("/login", (req, res) => {
             bcrypt.checkPassword(req.body.password, userInfo.hashed_password)
                 .then(passwordsMatch => {
                     if(passwordsMatch) {
-                        req.session.user = {id: userInfo.id, firstName: userInfo.first_name, lastName: userInfo.last_name, email: userInfo.email}
+                        req.session.user = {id: userInfo.id, firstName: userInfo.first_name, lastName: userInfo.last_name, email: userInfo.email, currently_at: userInfo.currently_at}
                         res.json({
                             success: true,
                             id: userInfo.id,
                             first_name: userInfo.first_name,
                             last_name: userInfo.last_name,
-                            email: userInfo.email
+                            email: userInfo.email,
+                            currently_at: userInfo.currently_at
                         })
                     } else {
                         res.json({
@@ -146,7 +148,7 @@ app.post("/login", (req, res) => {
 
 app.get("/user", (req, res) => {
     db.getUserById(req.session.user.id).then(userInfo => {
-        console.log("userInfo: ", userInfo);
+        // console.log("userInfo: ", userInfo);
         res.json({
             ...userInfo,
             profile_image_url: userInfo.profile_image_url || '/content/default_profile_picture.png'
@@ -226,6 +228,15 @@ app.post("/new-hostel.json", (req, res) => {
         })
 })
 
+app.get("/reservations.json", (req, res) => {
+    db.getUsersReservations(req.session.user.id)
+        .then( reservations => {
+            res.json({
+                reservations
+            })
+        })
+})
+
 app.get("/welcome", (req, res) => {
     if(req.session.user){
         res.redirect("/")
@@ -240,7 +251,6 @@ app.get('/logout', (req, res) => {
 })
 
 app.get('*', function(req, res) {
-    console.log("Is this happening tho");
     if(!req.session.user) {
         res.redirect("/welcome")
     } else {
@@ -252,81 +262,84 @@ server.listen(8080, function() {
     console.log("I'm listening.");
 });
 
+let onlineUsers = {};
+
 io.on('connection', function(socket) {
-    // console.log(`socket with the id ${socket.id} is now connected`);
-    //
-    // if (!socket.request.session || !socket.request.session.user.id) {
-    //     return socket.disconnect(true);
-    // }
-    //
-    // const userId = socket.request.session.user.id
-    //
-    // onlineUsers[socket.id] = userId
-    //
-    // if (Object.values(onlineUsers).filter(
-    //     id => id == userId
-    // ).length == 1) {
-    //     // or db query to get the data, and pass it as the 2nd argument (better)
-    //     db.getUserById(userId).then(userInfo => {
-    //         socket.broadcast.emit('userJoined', {
-    //             id: userId,
-    //             first_name: userInfo.first_name,
-    //             last_name: userInfo.last_name,
-    //             image_url: userInfo.image_url || '/content/default_profile_picture.png'
-    //         })
-    //     })
-    // }
-    //
-    // db.getUsersByIds(Object.values(onlineUsers)).then(onlineUsers => {
-    //         for (let user of onlineUsers) {
-    //             user.image_url = user.image_url || '/content/default_profile_picture.png'
-    //         }
-    //         console.log("onlineUsers: ", onlineUsers);
-    //         socket.emit('onlineUsers', onlineUsers)
-    //     }
-    // )
-    //
-    // socket.on('disconnect', function() {
-    //     io.emit('userLeft', userId)
-    //     console.log(`socket with the id ${socket.id} is now disconnected`);
-    //     delete onlineUsers[socket.id]
-    // });
-    // // io.sockets.sockets['jaflkjalkjefsukjh'].emit('hiDavid')
-    //
-    // ///// receiving from the client and the server fowards it to the other client ///////
-    // socket.on("privateMessage", data => {
-    //     io.sockets.sockets[data.socketId].emit('privateMessage')
-    // })
-    //
-    // socket.on('thanks', function(data) {
-    //     console.log(data);
-    // });
-    //
-    // socket.on("newMessage", message => {
-    //     db.saveMessage(socket.request.session.user.id, message).then( data => {
-    //         db.getUserById(userId).then(userInfo => {
-    //             let newMessage = {
-    //                 message: data.message,
-    //                 sender_id: data.sender_id,
-    //                 id: data.id,
-    //                 created_at: data.created_at,
-    //                 first_name: userInfo.first_name,
-    //                 last_name: userInfo.last_name,
-    //                 image_url: userInfo.image_url || '/content/default_profile_picture.png'
-    //             }
-    //             io.sockets.emit("newMessage", newMessage)
-    //         })
-    //     })
-    // })
-    //
-    // db.getMessages().then( messages => {
-    //     for (let message of messages) {
-    //         message.image_url = message.image_url || '/content/default_profile_picture.png'
-    //     }
-    //     socket.emit("chatMessages", messages)
-    // })
-    //
-    // socket.emit('welcome', {
-    //     message: 'Welome. It is nice to see you'
-    // });
+    console.log(`socket with the id ${socket.id} is now connected`);
+
+    if (!socket.request.session || !socket.request.session.user.id) {
+        return socket.disconnect(true);
+    }
+
+    const userId = socket.request.session.user.id
+
+    onlineUsers[socket.id] = userId
+
+    if (Object.values(onlineUsers).filter(
+        id => id == userId
+    ).length == 1) {
+        // or db query to get the data, and pass it as the 2nd argument (better)
+        db.getUserById(userId).then(userInfo => {
+            socket.broadcast.emit('userJoined', {
+                id: userId,
+                first_name: userInfo.first_name,
+                last_name: userInfo.last_name,
+                profile_image_url: userInfo.profile_image_url || '/content/default_profile_picture.png'
+            })
+        })
+    }
+
+    db.getUsersByIds(Object.values(onlineUsers)).then(onlineUsers => {
+            for (let user of onlineUsers) {
+                user.profile_image_url = user.profile_image_url || '/content/default_profile_picture.png'
+            }
+            // console.log("onlineUsers: ", onlineUsers);
+            socket.emit('onlineUsers', onlineUsers)
+        }
+    )
+
+    socket.on('disconnect', function() {
+        io.emit('userLeft', userId)
+        console.log(`socket with the id ${socket.id} is now disconnected`);
+        delete onlineUsers[socket.id]
+    });
+    // io.sockets.sockets['jaflkjalkjefsukjh'].emit('hiDavid')
+
+    ///// receiving from the client and the server fowards it to the other client ///////
+    socket.on("privateMessage", data => {
+        io.sockets.sockets[data.socketId].emit('privateMessage')
+    })
+
+    socket.on('thanks', function(data) {
+        console.log(data);
+    });
+
+    socket.on("newMessage", message => {
+        db.saveMessage(socket.request.session.user.id, message, socket.request.session.user.currently_at).then( data => {
+            db.getUserById(userId).then( userInfo => {
+                let newMessage = {
+                    message: data.message,
+                    sender_id: data.sender_id,
+                    id: data.id,
+                    location_id: data.location_id,
+                    created_at: data.created_at,
+                    first_name: userInfo.first_name,
+                    last_name: userInfo.last_name,
+                    profile_image_url: userInfo.profile_image_url || '/content/default_profile_picture.png'
+                }
+                io.sockets.emit("newMessage", newMessage)
+            })
+        })
+    })
+
+    db.getMessages().then( messages => {
+        for (let message of messages) {
+            message.profile_image_url = message.profile_image_url || '/content/default_profile_picture.png'
+        }
+        socket.emit("chatMessages", messages)
+    })
+
+    socket.emit('welcome', {
+        message: 'Welome. It is nice to see you'
+    });
 });

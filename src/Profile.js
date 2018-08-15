@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import axios from './axios'
 import Uploader from './Uploader'
+import YourReservations from './YourReservations'
 
 class Profile extends Component {
     constructor(props) {
@@ -63,24 +64,28 @@ class Profile extends Component {
         const { first_name, last_name, id, profile_image_url, bio, showBio, uploaderIsVisible } = this.state
         return (
             <div id="profile">
+            <div id="profile-page-left-panel">
+                <div id="mookup-top" className="effect1 mookup-left">mookup left</div>
+                <div className="effect1 mookup-left">mookup left</div>
+            </div>
                 <div id="profile-style-div" className="effect1">
                 <div className="section-header">This is what people see on your profile</div>
                     <img id="profilepage-profileimage" onClick={ this.showUploader } src={ profile_image_url } alt=""/>
                     <div id="text-box">
                         <div id="edit-profile-icon"><a href="/edit-profile"><i className="fas fa-pencil-alt"></i></a></div>
-                        <h1>{ `${ first_name } ${ last_name }` }</h1>
+                        <h1 id="profile-page-name">{ `${ first_name } ${ last_name }` }</h1>
                         <div id="bio-section">
                             { bio
-                                ? <p>{ bio } <span id="edit-bio-button" onClick={ (e) => {
+                                ? !showBio && <p id="bio-text">{ bio } <span id="edit-bio-button" onClick={ (e) => {
                                     this.toggleShowBio()
                                     console.log("bio on click", bio);
                                 } }>Edit</span> </p>
-                                : <p onClick={ this.toggleShowBio }>{ !showBio && "Click here to write a bio" }</p>
+                                : <div id="bio-default-text" onClick={ this.toggleShowBio }>{ !showBio && "Click here to write a bio" }</div>
                             }
 
-                            { showBio && <textarea id="bio-textarea" onChange={ this.handleChange } name="bio" defaultValue={ bio }></textarea> }
+                            { showBio && <textarea id="bio-textarea-input" onChange={ this.handleChange } name="bio" defaultValue={ bio }></textarea> }
 
-                            { showBio && <button onClick={ () => {
+                            { showBio && <button className="button" id="bio-button" onClick={ () => {
                                     this.setBio(this.state.bio)
                                     this.toggleShowBio()
                                 } }>SAVE</button>
@@ -88,6 +93,10 @@ class Profile extends Component {
                         </div>
                     </div>
                     <a href="/logout">logout</a>
+                </div>
+                <div id="profile-page-right-panel">
+                    <YourReservations />
+                    <div id="mookup-right" className="effect1">mookup right</div>
                 </div>
                 { uploaderIsVisible
                     ? <div className="dim-background" onClick={ this.hideUploader }></div>

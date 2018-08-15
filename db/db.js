@@ -38,13 +38,11 @@ exports.getUserById = function(id) {
     const params = [id]
     return db.query('SELECT * FROM users WHERE id = $1;', params)
         .then(results => {
-            console.log("in db results: ", results.rows[0]);
             return results.rows[0]
         })
 }
 
 exports.saveBio = function(id, bio) {
-    // console.log("bd, id: ", id, "bio: ", bio);
     const params = [id, bio];
     const q = `
         UPDATE users SET
@@ -53,7 +51,6 @@ exports.saveBio = function(id, bio) {
         RETURNING *;
         `;
     return db.query(q, params).then(userInfo => {
-        // console.log("bio on the db: ", userInfo.rows[0].bio);
         return userInfo.rows[0].bio
     })
 }
@@ -72,7 +69,6 @@ exports.changeUserProfilePic = function(user_id, profile_image_url) {
 }
 
 exports.updateUserNoPassword = function(id, first_name, last_name, email, birth_city, birth_country) {
-    console.log("db query NO-Password");
     const q = `
         UPDATE users SET first_name = $2, last_name = $3, email = $4, birth_city = $5, birth_country = $6
         WHERE id = $1
@@ -97,7 +93,6 @@ exports.updateUser = function(id, first_name, last_name, email, hashed_password,
 };
 
 exports.saveBio = function(id, bio) {
-    // console.log("bd, id: ", id, "bio: ", bio);
     const params = [id, bio];
     const q = `
         UPDATE users SET
@@ -106,7 +101,6 @@ exports.saveBio = function(id, bio) {
         RETURNING *;
         `;
     return db.query(q, params).then(userInfo => {
-        // console.log("bio on the db: ", userInfo.rows[0].bio);
         return userInfo.rows[0].bio
     })
 }
@@ -119,7 +113,6 @@ exports.checkInOut = function(id, status) {
     `;
     const params = [id, status];
     return db.query(q, params).then(status => {
-        console.log('returning from db: ', status.rows[0].checked_in)
         return status.rows[0].checked_in;
     });
 }
@@ -144,8 +137,52 @@ exports.newReservation = function(user_id, location_id, arrival_date, departure_
         RETURNING *;
         `
     return db.query(q, params).then(reservationInfo => {
-        console.log("new reservation at db: ", reservationInfo.rows[0]);
         return reservationInfo.rows[0]
+    })
+}
+
+exports.getUsersReservations = function(user_id) {
+    const params = [user_id]
+    return db.query('SELECT * FROM user_reservations WHERE user_id = $1;', params)
+        .then(reservations => {
+            return reservations.rows
+        })
+}
+
+exports.getUsersByIds = function(ids) {
+    const params = [ids]
+    const q = `SELECT * FROM users WHERE id = ANY($1)`;
+    return db.query(q, params).then(results => {
+        return results.rows
+    })
+}
+
+exports.getMessages = function() {
+    const q = `
+        SELECT hostel_chat.id, users.first_name, users.last_name, users.profile_image_url, hostel_chat.message, hostel_chat.sender_id, hostel_chat.created_at, hostel_chat.location_id
+        FROM hostel_chat
+        JOIN users
+        ON hostel_chat.sender_id = users.id
+        ORDER BY hostel_chat.id DESC LIMIT 10;
+        `
+    return db.query(q)
+        .then(results => {
+            console.log("when getting messages, location Id: ", results.rows);
+            return results.rows.sort( (a, b) => {
+                return a.id - b.id
+            })
+        })
+}
+
+exports.saveMessage = function(userId, message, location_id) {
+    const params = [userId, message, location_id]
+    const q = `
+            INSERT INTO hostel_chat (sender_id, message, location_id)
+            VALUES ($1, $2, $3)
+            RETURNING *;
+        `;
+    return db.query(q, params).then(results => {
+        return results.rows[0]
     })
 }
 

@@ -141,17 +141,15 @@ class Home extends Component {
         //     })
         // } else {
             // console.log("toggle reservation with no id");
-            console.log("reservation before switch. Show: ", this.state.showReservation);
             this.setState({
                 showReservation: !this.state.showReservation
-            }, () => console.log("reservation state switched. Show: ", this.state.showReservation) )
+            })
         // }
     }
     toggleShowPayment() {
         this.setState({
             showPayment: !this.state.showPayment
         })
-        console.log("payment state switched. Show: ", this.state.showPayment);
     }
     toggleShowMessage() {
         this.setState({
@@ -162,11 +160,9 @@ class Home extends Component {
         console.log('stateFromComponent: ', stateFromComponent);
         axios.post("/newReservation.json", stateFromComponent)
             .then(({data}) => {
-                console.log("DATA after newReservation", data);
                 this.setState({
                     data
                 }, () => {
-                    console.log("this.state.data.success: ", this.state.data.success);
                     if (this.state.data.success) {
                         this.toggleShowReservation()
                         this.toggleShowMessage()

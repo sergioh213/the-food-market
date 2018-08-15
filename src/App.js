@@ -6,6 +6,7 @@ import Home from './Home'
 import Events from './Events'
 import CurHostel from './CurHostel'
 import EditProfile from './EditProfile'
+import Chat from './Chat'
 import { BrowserRouter, Route, Link } from 'react-router-dom'
 
 class App extends Component {
@@ -43,6 +44,7 @@ class App extends Component {
                         <Route exact path='/edit-profile' component={EditProfile} />
                     </div>
                 </BrowserRouter>
+                <Chat />
             </div>
         )
     }

@@ -19,10 +19,13 @@ class Reservation extends Component {
     componentDidMount() {
         axios.get("/user").then(
             ({data}) => {
-                console.log("Looking for the payment info: ", data);
                 this.setState(data)
             }
         )
+        this.setState({
+            arrival_date: localStorage.getItem("arrival_date"),
+            departure_date: localStorage.getItem("departure_date")
+        })
     }
     handleChange(e) {
         this.setState({
@@ -32,16 +35,16 @@ class Reservation extends Component {
     handleSubmit(e){
         e.preventDefault()
         if (!this.state.card_number || !this.state.expiration_month || !this.state.expiration_year || !this.state.ccv) {
-            console.log("user doesn't have payment info");
+            localStorage.setItem("arrival_date", this.state.arrival_date)
+            localStorage.setItem("departure_date", this.state.departure_date)
             this.props.toggleShowPayment()
             this.props.toggleShowReservation()
         } else {
-            console.log("payment info DETECTED doing post");
-            console.log("hostel id being past to makeReservation: ", this.props.hostelInfo.id);
             this.setState({
                 location_id: this.props.hostelInfo.id
             }, () => {
-                console.log("state after setting hostelId: ", this.state);
+                localStorage.removeItem("arrival_date")
+                localStorage.removeItem("departure_date")
                 this.props.makeReservation(this.state)
             })
         }
@@ -50,7 +53,6 @@ class Reservation extends Component {
         if (!this.state.id) {
             return null;
         }
-        console.log("logging the state after mounted: ", this.state);
         const { hostel_main_img, street, num, postal_code, city_name, num_beds_left } = this.props.hostelInfo
         return (
             <div id="reservation">
@@ -71,7 +73,7 @@ class Reservation extends Component {
                     <div className="date-section">
                         {/*<DayPicker />*/}
                         {/*<div className="reservation-input-box">*/}
-                        <input className="date-input" onChange={ this.handleChange } name="arrival_date" type='date' min="2018-08-13" max="2019-12-31"/>
+                        <input className="date-input" onChange={ this.handleChange } name="arrival_date" type='date' min="2018-08-13" max="2019-12-31" defaultValue={ this.state.arrival_date } />
                             {/*<input className="date-input" onChange={ this.handleChange } name="arrival_day" placeholder='Day' type='number'/>*/}
                         {/*</div>*/}
                         {/*<div className="reservation-input-box">
@@ -84,7 +86,7 @@ class Reservation extends Component {
                     <div className="date-subheader">Check-Out date</div>
                     <div className="date-section">
                         {/*<div className="reservation-input-box">*/}
-                            <input className="date-input" onChange={ this.handleChange } name="departure_date" type='date'/>
+                            <input className="date-input" onChange={ this.handleChange } name="departure_date" type='date' defaultValue={ this.state.departure_date } />
                         {/*</div>*/}
                         {/*<div className="reservation-input-box">
                             <input className="date-input" onChange={ this.handleChange } name="departure_month" placeholder='Month' type='number'/>

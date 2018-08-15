@@ -32,11 +32,8 @@ class Payment extends Component {
         e.preventDefault()
         axios.post("/savePaymentInfo.json", this.state)
             .then(({data}) => {
-                console.log("DATA after savePaymentInfo", data);
                 this.setState({
                     data
-                }, () => {
-                    console.log("this.state.data after savePaymentInfo", this.state.data);
                 })
                 this.props.toggleShowPayment()
                 this.props.toggleShowReservation()
