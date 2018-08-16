@@ -14,7 +14,7 @@ html, body {
     /* overflow:  visible | hidden | scroll | auto | inherit */
 }
 .button{
-    height: 30px;
+    height: auto;
     background-color: #3F88C5;
     cursor: pointer;
     font-size: 14px;
@@ -286,14 +286,12 @@ html, body {
 }
 /* ~~~~~~~~ PROFILE ~~~~~~~~ */
 #profile-style-div{
-    display: flex;
     position: relative;
     width: 50%;
-    height: auto;
     background-color: white;
     margin-top: 50px;
     padding: 20px;
-    display: inline-block;
+    height: 100%;
 }
 #profilepage-profileimage{
     padding-top: 15px;
@@ -304,8 +302,7 @@ html, body {
     object-position: center;
 }
 #edit-profile-icon{
-    /* display: flex; */
-    background-color: #e0e0e0;
+    background-color: white;
     float: right;
     position: absolute;
     top: 35px;
@@ -316,7 +313,6 @@ html, body {
     height: 38px;
     border-radius: 100%;
     border: 2px #3F88C5 solid;
-    /* justify-content: right; */
 }
 #edit-profile-icon a{
     color: #3F88C5;
@@ -334,9 +330,13 @@ html, body {
 #profile-page-name{
     margin-top: 10px;
 }
+.opp-profile-page-name{
+    margin-bottom: 5px;
+}
 #bio-text{
     text-align: left;
     padding-left: 5px;
+    white-space: pre-line;
 }
 #bio-default-text{
     color: #3F88C5;
@@ -362,7 +362,6 @@ html, body {
     top: 0;
     width: 20%;
     height: 100%;
-    display: inline-block;
     margin-left: 10px;
 }
 #your-reservations{
@@ -396,7 +395,7 @@ html, body {
     margin-bottom: 5px;
 
 }
-#mookup-right{
+.profile-panel-right{
     margin-top: 10px;
     width: 100%;
     height: 20%;
@@ -404,23 +403,46 @@ html, body {
     padding: 20px;
 }
 /* ~~~~~~~~ LEFT PANEL ~~~~~~~~ */
+.panel-requests-subheader{
+    margin-top: 10px;
+}
 #profile-page-left-panel{
     /* position: absolute; */
     margin-top: 50px;
     top: 0;
     width: 20%;
     height: 100%;
-    display: inline-block;
+    /* display: inline-block; */
     margin-right: 10px;
 }
-#mookup-top{
-    margin-top: 0;
-}
-.mookup-left{
+.profile-panel-left{
     width: 100%;
     margin-top: 10px;
     background-color: white;
     padding: 20px;
+}
+#profile-panel-top{
+    margin-top: 0;
+}
+.connection-profile-picture{
+    width: 50%;
+    height: auto;
+    margin-top: 8px;
+}
+.connection-name-wrapper{
+    margin-top: 5px;
+}
+.connection-name{
+    /* position: relative; */
+    text-decoration: none;
+    color: black;
+}
+.friendbutton-panel-wrapper{
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+.wannabe{
+    border-bottom: 1px solid #bfbfbf;
 }
 /* //////////////////////////////// UPLOADER /////////////////////////////////// */
 #uploader{
@@ -529,6 +551,7 @@ html, body {
 #header{
     position: relative;
     height: 0;
+    z-index: -1;
 }
 /* .main-header-pane-wrapper{
 position: absolute;
@@ -650,6 +673,7 @@ position: absolute;
     height: 800px;
     object-fit: cover;
     object-position: right;
+    z-index: -2;
 }
 .map-dot{
     /* position: relative; */
@@ -694,34 +718,130 @@ position: absolute;
 }
 /* //////////////////////////////// CURRENT HOSTAL /////////////////////////////////// */
 #current-hostel{
-    /* position: relative; */
+    position: relative;
     /* right: 0; */
 }
 #current-hostel-subtitle{
+    /* z-index: 1000; */
     font-size: 20px;
-    position: relative;
-    margin-left: 125px;
-    top: 140px;
+    position: absolute;
+    left: 200px;
+    top: 300px;
     color: white;
     display: inline-block;
+    background-color: #7c304f;
+    transform: skewX(-45deg);
+    transform-origin:0 0;
+    content:'';
+    z-index:-1;
+    text-align: right;
+    width: 400px;
+    /* background: linear-gradient(to bottom,  #7c304f, rgb(63, 136, 197, 0)); */
 }
 #subtitle{
+    /* position: relative; */
     display: inline-block;
+    transform: skewX(45deg);
+    margin-right: 50px;
 }
 #subtitle-keyword{
+    margin-right: 50px;
     font-weight: bold;
     width: 100%;
-    padding-right: 3px;
+    padding-right: 50px;
     text-align: right;
+    transform: skewX(45deg);
+}
+#digital-key-image{
+    position: relative;
+    left: 40px;
+    /* z-index: 1; */
 }
 #check-in-button{
     position: absolute;
-    transform: translateX(-50%);
+    /* transform: translateX(-50%); */
     /* margin-right: 500px; */
-    right: 200px;
-    top: 100px;
-    width: 400px;
-    height: 50px;
+    left: 405px;
+    top: 400px;
+    width: 160px;
+    height: 48px;
+    border-radius: 6px;
+}
+#indication-text{
+    left: 410px;
+    top: 375px;
+    width: auto;
+    position: absolute;
+    /* background-color: red; */
+}
+#indication-text-qr{
+    left: 410px;
+    top: 490px;
+    width: 200px;
+    position: absolute;
+}
+#indication-text-app{
+    left: 410px;
+    top: 580px;
+    width: 200px;
+    position: absolute;
+}
+.app-store-images{
+    position: absolute;
+    left: 405px;
+    top: 610px;
+    width: 160px;
+    cursor: pointer;
+}
+#app-store-images2{
+    top: 660px;
+}
+/* ---Content Div--- */
+#current-hostel-content-box{
+    position: absolute;
+    right: 0;
+    width: 50%;
+    top: 0;
+    /* width: 50%; */
+    /* background-color: red; */
+    padding: 20px;
+    padding-bottom: 40px;
+    display: flex;
+    justify-content: center;
+}
+#current-hostel-center-style-div{
+    position: relative;
+    max-width: 800px;
+    min-width: 400px;
+    background-color: white;
+    margin-top: 50px;
+    padding: 20px;
+    height: 100%;
+}
+.current-hostel-title{
+    margin-top: 12px;
+    margin-bottom: 15px;
+    font-size: 16px;
+    text-align: center;
+}
+#current-hostel-right-panel{
+    max-width: 400px;
+    min-width: 200px;
+    margin-top: 50px;
+    top: 0;
+    width: 20%;
+    height: 100%;
+    margin-left: 10px;
+}
+#current-hostel-left-panel{
+    max-width: 400px;
+    min-width: 200px;
+    margin-top: 50px;
+    top: 0;
+    width: 20%;
+    height: 100%;
+    /* display: inline-block; */
+    margin-right: 10px;
 }
 /* //////////////////////////////// RESERVATION /////////////////////////////////// */
 #reservation{
@@ -860,18 +980,46 @@ position: absolute;
     margin-right: 20px;
 }
 /* //////////////////////////////// CHAT /////////////////////////////////// */
+#chat-button{
+    background-color: #3F88C5;
+    /* border: #3F88C5 3px solid; */
+    /* border-bottom: none;
+    border-right: none; */
+    width: 50px;
+    height: 50px;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    border-radius: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+#chat-button:hover{
+    background-color: #6aafe8;
+}
+#chat-logo-on-button{
+    color: white;
+    font-size: 20px;
+}
 #chat{
-    background-color: #f9dac2;
-    border: #5D3440 3px solid;
-    border-bottom: none;
-    border-right: none;
+    position: fixed;
+    background-color: white;
+    border: #3F88C5 3px solid;
+    /* border-bottom: none;
+    border-right: none; */
     width: 20%;
     min-width: 250px;
     height: auto;
-    position: absolute;
-    bottom: 0;
-    right: 0;
+    /* position: absolute; */
+    bottom: 20px;
+    right: 20px;
+    border-radius: 15px;
 }
+/* ~~~~~~~~ TAB BAR ~~~~~~~~ */
+
+/* ~~~~~~~~ rest of CHAT ~~~~~~~~ */
 #top-chat-bar{
     width: auto;
 }
@@ -881,26 +1029,25 @@ position: absolute;
     margin-top: 5px;
     /* float: right; */
     margin-left: 18px;
-    color: #5D3440;
+    color: #3F88C5;
 }
 #chat-close-x{
     float: right;
     margin-top: 4px;
     margin-right: 15px;
     cursor: pointer;
+    color: #3F88C5;
 }
 #chat-close-x:hover{
     font-weight: bold;
 }
 .chat-gridBox{
     display: grid;
-    grid-template-columns: 50px auto 80px;
+    grid-template-columns: 50px auto 60px;
 }
 .chat-image-box{
-    /* backgroundColor: pink; */
     grid-column: 1;
     width: 50px;
-    /* height: 50px; */
     text-align: center;
     margin-top: 8px;
 }
@@ -911,49 +1058,54 @@ position: absolute;
     object-position: center;
     border-radius: 100%;
 }
-.chat-message-box{
-    /* width: 350px; */
+.chat-message-box-wrapper{
+    padding: 5px;
     grid-column:  2;
+}
+.chat-message-box{
+    background-color: #6aafe8;
     display: grid;
     grid-template-rows: repeat( auto , 1fr );
+    border-radius: 10px;
+    padding-bottom: 5px;
 }
 .chat-name-div{
     grid-row:  1;
-    font-weight: bold;
-    font-size: 18px;
+    /* font-weight: bold;
+    font-size: 12px; */
     margin-top: 2px;
-    margin-left: 36px;
+    margin-left: 12px;
 }
 .chat-username-link{
     text-decoration: none;
     font-weight: bold;
-    font-size: 18px;
-    color: black;
+    font-size: 12px;
+    color: white;
 }
 .chat-message-text{
     grid-row:  2;
     margin: 0;
-    margin-left: 16px;
+    margin-left: 8px;
     padding: 0;
 }
 .chat-date-box{
-    width: auto; /* remove to 'auto' date width (making whole box bigger) */
+    padding-top: 10px;
     grid-column:  3;
     font-size: 10;
     padding-top: 2;
-    display: inline-block;
+    /* display: inline-block; */
 }
 .chat-message-time{
-    /* display: inline-block; */
-    font-size: 14px;
+    font-size: 10px;
 }
 .chat-message-date{
-    /* display: inline-block; */
     margin-left: 6px;
+    font-size: 8px;
 }
 #chat-input-section{
-    background-color: #EDCBB1;
+    background-color: white;
     padding-bottom: 4px;
+    border-radius: 0 0 15px 15px;
 }
 #messages-textarea{
     resize: none;
@@ -963,4 +1115,292 @@ position: absolute;
 }
 #submit-chat-message-button{
     width: 100%;
+    border-radius: 0 0 5px 5px;
 }
+/* //////////////////////////////// EVENTS /////////////////////////////////// */
+#events{
+    /* background-color: pink; */
+}
+#new-event-button{
+    background-color: #3F88C5;
+    width: 50px;
+    height: 50px;
+    position: absolute;
+    top: 60px;
+    right: 20px;
+    border-radius: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    z-index: 10;
+}
+#new-event-button:hover{
+    background-color: #6aafe8;
+}
+#plus-sign{
+    color: white;
+    font-size: 20px;
+}
+#event-list-wrapper{
+    margin-top: 170px;
+}
+#events-grid{
+    /* background-color: green; */
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    margin-bottom: 20px;
+    grid-gap: 20px;
+    margin-left: 40px;
+    margin-right: 40px;
+}
+.event-box{
+    grid-column: 1;
+    background-color: white;
+    padding: 20px;
+}
+.attendees-box{
+    background-color: white;
+    grid-column: 2;
+    padding: 20px;
+}
+#attend-event-button{
+    float: right;
+}
+.event-description{
+    /* float: left; */
+    display: inline-block;
+}
+.num-attendees-left-box{
+    /* position: absolute; */
+    float: right;
+    /* top: 50px; */
+}
+.num-attendees-left-text{
+    display: inline-block;
+}
+.num-attendees-left{
+    display: inline-block;
+    color: #3F88C5;
+    font-weight: bold;
+    margin-left: 10px;
+}
+.event-location-wrapper{
+
+}
+.event-location-header{
+    margin-top: 20px;
+    color: #3F88C5;
+    font-weight: bold;
+    display: inline-block;
+    margin-right: 10px;
+}
+.event-address{
+    display: inline-block;
+}
+
+.attendees-inner-box{
+    display: grid;
+    grid-template-columns: 50px auto;
+    position: relative;
+    height: 50px;
+    background-color: #e0e0e0;
+    border-radius: 25px;
+    margin-top: 10px;
+    /* margin-bottom: 5px; */
+}
+.attendees-box-title{
+    margin-left: 20px;
+    /* margin-bottom: 10px; */
+    color: #3F88C5;
+}
+.attendees-box-link{
+    text-decoration: none;
+    color: black;
+}
+.attendees-box-profile-pic{
+    grid-column: 1;
+    width: 50px;
+    height: 50px;
+    border-radius: 100%;
+    display: inline-block;
+    object-fit: cover;
+    object-position: center;
+}
+.attendees-box-name{
+    grid-column: 2;
+    position: relative;
+    margin-left: 10px;
+    margin-top: 18px;
+    font-weight: bold;
+    display: inline-block;
+    cursor: pointer;
+}
+/* //////////////////////////////// CREATE EVENTS /////////////////////////////////// */
+#create-events{
+    position: absolute;
+    text-align: left;
+    background-color: white;
+    width: auto;
+    height: auto;
+    top: 200px;
+    transform: translateX(-50%);
+    left: 50%;
+    z-index: 3;
+    padding: 20px;
+}
+#create-events-close-x{
+    position: absolute;
+    right: 25px;
+    cursor: pointer;
+    font-size: 20px;
+    color: #3F88C5;
+    top: 22px;
+    margin: 0;
+}
+#create-events-close-x:hover{ font-weight: bold; }
+#create-events-form{
+    text-align: left;
+}
+.create-event-subtitle{
+    margin-bottom: 6px;
+    margin-top: 15px;
+}
+#create-events-form input{
+    font-size: 14px;
+    padding-left: 10px;
+}
+#create-events-select{
+    /* margin-top: 10px; */
+    border-radius: 0;
+}
+#max-num-attendees-title{
+    margin-top: 10px;
+}
+#create-events-form #max-num-attendees-input{
+    font-size: 18px;
+    color: #3F88C5;
+    font-weight: bold;
+    width: 60px;
+}
+#input-error{
+    color: red;
+}
+#create-events-form #max-num-attendees-input::-webkit-input-placeholder {
+    font-weight: normal;
+    font-size: 16px;
+    /* padding-left: -5px; */
+}
+#create-event-textarea{
+    resize: none;
+    width: 100%;
+    min-height: 90px;
+    font-size: 14px;
+    border-color: rgb(166, 166, 166);
+    padding-left: 4px;
+    white-space: pre-line;
+}
+/* ~~~~~~~~ Select menu ~~~~~~~~ */
+.styled-select {
+   background: url(http://i62.tinypic.com/15xvbd5.png) no-repeat 96% 0;
+   height: 29px;
+   overflow: hidden;
+   width: 240px;
+}
+.styled-select select {
+   background: transparent;
+   border: none;
+   font-size: 14px;
+   height: 29px;
+   padding: 5px; /* If you add too much padding here, the options won't show in IE */
+   width: 268px;
+}
+.styled-select.slate {
+   background: url(http://i62.tinypic.com/2e3ybe1.jpg) no-repeat right center;
+   height: 34px;
+   width: 240px;
+}
+.styled-select.slate select {
+   border: 1px solid #ccc;
+   font-size: 16px;
+   height: 34px;
+   width: 268px;
+}
+/* -------------------- Rounded Corners */
+.rounded {
+   -webkit-border-radius: 20px;
+   -moz-border-radius: 20px;
+   border-radius: 20px;
+}
+.semi-square {
+   -webkit-border-radius: 5px;
+   -moz-border-radius: 5px;
+   border-radius: 5px;
+}
+/* -------------------- Colors: Background */
+.slate   { background-color: #ddd; }
+.green   { background-color: #779126; }
+.blue    { background-color: #3F88C5; }
+.yellow  { background-color: #eec111; }
+.black   { background-color: #000; }
+/* -------------------- Colors: Text */
+.slate select   { color: #000; }
+.green select   { color: #fff; }
+.blue select    { color: #fff; }
+.yellow select  { color: #000; }
+.black select   { color: #fff; }
+/* -------------------- Select Box Styles: danielneumann.com Method */
+/* -------------------- Source: http://danielneumann.com/blog/how-to-style-dropdown-with-css-only/ */
+#mainselection select {
+   border: 0;
+   color: #EEE;
+   background: transparent;
+   font-size: 20px;
+   font-weight: bold;
+   padding: 2px 10px;
+   width: 378px;
+   *width: 350px;
+   *background: #58B14C;
+   -webkit-appearance: none;
+}
+#mainselection {
+   overflow:hidden;
+   width:350px;
+   -moz-border-radius: 9px 9px 9px 9px;
+   -webkit-border-radius: 9px 9px 9px 9px;
+   border-radius: 9px 9px 9px 9px;
+   box-shadow: 1px 1px 11px #330033;
+   background: #58B14C url("http://i62.tinypic.com/15xvbd5.png") no-repeat scroll 319px center;
+}
+/* -------------------- Select Box Styles: stackoverflow.com Method */
+/* -------------------- Source: http://stackoverflow.com/a/5809186 */
+select#soflow, select#soflow-color {
+   -webkit-appearance: button;
+   -webkit-border-radius: 2px;
+   -webkit-box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
+   -webkit-padding-end: 20px;
+   -webkit-padding-start: 2px;
+   -webkit-user-select: none;
+   background-image: url(http://i62.tinypic.com/15xvbd5.png), -webkit-linear-gradient(#FAFAFA, #F4F4F4 40%, #E5E5E5);
+   background-position: 97% center;
+   background-repeat: no-repeat;
+   border: 1px solid #AAA;
+   color: #555;
+   font-size: inherit;
+   margin: 20px;
+   overflow: hidden;
+   padding: 5px 10px;
+   text-overflow: ellipsis;
+   white-space: nowrap;
+   width: 300px;
+}
+select#soflow-color {
+   color: #fff;
+   background-image: url(http://i62.tinypic.com/15xvbd5.png), -webkit-linear-gradient(#779126, #779126 40%, #779126);
+   background-color: #779126;
+   -webkit-border-radius: 20px;
+   -moz-border-radius: 20px;
+   border-radius: 20px;
+   padding-left: 15px;
+}
+/* myBlue: #3F88C5 */

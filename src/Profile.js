@@ -2,6 +2,8 @@ import React, {Component} from 'react'
 import axios from './axios'
 import Uploader from './Uploader'
 import YourReservations from './YourReservations'
+import Friends from './Friends'
+import Wannabes from './Wannabes'
 
 class Profile extends Component {
     constructor(props) {
@@ -33,6 +35,8 @@ class Profile extends Component {
         })
     }
     setBio(value) {
+        // var processedBio = value.replace(/\n\r?/g, "<br />")
+        // this.processedBio = processedBio
         axios.post("/bio", {bio : value}).then(
             ({data}) => {
                 this.setState({bio: data.bio})
@@ -62,11 +66,15 @@ class Profile extends Component {
     }
     render() {
         const { first_name, last_name, id, profile_image_url, bio, showBio, uploaderIsVisible } = this.state
+        if ( !this.state.id ) {
+            return null;
+        }
         return (
             <div id="profile">
             <div id="profile-page-left-panel">
-                <div id="mookup-top" className="effect1 mookup-left">mookup left</div>
-                <div className="effect1 mookup-left">mookup left</div>
+                <Friends />
+                <Wannabes />
+                <div className="effect1 profile-panel-left">Mookup left</div>
             </div>
                 <div id="profile-style-div" className="effect1">
                 <div className="section-header">This is what people see on your profile</div>
@@ -96,7 +104,7 @@ class Profile extends Component {
                 </div>
                 <div id="profile-page-right-panel">
                     <YourReservations />
-                    <div id="mookup-right" className="effect1">mookup right</div>
+                    <div className="profile-panel-right effect1">Mookup right</div>
                 </div>
                 { uploaderIsVisible
                     ? <div className="dim-background" onClick={ this.hideUploader }></div>

@@ -40,14 +40,12 @@ export default function(state = {}, action) {
         }
     }
     if (action.type == 'RECEIVE_MESSAGES') {
-        console.log("IN REDUCER action.messages: ", action.messages);
         state = {
             ...state,
             messages: action.messages
         }
     }
     if (action.type == 'NEW_MESSAGE') {
-        console.log("in reducer action.message: ", action.message);
         state = {
             ...state,
             messages: [...state.messages, action.message]

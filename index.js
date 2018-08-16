@@ -148,7 +148,6 @@ app.post("/login", (req, res) => {
 
 app.get("/user", (req, res) => {
     db.getUserById(req.session.user.id).then(userInfo => {
-        // console.log("userInfo: ", userInfo);
         res.json({
             ...userInfo,
             profile_image_url: userInfo.profile_image_url || '/content/default_profile_picture.png'
@@ -160,7 +159,6 @@ app.get("/user", (req, res) => {
 })
 
 app.post("/upload", uploader.single('file'), s3.upload, (req, res) => {
-    console.log("we are here, and the file is: ", req.file.filename);
     db.changeUserProfilePic(req.session.user.id, config.s3Url + req.file.filename).then(imgUrl => {
         res.json({
             success: true,
@@ -172,7 +170,6 @@ app.post("/upload", uploader.single('file'), s3.upload, (req, res) => {
 app.post("/editprofile.json", (req, res) => {
     const {age, birth_city, birth_country, password, email, last_name, first_name} = req.body
     if ((password == "" || null) || !password) {
-        console.log("No pasword inputted");
         db.updateUserNoPassword(req.session.user.id, first_name, last_name, email, birth_city, birth_country).then(userInfo => {
             res.json({userInfo})
         })
@@ -237,6 +234,188 @@ app.get("/reservations.json", (req, res) => {
         })
 })
 
+app.get("/user/:id.json", (req, res) => {
+    if (req.session.user.id == req.params.id) {
+        res.json({
+            redirect: true
+        })
+    } else {
+        db.getUserById(req.params.id).then(data => {
+            res.json({
+                ...data,
+                profile_image_url: data.profile_image_url || '/content/default_profile_picture.png'
+            })
+        })
+    }
+})
+
+app.get("/friend/:id.json", (req, res) => {
+    db.getCurrentStatus(req.session.user.id, req.params.id).then(data => {
+        res.json(data && {
+            sessionUserId: req.session.user.id,
+            status: data.status,
+            senderId: data.sender_id,
+            receiverId: data.receiver_id
+        })
+    }).catch(err => {
+        console.log(err);
+    })
+})
+
+app.post("/friend/:id.json", (req, res) => {
+    db.setStatus(req.session.user.id, req.params.id).then(data => {
+        res.json({
+            sessionUserId: req.session.user.id,
+            status: 1,
+            senderId: data.sender_id,
+            receiverId: data.receiver_id
+        })
+    }).catch(err => {
+        console.log(err);
+    })
+})
+
+app.post("/terminate/:id.json", (req, res) => {
+    db.deleteFriend(req.session.user.id, req.params.id).then(data => {
+        res.json({
+            sessionUserId: req.session.user.id,
+            status: null,
+        })
+    }).catch(err => {
+        console.log(err);
+    })
+})
+
+app.post("/accept/:id.json", (req, res) => {
+    db.acceptFriend(req.session.user.id, req.params.id).then(data => {
+        console.log("accept friend data: ", data);
+        res.json({
+            sessionUserId: req.session.user.id,
+            status: 2,
+            senderId: data.sender_id,
+            receiverId: data.receiver_id
+        })
+    }).catch(err => {
+        console.log(err);
+    })
+})
+
+app.get('/friendsWannabes.json', (req, res) => {
+    db.getFriendsWannabes(req.session.user.id).then(friendsWannabes => {
+        for (let user of friendsWannabes) {
+            user.profile_image_url = user.profile_image_url || '/content/default_profile_picture.png'
+        }
+        res.json({friendsWannabes})
+    })
+})
+
+app.get("/locations.json", (req, res) => {
+    console.log("getting to get locations");
+    db.getLocations().then( locations => {
+        console.log("locations data: ", locations);
+        res.json(locations)
+    })
+})
+
+app.post("/newEvent.json", (req, res) => {
+    // console.log("req.body at newEvent: ", req.body)
+    var maxNumAttendees = parseInt(req.body.max_num_attendees)
+    var locationId = parseInt(req.body.location_id)
+    // console.log("maxNumAttendees after numerify: ", maxNumAttendees); // numerify
+    db.createNewEvent(locationId, req.body.event_time, req.body.event_name, req.body.event_description, maxNumAttendees, maxNumAttendees, req.session.user.id)
+        .then( data => {
+            res.json({
+                success: true,
+                data: data
+            })
+        }).catch(err => {
+            console.log(err);
+            res.json({
+                error: true
+            })
+        })
+})
+
+app.get("/events-and-attendees.json", (req, res) => {
+    db.getEvents().then(events=>{
+        res.json({events})
+    })
+    // Promise.all([
+    //     db.getEvents(),
+    //     db.getAttendees()
+    // ]).then(([events, attendees]) => {
+    //     const user_eventsByEvent_id = {};
+    //
+    //     attendees.forEach(attendee => {
+    //         if (!user_eventsByEvent_id[attendee.event_id]) {
+    //             user_eventsByEvent_id[attendee.event_id] = [];
+    //         }
+    //         user_eventsByEvent_id[attendee.event_id].push(attendee.user_id)
+    //     })
+    //     console.log("user_eventsByEvent_id: ", user_eventsByEvent_id);
+    //     var arrayOfEvents = {}
+    //     for ( var key in user_eventsByEvent_id ) {
+    //         db.getUsersByIds(user_eventsByEvent_id[key]).then(eventAttendees => {
+    //             // console.log("eventAttendees: ", eventAttendees);
+    //             arrayOfEvents[key] = eventAttendees
+    //         })
+    //     }
+    //     console.log("$$$$$$$ user_eventsByEvent_id: ", user_eventsByEvent_id);
+    //     console.log("arrayOfEvents: ", arrayOfEvents);
+    //     res.json({arrayOfEvents})
+    // })
+    // .then( eventsAndAttendees => {
+    //     console.log("eventsAndAttendees after promise: ", eventsAndAttendees);
+    //     const listOfId = eventsAndAttendees[1].map( attendee => attendee.user_id )
+    //     console.log("listOfId: ", listOfId);
+    //     db.getUsersByIds(listOfId).then( attendeesProfiles => {
+    //         console.log("attendeesProfiles: ", attendeesProfiles);
+    //         const newArray = attendeesProfiles.map(profile => {
+    //             let obj
+    //             console.log("single profile: ", profile);
+    //             eventsAndAttendees[1].forEach(attendee => {
+    //                 console.log("profile.id: ", profile.id, " attendee.user_id: ", attendee.user_id);
+    //                 if (profile.id === attendee.user_id) {
+    //                     obj = {
+    //                         event_id: attendee.event_id,
+    //                         profile
+    //                     }
+    //                 }
+    //             })
+    //             return obj
+    //         })
+    //         console.log("newArray: ", newArray);
+    //         res.json({
+    //             events: eventsAndAttendees[0],
+    //             attendees: newArray
+    //         })
+    //     })
+    // })
+})
+
+app.post("/attend-event.json", (req, res) => {
+    console.log("req.body at attend-event: ", req.body);
+    var eventId = parseInt(req.body.event_id)
+    db.attendEvent(reventId, req.session.user.id)
+        .then( data => {
+            console.log("attend-event data sent: ", data);
+            res.json({
+                success: true,
+                data
+            })
+        })
+})
+
+app.get("/check-in", (req, res) => {
+    db.getCheckedInUsers().then( checkedInUsers => {
+        console.log("checkedInUsers: ", checkedInUsers);
+        for (let user of checkedInUsers) {
+            user.profile_image_url = user.profile_image_url || '/content/default_profile_picture.png'
+        }
+        res.json({checkedInUsers})
+    })
+})
+
 app.get("/welcome", (req, res) => {
     if(req.session.user){
         res.redirect("/")
@@ -293,7 +472,6 @@ io.on('connection', function(socket) {
             for (let user of onlineUsers) {
                 user.profile_image_url = user.profile_image_url || '/content/default_profile_picture.png'
             }
-            // console.log("onlineUsers: ", onlineUsers);
             socket.emit('onlineUsers', onlineUsers)
         }
     )

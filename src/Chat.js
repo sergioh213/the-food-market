@@ -143,12 +143,14 @@ class Chat extends Component {
                                     <div className="chat-image-box">
                                         <a href={`/user/${message.sender_id}`}><img className="chat-profile-picture" src={ message.profile_image_url } alt="Profile picture"/></a>
                                     </div>
-                                    <div className="chat-message-box">
-                                        <div className="chat-name-div">
-                                            <a className="chat-username-link" href={`/user/${message.sender_id}`}>{ `${message.first_name} ${message.last_name}` }</a>
-                                        </div>
-                                        <div className="chat-message-text">
-                                            { message.message }
+                                    <div className="chat-message-box-wrapper">
+                                        <div className="chat-message-box">
+                                            <div className="chat-name-div">
+                                                <a className="chat-username-link" href={`/user/${message.sender_id}`}>{ `${message.first_name} ${message.last_name}` }</a>
+                                            </div>
+                                            <div className="chat-message-text">
+                                                { message.message }
+                                            </div>
                                         </div>
                                     </div>
                                     <div className="chat-date-box">

@@ -167,7 +167,6 @@ exports.getMessages = function() {
         `
     return db.query(q)
         .then(results => {
-            console.log("when getting messages, location Id: ", results.rows);
             return results.rows.sort( (a, b) => {
                 return a.id - b.id
             })
@@ -183,6 +182,151 @@ exports.saveMessage = function(userId, message, location_id) {
         `;
     return db.query(q, params).then(results => {
         return results.rows[0]
+    })
+}
+
+exports.getCurrentStatus = function(sender_id, receiver_id) {
+    const params = [sender_id, receiver_id]
+    const q = `
+        SELECT * FROM connections
+        WHERE ((sender_id = $1 AND receiver_id = $2)
+        OR (sender_id = $2 AND receiver_id = $1))
+        `;
+    return db.query(q, params).then(results => {
+        return results.rows[0]
+    }).catch(err => {
+        return err
+    })
+}
+
+exports.setStatus = function(sender_id, receiver_id) {
+    const params = [sender_id, receiver_id]
+    const q = `
+        INSERT INTO connections (sender_id, receiver_id)
+        VALUES ($1, $2)
+        RETURNING *;
+        `;
+    return db.query(q, params).then(results => {
+        return results.rows[0]
+    })
+}
+
+exports.deleteFriend = function(sender_id, receiver_id) {
+    const params = [sender_id, receiver_id]
+    const q = `
+        DELETE FROM connections
+        WHERE ((sender_id = $1 AND receiver_id = $2)
+        OR (sender_id = $2 AND receiver_id = $1));
+        `;
+    return db.query(q, params).then(results => {
+        return results.rows[0]
+    })
+}
+
+exports.acceptFriend = function(sender_id, receiver_id) {
+    const params = [sender_id, receiver_id]
+    const q = `
+        UPDATE connections
+        SET status = 2
+        WHERE ((sender_id = $1 AND receiver_id = $2)
+        OR (sender_id = $2 AND receiver_id = $1))
+        RETURNING *;
+        `;
+    return db.query(q, params).then(results => {
+        console.log("accept in db results.rows[0]: ", results.rows[0]);
+        return results.rows[0]
+    })
+}
+
+// exports.getFriends = function(userid) {
+//     const params = [userid]
+//     const q = `SELECT * FROM connections
+//         WHERE ((sender_id = $1 OR receiver_id = $1)
+//         AND (status = 2))
+//         `;
+//     return db.query(q, params).then(results => {
+//         return results.rows
+//     })
+// }
+//
+// exports.getWannabes = function(userid) {
+//     const params = [userid]
+//     const q = `SELECT * FROM connections
+//         WHERE (receiver_id = $1
+//         AND status = 1)
+//         `;
+//     return db.query(q, params).then(results => {
+//         return results.rows
+//     })
+// }
+
+exports.getFriendsWannabes = function(userId) {
+    const params = [userId]
+
+    const q = `
+        SELECT users.id, first_name, last_name, profile_image_url, status
+        FROM connections
+        JOIN users
+        ON (status = 1 AND receiver_id = $1 AND sender_id = users.id)
+        OR (status = 2 AND receiver_id = $1 AND sender_id = users.id)
+        OR (status = 2 AND sender_id = $1 AND receiver_id = users.id)
+    `;
+
+    return db.query(q, params).then(results => {
+        return results.rows
+    })
+}
+
+exports.getLocations = function() {
+    const q = `SELECT * FROM locations;`;
+    return db.query(q).then(results => {
+        return results.rows
+    })
+}
+
+exports.createNewEvent = function(location_id, event_time, event_name, event_description, max_num_attendees, num_attendees_left, creator_id) {
+    const params = [location_id, event_time, event_name, event_description, max_num_attendees, num_attendees_left, creator_id]
+    const q = `
+        INSERT INTO events (location_id, event_time, event_name, event_description, max_num_attendees, num_attendees_left, creator_id)
+        VALUES ($1, $2, $3, $4, $5, $6, $7)
+        RETURNING *;
+        `;
+    return db.query(q, params).then(results => {
+        return results.rows[0]
+    })
+}
+
+exports.getEvents = function() {
+    const q = `SELECT * FROM events ORDER BY id DESC;`;
+    return db.query(q).then(results => {
+        return results.rows
+    })
+}
+
+exports.attendEvent = function(event_id, user_id) {
+    const params = [event_id, user_id]
+    const q = `
+        INSERT INTO user_events (event_id, user_id)
+        VALUES ($1, $2)
+        RETURNING *;
+        `;
+    return db.query(q, params).then(results => {
+        console.log("in db attendEvent results.rows[0]: ", results.rows[0]);
+        return results.rows[0]
+    })
+}
+
+exports.getAttendees = function() {
+    const q = `SELECT * FROM user_events;`;
+    return db.query(q).then(results => {
+        return results.rows
+    })
+}
+
+exports.getCheckedInUsers = function() {
+    const q = `SELECT * FROM users WHERE checked_in = true`;
+    return db.query(q).then(results => {
+        return results.rows
     })
 }
 
