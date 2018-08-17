@@ -399,18 +399,10 @@ app.get("/check-in", (req, res) => {
 })
 
 app.get("/user-location", (req, res) => {
-    console.log("getting to /user-location");
-    db.getUserById(req.session.user.id).then( userData => {
-        console.log("userData: ", userData);
-        db.getLocationsById(userData.currently_at).then( locationData => {
-            console.log("locationData: ", locationData);
-            res.json({
-                userData: userData,
-                locationData: locationData
-            })
-        })
-    })
+    db.userLocation(req.session.user.id)
 })
+
+
 
 app.get("/welcome", (req, res) => {
     if(req.session.user){

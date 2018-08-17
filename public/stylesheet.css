@@ -331,7 +331,14 @@ html, body {
     margin-top: 10px;
 }
 .opp-profile-page-name{
-    margin-bottom: 5px;
+    margin-bottom: 15px;
+}
+#from-opp{
+    font-weight: bold;
+    color: #3F88C5;
+}
+#opp-info-box{
+    margin-top: 8px;
 }
 #bio-text{
     text-align: left;
@@ -486,7 +493,17 @@ html, body {
     margin-top: 10px;
 }
 /* //////////////////////////////// EDIT PROFILE /////////////////////////////////// */
+#edit-profile-dim-background{
+    position: absolute;
+    bottom: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 199;
+}
 #edit-profile-style-div{
+    /* z-index: 1000; */
     position: relative;
     width: 300px;
     height: auto;

@@ -42,7 +42,7 @@ class Nav extends Component {
                         <a id="nav-home-link" href="/"><i className="fas fa-search"></i></a>
                     </div>
                     <div id="nav-home-box">
-                        <div id="city-name-nav">{ this.state.currently_at }</div>
+                        <div id="city-name-nav">{ this.state.city_name }</div>
                     </div>
                     <a id="nav-profile-pic-link" href="/profile"><img id="nav-profile-pic" src={ this.state.profile_image_url } alt=""></img></a>
                 </div>

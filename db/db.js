@@ -36,7 +36,12 @@ exports.getPasswordDB = function(email) {
 
 exports.getUserById = function(id) {
     const params = [id]
-    return db.query('SELECT * FROM users WHERE id = $1;', params)
+    return db.query(`
+            SELECT users.*, locations.city_name
+            FROM users
+            LEFT JOIN locations
+            ON locations.id = users.currently_at
+            WHERE users.id = $1;`, params)
         .then(results => {
             return results.rows[0]
         })

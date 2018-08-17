@@ -23,6 +23,7 @@ class EditProfile extends Component {
         )
     }
     showUploader() {
+        console.log("showUploader happening");
         this.setState({
             uploaderIsVisible: true
         })
@@ -98,7 +99,7 @@ class EditProfile extends Component {
                     </form>
                 </div>
                 { this.state.uploaderIsVisible
-                    ? <div id="dim-background" onClick={ this.hideUploader }></div>
+                    ? <div id="edit-profile-dim-background" onClick={ this.hideUploader }></div>
                     : null
                 }
             </div>

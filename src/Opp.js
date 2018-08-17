@@ -102,15 +102,17 @@ class Opp extends Component {
             transform: 'translate(-50%, -50%)',
             top: profileResizableHeight + 25
         }
-        const { first_name, last_name, id, profile_image_url, bio } = this.state
+        const { first_name, last_name, id, profile_image_url, bio, birth_city, birth_country } = this.state
         if (!id) {
             return null;
         }
         return (
             <div id="profile" >
                 <div id="profile-page-left-panel">
-                    <div id="profile-panel-top" className="effect1 profile-panel-left">Mookup left</div>
-                    <div className="effect1 profile-panel-left">Mookup left</div>
+                    <div id="profile-panel-top" className="effect1 profile-panel-left">
+                        <div id="from-opp">From: </div><div id="opp-info-box">{`${ birth_city }, ${ birth_country }`}</div>
+                    </div>
+                    <div className="effect1 profile-panel-left">No info</div>
                 </div>
                 <div id="profile-style-div" className="effect1">
                     <img id="profilepage-profileimage" src={ profile_image_url } alt=""/>
@@ -123,8 +125,9 @@ class Opp extends Component {
                     </div>
                 </div>
                 <div id="profile-page-right-panel">
-                    {/*<YourReservations />*/}
-                    <div id="profile-panel-top" className="effect1 profile-panel-right">Mookup right</div>
+                    <div id="profile-panel-top" className="effect1 profile-panel-right">
+                        <div id="from-opp">Currently staying at: </div><div id="opp-info-box">EAST MITTE, Berlin</div>
+                    </div>
                 </div>
             </div>
         )
