@@ -402,8 +402,6 @@ app.get("/user-location", (req, res) => {
     db.userLocation(req.session.user.id)
 })
 
-
-
 app.get("/welcome", (req, res) => {
     if(req.session.user){
         res.redirect("/")

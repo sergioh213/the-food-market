@@ -18,7 +18,6 @@ class Events extends Component {
         this.toggleCreateEvent = this.toggleCreateEvent.bind(this)
         this.createNewEvent = this.createNewEvent.bind(this)
         this.attendEvent = this.attendEvent.bind(this)
-        this.renderAttendees = this.renderAttendees.bind(this)
     }
     componentDidMount() {
         axios.get("/events-and-attendees.json").then( resp => {
@@ -41,7 +40,7 @@ class Events extends Component {
                 }
             })
     }
-    toggleCreateEvent(){
+    toggleCreateEvent() {
         this.setState({
             showCreateEvent: !this.state.showCreateEvent
         })
@@ -52,30 +51,19 @@ class Events extends Component {
             .then( ({data}) => {
                 console.log("attend event returned data: ", data.data);
                 if (data.success) {
-                    this.setState({
-                        data: data.data,
-                        success: data.success,
-                        buttonText: "You are attending",
+                    console.log("attend returned successfully");
+                    const clone = this.state.events.map( event => {
+                        if (event.id ==  data.data.event_id) {
+                            console.log("we are here");
+                            event.attending = true
+                        }
+                        return event
                     })
+                    this.setState({
+                        events: clone
+                    }, () => console.log("this.state after clone: ", this.state))
                 }
             })
-    }
-    renderAttendees(eventId) {
-        // console.log("this.state.attendees in renderAttendees: ", this.state.attendees.length );
-        // var thisEventAttendees = this.state.attendees.filter( attendee => eventId == attendee.event_id )
-        // console.log("filtered list. All events should be ", eventId, ": ", thisEventAttendees.length);
-        // return thisEventAttendees.map( eventAttendee => {
-        //     console.log("eventAttendee.profile.first_name: ", eventAttendee.profile.first_name);
-        //     return (<div key={ eventAttendee.profile.id }>{ eventAttendee.profile.first_name }</div>)
-        // })
-        return (
-            <div className="attendees-inner-box">
-                {/*<a className="attendees-box-link" href="/user/8">*/}
-                    <a className="attendees-box-link" href="/user/8"><img className="attendees-box-profile-pic" src="/content/default_profile_picture.png" alt=""/></a>
-                    <a className="attendees-box-link" href="/user/8"><div className="attendees-box-name">Sergio Herrero</div></a>
-                {/*</a>*/}
-            </div>
-        )
     }
     render() {
         console.log("this.state.events at render: ", this.state.events);

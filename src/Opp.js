@@ -22,86 +22,6 @@ class Opp extends Component {
             })
     }
     render() {
-        var profileResizableHeight = 200
-        var bioSectionHeight = 92
-        var textareaHeight = 210
-        var profileBoxVerticalPos = 400
-        var pStyle = {
-            padding: 0,
-            margin: 0
-        }
-        var titleStyle = {
-            left: '50%',
-            transform: 'translateX(-50%)',
-            top: '100px',
-            position: 'absolute',
-            color: '#5D3440',
-            fontWeight: 'bold',
-        }
-        var profileStyle = {
-            position: 'absolute',
-            display: 'inline',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            width: '700px',
-            top: profileBoxVerticalPos,
-            backgroundColor: '#EDCBB1',
-            padding: 0,
-            height: profileResizableHeight,
-            borderRadius: '19px',
-            paddingBottom: 20
-        }
-        var textBoxStyle = {
-            paddingTop: 20,
-            paddingRight: '20px',
-            paddingLeft: '20px',
-            verticalAlign: 'top',
-            width: '500px',
-            height: '200px',
-            position: 'relative',
-            display: 'inline-block'
-        }
-        var sectionHeader = {
-            margin: 0
-        }
-        var nameStyle = {
-            margin: 0
-        }
-        var bioStyle = {
-            margin: 0,
-            cursor: 'pointer',
-            fontSize: '16px'
-        }
-        var bioSection = {
-            backgroundColor: '#BFB59E',
-            padding: '10px',
-            marginTop: '10px',
-            borderRadius: "0px 8px 8px 0px",
-            minHeight: bioSectionHeight
-        }
-        var boxStyle = {
-            width: '200px',
-            height: '200px',
-            display: 'inline-block'
-        }
-        var picStyle = {
-            width: '200px',
-            height: '200px',
-            display: 'inline-block',
-            objectFit: 'cover',
-            objectPosition: 'center'
-        }
-        var wrapper = {
-            backgroundColor: '#EDCBB1',
-            padding: 10,
-            width: 'auto',
-            height: 'auto',
-            textAlign: 'center',
-            position: 'absolute',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            top: profileResizableHeight + 25
-        }
         const { first_name, last_name, id, profile_image_url, bio, birth_city, birth_country } = this.state
         if (!id) {
             return null;
@@ -110,7 +30,9 @@ class Opp extends Component {
             <div id="profile" >
                 <div id="profile-page-left-panel">
                     <div id="profile-panel-top" className="effect1 profile-panel-left">
-                        <div id="from-opp">From: </div><div id="opp-info-box">{`${ birth_city }, ${ birth_country }`}</div>
+                        <div id="from-opp">From: </div><div id="opp-info-box">
+                            { birth_city ? `${ birth_city }, ${ birth_country }` : "No info yet"}
+                        </div>
                     </div>
                     <div className="effect1 profile-panel-left">No info</div>
                 </div>

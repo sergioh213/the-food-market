@@ -16,6 +16,7 @@ class Home extends Component {
             showPayment: false,
             showMessage: false
         }
+        this.timers = {}
 
         this.enlargeDots = this.enlargeDots.bind(this)
         this.shrinkDots = this.shrinkDots.bind(this)
@@ -94,7 +95,7 @@ class Home extends Component {
         //         locations: clone
         //     })
         // }
-        this.timer = setTimeout( () => {
+        this.timers[id] = setTimeout( () => {
             // console.log("shrinking happening");
             const clone = this.state.locations.map(item => {
                 if (item.id === id) {
@@ -103,14 +104,12 @@ class Home extends Component {
                 return item
             })
             this.setState({
-                // showPopUp: true,
                 locations: clone
             })
         }, 200)
     }
     enlargeDots(id) {
-        // console.log("enlarging happening");
-        clearTimeout(this.timer)
+        clearTimeout(this.timers[id])
         const clone = this.state.locations.map(item => {
             if (item.id === id) {
                 item.enlarged = true
@@ -127,24 +126,9 @@ class Home extends Component {
     //     e.target.style.transform = 'scale(1.5)'
     // }
     toggleShowReservation() {
-        // if (id) {
-        //     console.log("toggle reservation with id");
-        //     const clone = this.state.locations.map(item => {
-        //         if (item.id === id) {
-        //             item.enlarged = false
-        //         }
-        //         return item
-        //     })
-        //     this.setState({
-        //         showReservation: false,
-        //         locations: clone
-        //     })
-        // } else {
-            // console.log("toggle reservation with no id");
-            this.setState({
-                showReservation: !this.state.showReservation
-            })
-        // }
+        this.setState({
+            showReservation: !this.state.showReservation
+        })
     }
     toggleShowPayment() {
         this.setState({

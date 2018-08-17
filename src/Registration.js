@@ -59,10 +59,10 @@ class Registration extends Component {
                             <input onChange={ this.handleChange } name="last_name" placeholder='Last name' type='text'/>
                         </div>
                         <div className="registration-input-box">
-                            <input onChange={ this.handleChange } name="email" placeholder='Email' type='text'/>
+                            <input onChange={ this.handleChange } name="email" placeholder='Email' type='email'/>
                         </div>
                         <div className="registration-input-box">
-                            <input onChange={ this.handleChange } name="password" placeholder='Password' type='text'/>
+                            <input onChange={ this.handleChange } name="password" placeholder='Password' type='password'/>
                         </div>
                         <button id="submit-button-registration">Submit</button>
                     </form>

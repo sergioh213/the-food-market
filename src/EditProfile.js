@@ -55,6 +55,7 @@ class EditProfile extends Component {
             .then(({data}) => {
                 console.log("data returned from server: ", data);
                 this.setState(data)
+                this.props.history.push("/profile")
             })
     }
     render() {

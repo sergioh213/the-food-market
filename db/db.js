@@ -168,7 +168,7 @@ exports.getMessages = function() {
         FROM hostel_chat
         JOIN users
         ON hostel_chat.sender_id = users.id
-        ORDER BY hostel_chat.id DESC LIMIT 10;
+        ORDER BY hostel_chat.id DESC LIMIT 9;
         `
     return db.query(q)
         .then(results => {

@@ -267,12 +267,45 @@ html, body {
     height: 40px;
 }
 #nav-profile-pic{
-    width: inherit;
-    height: inherit;
     border-radius: 100%;
     border: grey solid 2px;
     object-fit: cover;
     object-position: center;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    margin-right: 30px;
+    margin-left: 10px;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+}
+#nav-menu{
+    background-color: #3F88C5;
+    position: absolute;
+    /* padding-top: 5px; */
+    /* padding-bottom: 20px; */
+    /* padding-left: 30px; */
+    /* padding-right: 30px; */
+    text-align: center;
+    right: 0;
+    z-index: 100;
+    min-width: 200px;
+}
+#nav-menu-links{
+    text-decoration: none;
+    width: 100%;
+}
+.nav-menu-options{
+    width: 100%;
+    /* margin-top: 5px; */
+    padding-bottom: 9px;
+    padding-top: 9px;
+    border-bottom: 1px solid #bfbfbf;
+    color: white;
+}
+.nav-menu-options:hover{
+    background-color: white;
+    color: #3F88C5;
 }
 /* //////////////////////////////// PROFILE PAGE /////////////////////////////////// */
 #profile{
@@ -332,6 +365,15 @@ html, body {
 }
 .opp-profile-page-name{
     margin-bottom: 15px;
+}
+#profile-page-dim-background{
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 199;
+    height: 100vh;
 }
 #from-opp{
     font-weight: bold;
@@ -660,11 +702,10 @@ position: absolute;
     padding-right: 50px;
     padding-left: 20px;
     border-bottom: 1px solid #bfbfbf;
+    cursor: pointer;
 }
 .hostel-div:hover{
-    position: relative;
     background-color: #bfbfbf;
-    cursor: pointer;
 }
 #location-icon{
     /* position: relative;

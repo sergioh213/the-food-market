@@ -53,10 +53,10 @@ class Login extends Component {
                     <form id="registration-form" onSubmit={ this.handleSubmit }>
 
                         <div className="registration-input-box">
-                            <input onChange={ this.handleChange } name="email" placeholder='Email' type='text'/>
+                            <input onChange={ this.handleChange } name="email" placeholder='Email' type='email'/>
                         </div>
                         <div className="registration-input-box">
-                            <input onChange={ this.handleChange } name="password" placeholder='Password' type='text'/>
+                            <input onChange={ this.handleChange } name="password" placeholder='Password' type='password'/>
                         </div>
                         <div className="registration-input-box">
                             <button id="submit-button-login">Submit</button>

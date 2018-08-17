@@ -65,7 +65,7 @@ class Profile extends Component {
         })
     }
     render() {
-        const { first_name, last_name, id, profile_image_url, bio, showBio, uploaderIsVisible } = this.state
+        const { first_name, last_name, id, profile_image_url, bio, showBio, uploaderIsVisible, birth_city, birth_country } = this.state
         if ( !this.state.id ) {
             return null;
         }
@@ -74,7 +74,11 @@ class Profile extends Component {
             <div id="profile-page-left-panel">
                 <Friends />
                 <Wannabes />
-                <div className="effect1 profile-panel-left">Mookup left</div>
+                <div className="effect1 profile-panel-left">
+                    <div id="from-opp">From: </div><div id="opp-info-box">
+                        { birth_city ? `${ birth_city }, ${ birth_country }` : "No info yet"}
+                    </div>
+                </div>
             </div>
                 <div id="profile-style-div" className="effect1">
                 <div className="section-header">This is what people see on your profile</div>
@@ -104,10 +108,12 @@ class Profile extends Component {
                 </div>
                 <div id="profile-page-right-panel">
                     <YourReservations />
-                    <div className="profile-panel-right effect1">Mookup right</div>
+                    <div className="profile-panel-right effect1">
+
+                    </div>
                 </div>
                 { uploaderIsVisible
-                    ? <div className="dim-background" onClick={ this.hideUploader }></div>
+                    ? <div id="profile-page-dim-background" onClick={ this.hideUploader }></div>
                     : null
                 }
                 { uploaderIsVisible
