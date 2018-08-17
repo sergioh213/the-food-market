@@ -615,6 +615,15 @@ position: absolute;
     top: 60px;
 } */
 /* //////////////////////////////// HOME /////////////////////////////////// */
+/* //////////////////////////////// HOME /////////////////////////////////// */
+#home-background{
+    position: absolute;
+    height: 100vh;
+    background-color: #E8E8E8;
+    width: 100%;
+    z-index: -3;
+    top: 0;
+}
 #home-style-div{
     position: relative;
     /* top: 0; */
@@ -856,6 +865,22 @@ position: absolute;
     z-index: 3;
     padding: 10px;
 }
+#successful-reservation{
+    position: absolute;
+    text-align: center;
+    background-color: white;
+    width: 300px;
+    height: auto;
+    top: 250px;
+    transform: translateX(-50%);
+    left: 50%;
+    z-index: 3;
+    padding: 20px;
+    padding-top: 30px;
+}
+#successful-message{
+    color: #3F88C5;
+}
 .reservation-input-box{
     display: inline-block;
 }
@@ -1009,7 +1034,7 @@ position: absolute;
     border: #3F88C5 3px solid;
     /* border-bottom: none;
     border-right: none; */
-    width: 20%;
+    width: 28%;
     min-width: 250px;
     height: auto;
     /* position: absolute; */

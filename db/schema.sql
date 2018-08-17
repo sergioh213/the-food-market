@@ -7,7 +7,7 @@
 -- DROP TABLE IF EXISTS user_images;
 -- DROP TABLE IF EXISTS user_notes;
 DROP TABLE IF EXISTS user_events;
--- DROP TABLE IF EXISTS events;
+DROP TABLE IF EXISTS events;
 
 -- CREATE TABLE locations (
 --     id SERIAL PRIMARY KEY,
@@ -100,17 +100,17 @@ DROP TABLE IF EXISTS user_events;
 --     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 -- );
 
--- CREATE TABLE events (
---     id SERIAL PRIMARY KEY,
---     location_id INT NOT NULL REFERENCES locations(id),
---     event_time TIMESTAMP NOT NULL,
---     event_name VARCHAR(200) NOT NULL,
---     event_description VARCHAR(600) NOT NULL,
---     max_num_attendees INT NOT NULL,
---     num_attendees_left INT CHECK (num_attendees_left >= 0 AND num_attendees_left <= max_num_attendees),
---     creator_id INT REFERENCES users(id),
---     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
--- );
+CREATE TABLE events (
+    id SERIAL PRIMARY KEY,
+    location_id INT NOT NULL REFERENCES locations(id),
+    event_time TIMESTAMP NOT NULL,
+    event_name VARCHAR(200) NOT NULL,
+    event_description VARCHAR(600) NOT NULL,
+    max_num_attendees INT NOT NULL,
+    num_attendees_left INT CHECK (num_attendees_left >= 0 AND num_attendees_left <= max_num_attendees),
+    creator_id INT REFERENCES users(id),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
 CREATE TABLE user_events (
     id SERIAL PRIMARY KEY,

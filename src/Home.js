@@ -180,7 +180,7 @@ class Home extends Component {
                     <img id="map" src="/content/berlin-map-wide.png" alt=""/>
                     <Header text={`Home page`}/>
                     {
-                        this.state.showMessage && <div id="reservation">Your reservation was SUCCESFULLY made</div>
+                        this.state.showMessage && <div id="successful-reservation">Your reservation was <div id="successful-message">SUCCESFULLY</div> made<div onClick={ this.toggleShowMessage } id="close-x">x</div></div>
                     }
                     <div id="hostels-in-city">
                         {
@@ -219,7 +219,7 @@ class Home extends Component {
                             return (
                                 <div key={item.id}>
                                     { item.enlarged &&
-                                        <div style={{ right: item.coordinates.right, top: item.coordinates.top - 10 }} onMouseEnter={ () => this.enlargeDots(item.id) } onMouseLeave={ () => this.shrinkDots(item.id) } className="dot-lable">
+                                        <div style={{ right: item.coordinates.right, top: item.coordinates.top - 10 }} onMouseEnter={ () => this.enlargeDots(item.id) } onMouseLeave={ () => this.shrinkDots(item.id) } className="dot-lable effect1">
                                             <img className="map-label-img" src={`${ item.hostel_main_img }`} alt=""/>
                                             <div>{`${ item.street } ${ item.num }`}</div>
                                             <div>{`${ item.postal_code }, ${ item.city_name }`}</div>
@@ -236,7 +236,8 @@ class Home extends Component {
                             )
                         })
                     }
-                    <div id="home-paragraph">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</div>
+                    <div id="home-paragraph" className="effect1">At our co-living spaces, each location has one special amenity.<br />Reserve a bed and use it in any location (including other countries!!).<br /><br />If you are currently staying with us, you can use any location's amenity, share our comunity of amazing people and attend our events.<br /><br />You are free to stay for as long as you want!</div>
+                    {/*<div id="home-paragraph">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</div>*/}
                 </div>
                 { this.state.showMessage
                     ? <div className="dim-background" id="darker" onClick={ this.toggleShowMessage }></div>
@@ -250,6 +251,7 @@ class Home extends Component {
                     ? <div className="dim-background" id="darker" onClick={ this.toggleShowReservation }></div>
                     : null
                 }
+                <div id="home-background"></div>
             </div>
         )
     }

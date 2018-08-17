@@ -284,6 +284,13 @@ exports.getLocations = function() {
     })
 }
 
+exports.getLocationsById = function(id) {
+    const q = `SELECT * FROM locations WHERE id = $1;`;
+    return db.query(q, [id]).then(results => {
+        return results.rows[0]
+    })
+}
+
 exports.createNewEvent = function(location_id, event_time, event_name, event_description, max_num_attendees, num_attendees_left, creator_id) {
     const params = [location_id, event_time, event_name, event_description, max_num_attendees, num_attendees_left, creator_id]
     const q = `
@@ -317,7 +324,12 @@ exports.attendEvent = function(event_id, user_id) {
 }
 
 exports.getAttendees = function() {
-    const q = `SELECT * FROM user_events;`;
+    const q = `
+        SELECT event_id, users.*
+        FROM user_events
+        LEFT JOIN users
+        ON users.id = user_events.user_id;
+    `;
     return db.query(q).then(results => {
         return results.rows
     })
@@ -327,6 +339,14 @@ exports.getCheckedInUsers = function() {
     const q = `SELECT * FROM users WHERE checked_in = true`;
     return db.query(q).then(results => {
         return results.rows
+    })
+}
+
+exports.getUserEvents = function(event_id, user_id) {
+    const params = [event_id, user_id]
+    const q = `SELECT * FROM user_events WHERE (event_id = $1 AND user_id = $2);`;
+    return db.query(q, params).then(results => {
+        return results.rows[0]
     })
 }
 

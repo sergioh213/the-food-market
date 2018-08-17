@@ -14,8 +14,18 @@ class Nav extends Component {
                 // console.log("state in nav bar: ", this.state);
             }
         )
+        // console.log("component mounts");
+        // axios.get("/user-location").then( data => {
+        //     console.log("data: ", data, " data: ", data);
+        //     this.setState({
+        //         data: data
+        //     }, () => console.log("state in nav bar: ", this.state))
+        // })
     }
     render() {
+        // if (this.state.currently_at) {
+        //     return null
+        // }
         return (
             <div id="nav">
                 <div id="navheader">

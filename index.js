@@ -337,72 +337,54 @@ app.post("/newEvent.json", (req, res) => {
 })
 
 app.get("/events-and-attendees.json", (req, res) => {
-    db.getEvents().then(events=>{
+    Promise.all([
+        db.getEvents(),
+        db.getAttendees()
+    ]).then(([events, attendees]) => {
+        const user_eventsByEvent_id = {};
+
+        attendees.forEach(attendee => {
+            if (!user_eventsByEvent_id[attendee.event_id]) {
+                user_eventsByEvent_id[attendee.event_id] = [];
+            }
+            user_eventsByEvent_id[attendee.event_id].push(attendee)
+            attendee.profile_image_url = attendee.profile_image_url || '/content/default_profile_picture.png'
+        })
+
+        // console.log("user_eventsByEvent_id: ", user_eventsByEvent_id);
+        events.forEach( event => {
+            event.attendees = user_eventsByEvent_id[event.id]
+            event.attending = event.attendees && event.attendees.some( attendee => attendee.id == req.session.user.id )
+        })
+        console.log("events: ", events);
         res.json({events})
     })
-    // Promise.all([
-    //     db.getEvents(),
-    //     db.getAttendees()
-    // ]).then(([events, attendees]) => {
-    //     const user_eventsByEvent_id = {};
-    //
-    //     attendees.forEach(attendee => {
-    //         if (!user_eventsByEvent_id[attendee.event_id]) {
-    //             user_eventsByEvent_id[attendee.event_id] = [];
-    //         }
-    //         user_eventsByEvent_id[attendee.event_id].push(attendee.user_id)
-    //     })
-    //     console.log("user_eventsByEvent_id: ", user_eventsByEvent_id);
-    //     var arrayOfEvents = {}
-    //     for ( var key in user_eventsByEvent_id ) {
-    //         db.getUsersByIds(user_eventsByEvent_id[key]).then(eventAttendees => {
-    //             // console.log("eventAttendees: ", eventAttendees);
-    //             arrayOfEvents[key] = eventAttendees
-    //         })
-    //     }
-    //     console.log("$$$$$$$ user_eventsByEvent_id: ", user_eventsByEvent_id);
-    //     console.log("arrayOfEvents: ", arrayOfEvents);
-    //     res.json({arrayOfEvents})
-    // })
-    // .then( eventsAndAttendees => {
-    //     console.log("eventsAndAttendees after promise: ", eventsAndAttendees);
-    //     const listOfId = eventsAndAttendees[1].map( attendee => attendee.user_id )
-    //     console.log("listOfId: ", listOfId);
-    //     db.getUsersByIds(listOfId).then( attendeesProfiles => {
-    //         console.log("attendeesProfiles: ", attendeesProfiles);
-    //         const newArray = attendeesProfiles.map(profile => {
-    //             let obj
-    //             console.log("single profile: ", profile);
-    //             eventsAndAttendees[1].forEach(attendee => {
-    //                 console.log("profile.id: ", profile.id, " attendee.user_id: ", attendee.user_id);
-    //                 if (profile.id === attendee.user_id) {
-    //                     obj = {
-    //                         event_id: attendee.event_id,
-    //                         profile
-    //                     }
-    //                 }
-    //             })
-    //             return obj
-    //         })
-    //         console.log("newArray: ", newArray);
-    //         res.json({
-    //             events: eventsAndAttendees[0],
-    //             attendees: newArray
-    //         })
-    //     })
-    // })
 })
 
 app.post("/attend-event.json", (req, res) => {
     console.log("req.body at attend-event: ", req.body);
     var eventId = parseInt(req.body.event_id)
-    db.attendEvent(reventId, req.session.user.id)
+    db.attendEvent(eventId, req.session.user.id)
         .then( data => {
             console.log("attend-event data sent: ", data);
             res.json({
                 success: true,
                 data
             })
+        })
+})
+
+app.post('/user-events.json', (req, res) => {
+    console.log('req.body: ', req.body);
+    console.log("req.body.event_id: ", req.body.event_id, " req.body.user_id: ", req.body.user_id);
+    db.getUserEvents(req.body.event_id, req.body.user_id)
+        .then(data => {
+            if (data == undefined) {
+                console.log("returned data on server: ", data);
+                res.json({attending: false})
+            } else {
+                res.json({attending: true})
+            }
         })
 })
 
@@ -413,6 +395,20 @@ app.get("/check-in", (req, res) => {
             user.profile_image_url = user.profile_image_url || '/content/default_profile_picture.png'
         }
         res.json({checkedInUsers})
+    })
+})
+
+app.get("/user-location", (req, res) => {
+    console.log("getting to /user-location");
+    db.getUserById(req.session.user.id).then( userData => {
+        console.log("userData: ", userData);
+        db.getLocationsById(userData.currently_at).then( locationData => {
+            console.log("locationData: ", locationData);
+            res.json({
+                userData: userData,
+                locationData: locationData
+            })
+        })
     })
 })
 
