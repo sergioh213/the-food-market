@@ -17,7 +17,7 @@ const server = require('http').Server(app);
 
 let domain
 if (process.env.NODE_ENV == "production") {
-    domain = 'https://co-living.herokuapp.com/'
+    domain = 'https://co-living.herokuapp.com/socket.io/'
 } else {
     domain = 'localhost:8080'
 }
