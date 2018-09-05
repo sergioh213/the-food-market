@@ -141,7 +141,7 @@ class Chat extends Component {
                             message => (
                                 <div className="chat-gridBox" key={ message.id } >
                                     <div className="chat-image-box">
-                                        <a href={`/user/${message.sender_id}`}><img className="chat-profile-picture" src={ message.profile_image_url } alt="Profile picture"/></a>
+                                        <a href={`/user/${message.sender_id}`}><img className="chat-profile-picture" src={ message.profile_image_url } alt=""/></a>
                                     </div>
                                     <div className="chat-message-box-wrapper">
                                         <div className="chat-message-box">

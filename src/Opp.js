@@ -36,13 +36,15 @@ class Opp extends Component {
                     </div>
                     <div className="effect1 profile-panel-left">No info</div>
                 </div>
-                <div id="profile-style-div" className="effect1">
-                    <img id="profilepage-profileimage" src={ profile_image_url } alt=""/>
-                    <div id="text-box">
-                        <h1 id="profile-page-name" className="opp-profile-page-name">{ `${ first_name } ${ last_name }` }</h1>
-                        <FriendButton id={ id } />
-                        <div id="bio-section">
-                            <p id="bio-text">{ bio }</p>
+                <div id="profile-style-div">
+                    <div id="profile-content-box" className="effect1">
+                        <img id="profilepage-profileimage" src={ profile_image_url } alt=""/>
+                        <div id="text-box">
+                            <h1 id="profile-page-name" className="opp-profile-page-name">{ `${ first_name } ${ last_name }` }</h1>
+                            <FriendButton id={ id } />
+                            <div id="bio-section">
+                                <p id="bio-text">{ bio }</p>
+                            </div>
                         </div>
                     </div>
                 </div>

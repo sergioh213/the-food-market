@@ -39,7 +39,7 @@ class Friends extends Component {
         }
         console.log('this.props.friends: ', this.props.friends);
         return (
-            <div id="profile-panel-top" className="effect1 profile-panel-right">
+            <div className="effect1 profile-panel-right">
                 <div className="section-header">Connections:</div>
                 { !this.props.friends.length
                     ? <div className="panel-requests-subheader">You have no connections</div>

@@ -1,4 +1,5 @@
 import React, {Component} from 'react'
+import { Router, Link } from 'react-router-dom'
 import axios from './axios'
 
 class Nav extends Component {
@@ -6,10 +7,12 @@ class Nav extends Component {
         super(props)
 
         this.state = {
-            showMenu: false
+            showMenu: false,
+            showSearch: false
         }
 
         this.toggleShowMenu = this.toggleShowMenu.bind(this)
+        this.toggleShowSearch = this.toggleShowSearch.bind(this)
     }
     componentDidMount() {
         axios.get("/user").then(
@@ -32,6 +35,11 @@ class Nav extends Component {
             showMenu: !this.state.showMenu
         })
     }
+    toggleShowSearch() {
+        this.setState({
+            showSearch: !this.state.showSearch
+        })
+    }
     render() {
         // if (this.state.currently_at) {
         //     return null
@@ -49,8 +57,14 @@ class Nav extends Component {
                         <a id="nav-home-link" href={`/events/berlin`}><i className="fas fa-exclamation"></i></a>
                     </div>
                     <div id="nav-home-box">
-                        <a id="nav-home-link" href="/"><i className="fas fa-search"></i></a>
+                        {/*<Router>*/}
+                        {/*<Link to="/"><i className="fas fa-search"></i></Link>*/}
+                        <a onClick={ this.toggleShowSearch } id="nav-home-link" href="/"><i className="fas fa-search"></i></a>
+                        { this.state.showSearch && <input id="search-bar" type="text"/> }
+                        {/*</Router>*/}
                     </div>
+                    {/*<div id="nav-home-box">
+                    </div>*/}
                     <div id="nav-home-box">
                         <div id="city-name-nav">{ this.state.city_name }</div>
                     </div>
@@ -63,6 +77,9 @@ class Nav extends Component {
                         <a id="nav-menu-links" href="/edit-profile"><div className="nav-menu-options">Edit profile</div></a>
                         <a id="nav-menu-links" href="/logout"><div className="nav-menu-options">Log Out</div></a>
                     </div>
+                }
+                { this.state.showMenu &&
+                    <div id="profile-page-dim-background" onClick={ this.toggleShowMenu }></div>
                 }
             </div>
         )
