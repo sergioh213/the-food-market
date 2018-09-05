@@ -14,7 +14,15 @@ const path = require('path');
 const s3 = require("./s3");
 const config = require("./config");
 const server = require('http').Server(app);
-const io = require('socket.io')(server, { origins: 'localhost:8080' });
+
+let domain
+if (process.env.NODE_ENV == "production") {
+    domain = 'https://co-living.herokuapp.com/'
+} else {
+    domain = 'localhost:8080'
+}
+
+const io = require('socket.io')(server, { origins: domain });
 
 var diskStorage = multer.diskStorage({
     destination: function (req, file, callback) {
