@@ -9,7 +9,7 @@ if (process.env.DATABASE_URL) {
 exports.newUser = function(first_name, last_name, email, hashed_password) {
     const q = `
         INSERT INTO users (first_name, last_name, email, hashed_password, currently_at)
-        VALUES ($1, $2, $3, $4, $5)
+        VALUES ($1, $2, $3, $4, 1)
         RETURNING *;
         `
     const params = [first_name, last_name, email, hashed_password, 1]

@@ -6,7 +6,7 @@
 -- DROP TABLE IF EXISTS user_lenguages;
 -- DROP TABLE IF EXISTS user_images;
 -- DROP TABLE IF EXISTS user_notes;
-DROP TABLE IF EXISTS user_events;
+-- DROP TABLE IF EXISTS user_events;
 -- DROP TABLE IF EXISTS events;
 
 -- CREATE TABLE locations (
@@ -42,7 +42,7 @@ DROP TABLE IF EXISTS user_events;
 --     CCV INT,
 --     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 -- );
-
+--
 -- CREATE TABLE locations_amenities (
 --     id SERIAL PRIMARY KEY,
 --     location_id INT REFERENCES locations(id),
@@ -99,7 +99,7 @@ DROP TABLE IF EXISTS user_events;
 --     note VARCHAR(400),
 --     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 -- );
-
+--
 -- CREATE TABLE events (
 --     id SERIAL PRIMARY KEY,
 --     location_id INT NOT NULL REFERENCES locations(id),
@@ -111,10 +111,10 @@ DROP TABLE IF EXISTS user_events;
 --     creator_id INT REFERENCES users(id),
 --     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 -- );
-
-CREATE TABLE user_events (
-    id SERIAL PRIMARY KEY,
-    event_id INT REFERENCES events(id),
-    user_id INT REFERENCES users(id),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
+--
+-- CREATE TABLE user_events (
+--     id SERIAL PRIMARY KEY,
+--     event_id INT REFERENCES events(id),
+--     user_id INT REFERENCES users(id),
+--     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+-- );
