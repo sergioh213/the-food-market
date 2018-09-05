@@ -9,7 +9,7 @@ if (process.env.DATABASE_URL) {
 exports.newUser = function(first_name, last_name, email, hashed_password) {
     const q = `
         INSERT INTO users (first_name, last_name, email, hashed_password, currently_at)
-        VALUES ($1, $2, $3, $4, 1)
+        VALUES ($1, $2, $3, $4, $5)
         RETURNING *;
         `
     const params = [first_name, last_name, email, hashed_password, 1]
@@ -368,7 +368,5 @@ exports.newHostel = function(city_name, area, coordinates, street, num, postal_c
 }
 
 // INSERT INTO locations (city_name, area, coordinates, street, num, postal_code, hostel_main_img, total_num_beds, num_beds_left) VALUES ('Berlin', 'KREUZBERG', '420-620', 'Erkelenzdamm', '35-21', '10999', '/content/header-pic-1.jpg', 8, 8);
-
 // INSERT INTO locations (city_name, area, coordinates, street, num, postal_code, hostel_main_img, total_num_beds, num_beds_left) VALUES ('Berlin', 'EAST MITTE', '395-480', 'Alexanderstraße', '7', '10178', '/content/header-pic-2.jpg', 3, 3);
-
 // INSERT INTO locations (city_name, area, coordinates, street, num, postal_code, hostel_main_img, total_num_beds, num_beds_left) VALUES ('Berlin', 'NORTH MITTE', '555-390', 'Chausseestraße', '61', '10115', '/content/header-pic-3.jpg', 14, 14);

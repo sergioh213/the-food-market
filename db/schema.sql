@@ -4,6 +4,7 @@
 -- DROP TABLE IF EXISTS connections;
 -- DROP TABLE IF EXISTS hostel_chat;
 -- DROP TABLE IF EXISTS user_lenguages;
+-- DROP TABLE IF EXISTS locations_amenities;
 -- DROP TABLE IF EXISTS user_images;
 -- DROP TABLE IF EXISTS user_notes;
 -- DROP TABLE IF EXISTS user_events;
