@@ -1,9 +1,9 @@
 import React, {Component} from 'react'
 import axios from './axios'
 import Uploader from './Uploader'
-import YourReservations from './YourReservations'
-import Friends from './Friends'
-import Wannabes from './Wannabes'
+// import YourReservations from './YourReservations'
+// import Friends from './Friends'
+// import Wannabes from './Wannabes'
 
 class Profile extends Component {
     constructor(props) {

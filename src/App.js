@@ -2,9 +2,6 @@ import React, {Component} from 'react'
 import axios from './axios'
 import Nav from './Nav'
 import Profile from './Profile'
-import Home from './Home'
-import Events from './Events'
-import CurHostel from './CurHostel'
 import EditProfile from './EditProfile'
 import Chat from './Chat'
 import Opp from './Opp'
@@ -42,10 +39,7 @@ class App extends Component {
                 <Nav />
                 <BrowserRouter>
                     <div>
-                        <Route exact path='/' component={Home} />
-                        <Route exact path='/profile' component={Profile} />
-                        <Route exact path='/events/berlin' component={Events} />
-                        <Route exact path='/your-hostel' component={CurHostel} />
+                        <Route exact path='/' component={Profile} />
                         <Route exact path='/edit-profile' component={EditProfile} />
                         <Route exact path='/user/:id' component={Opp} />
                     </div>

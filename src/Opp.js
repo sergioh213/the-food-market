@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import axios from './axios'
-import FriendButton from './FriendButton'
+// import FriendButton from './FriendButton'
 
 class Opp extends Component {
     constructor(props) {

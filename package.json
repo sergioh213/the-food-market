@@ -44,6 +44,7 @@
         "socket-cookie-session": "github:spicedacademy/socket-cookie-session",
         "socket.io": "^2.0.3",
         "spiced-pg": "^1.0.0",
+        "styled-components": "^3.4.5",
         "uid-safe": "^2.1.4",
         "webpack": "^1.14.0",
         "webpack-dev-middleware": "^1.8.4"

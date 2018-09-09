@@ -1,9 +1,9 @@
 import React, {Component} from 'react'
 import axios from './axios'
 import { Link } from 'react-router-dom'
+import Logo from './Logo'
 
-
-class Registration extends Component {
+class ProducerRegistration extends Component {
     constructor() {
         super()
 
@@ -44,8 +44,9 @@ class Registration extends Component {
     render() {
         return (
             <div id="registration">
+                <Logo />
                 <div id="registration-style-div">
-                    <div id="registration-header">Registration</div>
+                <div id="account-type-title">Producer</div>
                     {
                         this.state.error
                         ? <div id="registration-error-box">ERROR:<br />{this.state.error}</div>
@@ -64,13 +65,13 @@ class Registration extends Component {
                         <div className="registration-input-box">
                             <input onChange={ this.handleChange } name="password" placeholder='Password' type='password'/>
                         </div>
-                        <button id="submit-button-registration">Submit</button>
+                        <button id="submit-button-registration">Create account</button>
                     </form>
-                    <div id="log-in">Already a member? <Link to="/login">Log in</Link></div>
+                    <Link to="/"><button id="signup-button-registration">Already have an account?</button></Link>
                 </div>
             </div>
         )
     }
 }
 
-export default Registration
+export default ProducerRegistration
