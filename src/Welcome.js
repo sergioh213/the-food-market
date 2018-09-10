@@ -1,12 +1,13 @@
 import React from 'react'
 import ProducerRegistration from './ProducerRegistration'
 import TransporterRegistration from './TransporterRegistration'
-import WholesellerRegistration from './WholesellerRegistration'
+import WholesalerRegistration from './WholesalerRegistration'
 import RetailerRegistration from './RetailerRegistration'
 import RebuyerRegistration from './RebuyerRegistration'
 import Landing from './Landing'
 import Login from './Login'
 import Nav from './Nav'
+import BackgroundRegistration from './BackgroundRegistration'
 import Accounts from './Accounts'
 import { HashRouter, Route, Link } from 'react-router-dom'
 
@@ -19,11 +20,41 @@ function Welcome() {
             <HashRouter>
                 <div id="routers-div">
                     <Route exact path="/" component={Login}></Route>
-                    <Route exact path="/producer" component={ProducerRegistration}></Route>
-                    <Route exact path="/transporter" component={TransporterRegistration}></Route>
-                    <Route exact path="/wholeseller" component={WholesellerRegistration}></Route>
-                    <Route exact path="/retailer" component={RetailerRegistration}></Route>
-                    <Route exact path="/re-buyer" component={RebuyerRegistration}></Route>
+                    <Route exact path="/producer" render={() => {
+                        return (
+                            <div>
+                                <BackgroundRegistration producer/>
+                                <ProducerRegistration />
+                            </div>
+                    )}}></Route>
+                    <Route exact path="/transporter" render={() => {
+                        return (
+                            <div>
+                                <BackgroundRegistration transporter/>
+                                <TransporterRegistration />
+                            </div>
+                    )}}></Route>
+                    <Route exact path="/wholeseller" render={() => {
+                        return (
+                            <div>
+                                <BackgroundRegistration wholesaler/>
+                                <WholesalerRegistration />
+                            </div>
+                    )}}></Route>
+                    <Route exact path="/retailer" render={() => {
+                        return (
+                            <div>
+                                <BackgroundRegistration retailer/>
+                                <RetailerRegistration />
+                            </div>
+                    )}}></Route>
+                    <Route exact path="/re-buyer" render={() => {
+                        return (
+                            <div>
+                                <BackgroundRegistration rebuyer/>
+                                <RebuyerRegistration />
+                            </div>
+                    )}}></Route>
                     <Route exact path="/create-account" component={Landing}></Route>
                 </div>
             </HashRouter>
