@@ -44,7 +44,7 @@ class Login extends Component {
     render() {
         return (
             <div id="login">
-            <Logo />
+            <Logo black/>
                 <div id="registration-style-div">
                     {
                         this.state.error

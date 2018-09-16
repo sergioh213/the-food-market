@@ -3,24 +3,24 @@ let db;
 if (process.env.DATABASE_URL) {
     db = spicedPg(process.env.DATABASE_URL)
 } else {
-    db = spicedPg('postgres:sergioherrero:password@localhost:5432/co-living');
+    db = spicedPg('postgres:sergioherrero:password@localhost:5432/food-market');
 }
 
-exports.newUser = function(first_name, last_name, email, hashed_password) {
+exports.newProducer = function(company_legal_name, email, hashed_password) {
     const q = `
-        INSERT INTO users (first_name, last_name, email, hashed_password, currently_at)
-        VALUES ($1, $2, $3, $4, $5)
+        INSERT INTO producers (company_legal_name, email, hashed_password, company_type)
+        VALUES ($1, $2, $3, $4)
         RETURNING *;
         `
-    const params = [first_name, last_name, email, hashed_password, 1]
+    const params = [company_legal_name, email, hashed_password, 1]
     return db.query(q, params).then(results => {
         return results.rows[0]
     })
 }
 
-exports.getEmails = function(email) {
+exports.getProducerByEmail = function(email) {
     const params = [email]
-    return db.query('SELECT * FROM users WHERE email = $1;', params)
+    return db.query('SELECT * FROM producers WHERE email = $1;', params)
         .then(results => {
             return results.rows[0]
         })
@@ -34,29 +34,24 @@ exports.getPasswordDB = function(email) {
         })
 }
 
-exports.getUserById = function(id) {
+exports.getProducerById = function(id) {
     const params = [id]
-    return db.query(`
-            SELECT users.*, locations.city_name
-            FROM users
-            LEFT JOIN locations
-            ON locations.id = users.currently_at
-            WHERE users.id = $1;`, params)
+    return db.query(`SELECT * FROM producers WHERE producers.id = $1;`, params)
         .then(results => {
             return results.rows[0]
         })
 }
 
-exports.saveBio = function(id, bio) {
-    const params = [id, bio];
+exports.saveDescription = function(id, company_description) {
+    const params = [id, company_description];
     const q = `
-        UPDATE users SET
-        bio = $2
+        UPDATE producers SET
+        company_description = $2
         WHERE id = $1
         RETURNING *;
         `;
     return db.query(q, params).then(userInfo => {
-        return userInfo.rows[0].bio
+        return userInfo.rows[0].company_description
     })
 }
 
@@ -85,6 +80,19 @@ exports.updateUserNoPassword = function(id, first_name, last_name, email, birth_
     });
 };
 
+exports.updateCompanyName = function(id, company_legal_name) {
+    const q = `
+        UPDATE producers SET company_legal_name = $2
+        WHERE id = $1
+        RETURNING *;
+    `;
+    const params = [id, company_legal_name];
+    return db.query(q, params).then(updatedCompanyName => {
+        console.log("in db updatedCompanyName.rows[0].company_legal_name: ", updatedCompanyName.rows[0].company_legal_name);
+        return updatedCompanyName.rows[0].company_legal_name;
+    });
+};
+
 exports.updateUser = function(id, first_name, last_name, email, hashed_password, birth_city, birth_country) {
     const q = `
         UPDATE users SET first_name = $2, last_name = $3, email = $4, hashed_password = $5, birth_city = $6, birth_country = $7
@@ -96,19 +104,6 @@ exports.updateUser = function(id, first_name, last_name, email, hashed_password,
         return updatedProfile.rows;
     });
 };
-
-exports.saveBio = function(id, bio) {
-    const params = [id, bio];
-    const q = `
-        UPDATE users SET
-        bio = $2
-        WHERE id = $1
-        RETURNING *;
-        `;
-    return db.query(q, params).then(userInfo => {
-        return userInfo.rows[0].bio
-    })
-}
 
 exports.checkInOut = function(id, status) {
     const q = `
@@ -122,10 +117,10 @@ exports.checkInOut = function(id, status) {
     });
 }
 
-exports.savePaymentInfo = function(id, card_number, expiration_month, expiration_year, CCV) {
-    const params = [id, card_number, expiration_month, expiration_year, CCV]
+exports.savePaymentInfo = function(id, payment_card_number, payment_card_expiration_month, payment_card_expiration_year, payment_card_ccv) {
+    const params = [id, payment_card_number, payment_card_expiration_month, payment_card_expiration_year, payment_card_ccv]
     const q = `
-        UPDATE users SET card_number = $2, expiration_month = $3, expiration_year = $4, CCV = $5
+        UPDATE producers SET payment_card_number = $2, payment_card_expiration_month = $3, payment_card_expiration_year = $4, payment_card_ccv = $5
         WHERE id = $1
         RETURNING *;
         `
@@ -133,6 +128,20 @@ exports.savePaymentInfo = function(id, card_number, expiration_month, expiration
         return newPaymentInfo.rows[0]
     })
 }
+
+exports.deletePaymentInfo = function(id) {
+    const params = [id]
+    const q = `
+        UPDATE producers
+        SET payment_card_number = NULL, payment_card_expiration_month = NULL, payment_card_expiration_year = NULL, payment_card_ccv = NULL
+        WHERE id = $1
+        RETURNING *;
+        `;
+    return db.query(q, params).then(results => {
+        return results.rows[0]
+    })
+}
+// UPDATE producers SET payment_card_number = NULL, payment_card_expiration_month = NULL, payment_card_expiration_year = NULL, payment_card_ccv = NULL WHERE id = 1;
 
 exports.newReservation = function(user_id, location_id, arrival_date, departure_date) {
     const params = [user_id, location_id, arrival_date, departure_date]
@@ -154,9 +163,9 @@ exports.getUsersReservations = function(user_id) {
         })
 }
 
-exports.getUsersByIds = function(ids) {
+exports.getCompaniesByIds = function(ids) {
     const params = [ids]
-    const q = `SELECT * FROM users WHERE id = ANY($1)`;
+    const q = `SELECT * FROM producers WHERE id = ANY($1)`;
     return db.query(q, params).then(results => {
         return results.rows
     })

@@ -5,7 +5,7 @@
 }
 body {
     margin: 0;
-    background-color: white;
+    background-color: rgba(251, 251, 251, 1);
     height: 100vh;
 }
 .button{
@@ -45,6 +45,68 @@ a{
 }
 #darker{
     background-color: rgba(0, 0, 0, 0.75);
+}
+#no-bottom-border{
+    border-bottom: none;
+}
+.shadow {
+    -webkit-box-shadow: 0 1px 9px -1px #ccc;  /* Safari 3-4, iOS 4.0.2 - 4.2, Android 2.3+ */
+    -moz-box-shadow:    0 1px 9px -1px #ccc;  /* Firefox 3.5 - 3.6 */
+    box-shadow:         0 1px 9px -1px #ccc;  /* Opera 10.5, IE 9, Firefox 4+, Chrome 6+, iOS 5 */
+}
+/* ////////////////////////////////  MAP  /////////////////////////////////// */
+#map-box{
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-top: 15px;
+    width: 505px;
+    height: 505px;
+}
+#search-map-input-wrapper{
+    text-align: center;
+    margin-top: 15px;
+}
+#search-map-input{
+    width: 79%;
+    height: 30px;
+    padding: 4px 8px;
+    font-size: 16px;
+    margin-right: 1%;
+    display: inline-block;
+}
+#input-line-wrapper{
+    position: relative;
+    width: 505px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+.prediction-box:hover{
+    background-color: lightgrey;
+}
+/* ////////////////////////////////  ACCOUNTS  /////////////////////////////////// */
+#temporary-profile{
+    position: relative;
+    background-color: red;
+    width: 100vw;
+    height: 100vh;
+}
+#company-description-button{
+    position: relative;
+    width: 510px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+#description-textarea{
+    position: relative;
+    resize: none;
+    width: 510px;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-top: 15px;
+    border: none;
+    padding: 4px 8px;
+    font-size: 14px;
 }
 /* ////////////////////////////////  ACCOUNTS /////////////////////////////////// */
 .registration-background{
@@ -95,6 +157,12 @@ a{
 }
 .icon:hover{
     transform: scale(1.05);
+}
+.scale-on-hover:hover{
+    transform: scale(1.05);
+}
+.scale-on-hover-and-center:hover{
+    transform: translateX(-50%) scale(1.05);
 }
 .acount-type{
     position: relative;
@@ -189,13 +257,13 @@ a{
     font-size: 20px;
 }
 #registration-subheader{
-    background-color: rgba(0, 0, 0, 0);
+    /* background-color: rgba(255, 255, 255, 1); */
     text-align: center;
     font-size: 14px;
     margin-bottom: 20px;
     margin-top: 30px;
     font-weight: 400;
-    color: #232323;
+    color: rgba(255, 255, 255, 1);
 }
 #registration-style-div{
     position: relative;
@@ -213,14 +281,53 @@ a{
 }
 #registration-form{
     background-color: rgba(0, 0, 0, 0);
-    text-align: right;
+}
+#input-box{
+    position: relative;
+    background-color: rgba(255, 255, 255, 1);
+    margin-top: 30px;
+    border-radius: 4px;
+    border: none;
+}
+#companyname-edit{
+    position: relative;
+    font-size: 30px;
+    width: auto;
+    -webkit-appearance: none;
+    -ms-appearance: none;
+    margin-left: 50%;
+    transform: translateX(-50%);
+    cursor: text;
+    border-width: 0;
+    border-style: none;
+    border-image: none;
+    color: #949596;
+    font-weight: 400;
+    margin-top: 10px;
+    background-color: white;
+    display: inline-block;
+    min-width: 200px;
+    border-radius: 4px;
+    text-align: center;
+    height: 40px;
+}
+.scale-on-hover-and-center{
+    position: relative;
+    font-size: 30px;
+    color: #949596;
+    font-weight: 400;
+    margin-top: 10px;
+    background-color: white;
+    display: inline-block;
+    min-width: 200px;
+    border-radius: 4px;
+    height: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    padding: 0 8px;
 }
 .registration-input-box input{
-    height: 30px;
-    width: 100%;
-    font-size: 14px;
-    /* text-align: right; */
-    margin-top: 2px;
     background-color: rgba(0, 0, 0, 0);
     -webkit-appearance: none;
     -ms-appearance: none;
@@ -228,8 +335,12 @@ a{
     border-width: 0;
     border-style: none;
     border-image: none;
-    border-bottom: 1px solid grey;
+    border-bottom: 1px solid #e8e8e8;
     padding-left: 16px;
+    width: 100%;
+    height: 45px;
+    font-size: 16px;
+    font-weight: 400;
 }
 .registration-input-box input:placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
     color: grey;
@@ -722,17 +833,30 @@ a{
     margin-top: 10px;
 }
 /* //////////////////////////////// PAYMENT /////////////////////////////////// */
-#payment{
-    position: absolute;
+/* #payment{
+    position: relative;
     text-align: left;
     background-color: white;
     width: auto;
     height: auto;
     top: 200px;
-    transform: translateX(-50%);
     left: 50%;
+    transform: translateX(-50%);
     z-index: 3;
     padding: 20px;
+} */
+#payment-style{
+    position: relative;
+    text-align: left;
+    background-color: white;
+    display: inline-block;
+    width: auto;
+    height: auto;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1;
+    padding: 20px;
+    margin-top: 15px;
 }
 .payment-title{
     width: 100%;
@@ -934,3 +1058,4 @@ a{
     width: 100%;
     border-radius: 0 0 5px 5px;
 }
+/* -------------------------------------------------------------- */

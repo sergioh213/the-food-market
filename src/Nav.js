@@ -15,19 +15,11 @@ class Nav extends Component {
         this.toggleShowSearch = this.toggleShowSearch.bind(this)
     }
     componentDidMount() {
-        axios.get("/user").then(
+        axios.get("/producer.json").then(
             ({data}) => {
                 this.setState(data)
-                // console.log("state in nav bar: ", this.state);
             }
         )
-        // console.log("component mounts");
-        // axios.get("/user-location").then( data => {
-        //     console.log("data: ", data, " data: ", data);
-        //     this.setState({
-        //         data: data
-        //     }, () => console.log("state in nav bar: ", this.state))
-        // })
     }
     toggleShowMenu() {
         console.log("toggleShowMenu happening!");
@@ -41,9 +33,6 @@ class Nav extends Component {
         })
     }
     render() {
-        // if (this.state.currently_at) {
-        //     return null
-        // }
         return (
             <div id="nav">
                 <div id="navheader">

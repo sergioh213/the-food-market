@@ -53,17 +53,19 @@ class TransporterRegistration extends Component {
                         : null
                     }
                     <form id="registration-form" onSubmit={ this.handleSubmit }>
-                        <div className="registration-input-box">
-                            <input onChange={ this.handleChange } name="first_name" placeholder='First name' type='text'/>
-                        </div>
-                        <div className="registration-input-box">
-                            <input onChange={ this.handleChange } name="last_name" placeholder='Last name' type='text'/>
-                        </div>
-                        <div className="registration-input-box">
-                            <input onChange={ this.handleChange } name="email" placeholder='Email' type='email'/>
-                        </div>
-                        <div className="registration-input-box">
-                            <input onChange={ this.handleChange } name="password" placeholder='Password' type='password'/>
+                        <div id="input-box">
+                            <div className="registration-input-box">
+                                <input onChange={ this.handleChange } name="first_name" placeholder='First name' type='text'/>
+                            </div>
+                            <div className="registration-input-box">
+                                <input onChange={ this.handleChange } name="last_name" placeholder='Last name' type='text'/>
+                            </div>
+                            <div className="registration-input-box">
+                                <input onChange={ this.handleChange } name="email" placeholder='Email' type='email'/>
+                            </div>
+                            <div className="registration-input-box">
+                                <input id="no-bottom-border" onChange={ this.handleChange } name="password" placeholder='Password' type='password'/>
+                            </div>
                         </div>
                         <button id="submit-button-registration">Create account</button>
                     </form>
