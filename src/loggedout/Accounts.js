@@ -13,6 +13,7 @@ class Accounts extends Component {
         const IconWrapper = styled.div`
             position: relative;
             display: inline-block;
+            bottom: 20px;
             border-radius: 100%;
             background-color: #5EB648;
             height: 35px;
