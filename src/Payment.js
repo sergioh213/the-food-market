@@ -51,20 +51,14 @@ class Payment extends Component {
         if (!this.state.id) {
             return null
         }
-        // const MainDiv = styled.div`
-        //     position: relative;
-        //     text-align: left;
-        //     background-color: white;
-        //     display: inline-block;
-        //     width: auto;
-        //     height: auto;
-        //     left: 50%;
-        //     transform: translateX(-50%);
-        //     z-index: 1;
-        //     padding: 20px;
-        //     margin-top: 15px;`
+        const Message = styled.div`
+            font-size: 16px;
+            color: lightgrey;
+            margin-top: 30px;
+            text-align: center;`
         return (
             <div id="payment">
+                <Message>Add your payment information</Message>
                 <div className="shadow" id="payment-style">
                     <div className="payment-title">Your payment information</div>
                     <div className="payment-subtitle">We accept</div>

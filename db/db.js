@@ -93,6 +93,20 @@ exports.updateCompanyName = function(id, company_legal_name) {
     });
 };
 
+exports.updateHeadquarters = function(id, headquarter_google_maps_place_id, headquarter_formatted_address, headquarter_latitude, headquarter_longitude) {
+    console.log("loging arguments in db: ", headquarter_google_maps_place_id, ", ", headquarter_formatted_address, ", ", headquarter_latitude, ", ", headquarter_longitude);
+    const q = `
+        UPDATE producers SET headquarter_google_maps_place_id = $2, headquarter_formatted_address = $3, headquarter_latitude = $4, headquarter_longitude = $5
+        WHERE id = $1
+        RETURNING *;
+    `;
+    const params = [id, headquarter_google_maps_place_id, headquarter_formatted_address, headquarter_latitude, headquarter_longitude];
+    return db.query(q, params).then(updatedCompanyInfo => {
+        console.log("in db updatedCompanyName.rows[0].company_legal_name: ", updatedCompanyInfo.rows[0]);
+        return updatedCompanyInfo.rows[0];
+    });
+};
+
 exports.updateUser = function(id, first_name, last_name, email, hashed_password, birth_city, birth_country) {
     const q = `
         UPDATE users SET first_name = $2, last_name = $3, email = $4, hashed_password = $5, birth_city = $6, birth_country = $7

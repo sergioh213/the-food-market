@@ -19,7 +19,13 @@ function Welcome() {
         <Accounts />
             <HashRouter>
                 <div id="routers-div">
-                    <Route exact path="/" component={Login}></Route>
+                    <Route exact path="/" render={() => {
+                        return (
+                            <div>
+                                <BackgroundRegistration login darker/>
+                                <Login />
+                            </div>
+                    )}}></Route>
                     <Route exact path="/producer" render={() => {
                         return (
                             <div>
@@ -55,7 +61,13 @@ function Welcome() {
                                 <RebuyerRegistration />
                             </div>
                     )}}></Route>
-                    <Route exact path="/create-account" component={Landing}></Route>
+                    <Route exact path="/create-account" render={() => {
+                        return (
+                            <div>
+                                <BackgroundRegistration landing/>
+                                <Landing />
+                            </div>
+                    )}}></Route>
                 </div>
             </HashRouter>
         </div>

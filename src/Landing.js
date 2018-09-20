@@ -3,6 +3,7 @@ import axios from './axios'
 import { Link } from 'react-router-dom'
 import Login from './Login'
 import Logo from './Logo'
+import styled from 'styled-components'
 import RegistrationChoice from './RegistrationChoice'
 
 class Landing extends Component {
@@ -44,10 +45,16 @@ class Landing extends Component {
     }
 
     render() {
+        const Title = styled.div`
+            text-align: center;
+            font-size: 40px;
+            font-weight: 400;
+            color: lightgrey;
+            margin-bottom: 30px;`
         return (
             <div id="landing">
                 <Logo />
-                <div id="title">Register As</div>
+                <Title>Register As</Title>
                 <RegistrationChoice />
             </div>
         )

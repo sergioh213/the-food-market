@@ -14,6 +14,7 @@ class ExampleComponent extends Component {
         this.editCompanyName = this.editCompanyName.bind(this)
         this.toggleShowCompanyName = this.toggleShowCompanyName.bind(this)
         this.setNewCompanyName = this.setNewCompanyName.bind(this)
+        this.handleChange = this.handleChange.bind(this)
     }
     componentDidMount() {
         axios.get("/producer.json").then(
@@ -37,9 +38,11 @@ class ExampleComponent extends Component {
         console.log("text: ", text);
         // e.target.innerHTML
     }
-    setNewCompanyName(value) {
+    setNewCompanyName(e) {
         console.log("setNewCompanyName happening");
-        axios.post("/change-company-name.json", {new_company_name: value}).then(
+        var text = e.target.innerText
+        console.log("final text to be sent: ", text);
+        axios.post("/change-company-name.json", {new_company_name: text}).then(
             ({data}) => {
                 this.setState({company_legal_name: data.company_legal_name}, () => console.log("this.state.company_legal_name: ", this.state.company_legal_name))
             })
@@ -49,6 +52,11 @@ class ExampleComponent extends Component {
         this.setState({
             showCompanyName: true
         })
+    }
+    handleChange(e) {
+        this.setState({
+            [ e.target.name ]: e.target.value
+        }, () => console.log("state after change: ", this.state))
     }
     render() {
         if ( !this.state.id ) {
@@ -73,7 +81,7 @@ class ExampleComponent extends Component {
             text-align: center;
             padding: 0 8px;`
         return (
-            <CompanyNameMain>
+            <div className="company-name-main">
                 { this.state.showCompanyName &&
                     <div
                         onMouseEnter={(e) => {this.addShadow(e)}}
@@ -81,9 +89,10 @@ class ExampleComponent extends Component {
                         onClick={(e) => {this.editCompanyName(e)}}
                         className="scale-on-hover-and-center"
                         contentEditable={this.state.editable}
+                        onBlur={(e) => this.setNewCompanyName(e) }
                     >{this.state.company_legal_name}</div>
                 }
-            </CompanyNameMain>
+            </div>
         )
         // { !this.state.showCompanyName &&
         //     <CompanyNameInput

@@ -10,16 +10,14 @@ class MapComponent extends Component {
         this.state = {
             inputValue: "",
             displayPredictions: true,
-            placeId: "ChIJhdqtz4aI7UYRefD8s-aZ73I", // europe
-            // placeId: "fedb05012f42e79f038a58eac44e1bbc61b7c7aa", // test
-            // placeId: "ChIJkxgQV0pPYA0Rltdx8d7gj-o" // xativa
-            // placeId: "ChIJAAAAAAAAAAARAAAAAAAAAAA" //my location? world?
+            placeId: "ChIJhdqtz4aI7UYRefD8s-aZ73I" // europe
         }
 
         this.searchLocation = this.searchLocation.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.findMyPostion = this.findMyPostion.bind(this);
-        // this.changeLocation = this.changeLocation.bind(this);
+        this.processData = this.processData.bind(this);
+        this.saveAddress = this.saveAddress.bind(this);
     }
     componentDidMount() {
         this.setState({ mounted: true })
@@ -39,11 +37,7 @@ class MapComponent extends Component {
         axios.get("/place", {
             params: { input: this.state.inputValue }
         }).then(resp => {
-            if (!resp.data.error) {
-                this.setState({
-                    placeId: resp.data[0]
-                })
-            }
+            this.processData(resp)
         })
     }
     findMyPostion() {
@@ -57,17 +51,70 @@ class MapComponent extends Component {
                     }
                 }).then(resp => {
                     if (!resp.data.error) {
-                        this.setState({ placeId: resp.data[0] })
+                        this.setState({ placeId: resp.data[0] }, () => {
+                            axios.get("/place-details", {
+                                params: { input: this.state.placeId }
+                            }).then(placeDetails => {
+                                this.processData(placeDetails)
+                            })
+                        })
                     }
                 });
         });
     }
-    ////////// function to move data from component to component /////////////
-    // changeLocation({ placeId, placeDescription }) {
-    //     this.setState({ placeId, placeDescription });
-    // }
+    processData(info){
+        if (!info.data.error) {
+            var data = info.data
+            var otherTypes = ""
+            for (var i = 0; i < data.types.length; i++) {
+                if (info.data.types[i] === "street_address") {
+                    this.setState({
+                        ...data,
+                        save: true,
+                        warningMessage: "Valid address"
+                    })
+                    break
+                } else if (i == 0) {
+                    otherTypes += info.data.types[0]
+                    this.setState({
+                        ...data,
+                        save: false,
+                        warningMessage: "Invalid location. Please chose an address, not a " + otherTypes
+                    }, () => {
+                        otherTypes = null
+                    })
+                }
+            }
+        }
+        console.log("this.state after process: ", this.state);
+    }
     populateInput(e, itemId, itemDescription) {
         this.setState({ inputValue: itemDescription, displayPredictions: false })
+    }
+    saveAddress() {
+        if (this.state.save) {
+            axios.post("/save-headquarters.json", this.state)
+            .then(data => {
+                console.log("data.data after saving address: ", data.data);
+                if (data.data.success) {
+                    this.setState({
+                        savedAddress: data.data.headquarter_formatted_address,
+                        successMessage: "Has succesfully been saved as the companies headquarters",
+                        warningMessage: null
+                    })
+                }
+            })
+        } else {
+            this.setState({
+                errorMessage: "CHOOSE A VALID ADDRESS"
+            }, () => {
+                setTimeout(() => {
+                    this.setState({
+                        errorMessage: null
+                    })
+                }, 3000)
+            })
+        }
     }
     render() {
         if (!this.state.mounted) {
@@ -93,7 +140,7 @@ class MapComponent extends Component {
             display: inline-block;`
         const CurrentLocationButton = styled.button`
             display: inline-block;
-            width: 250px;
+            width: 48.5%;
             height: 45px;
             background-color: #6ACC58;
             cursor: pointer;
@@ -101,11 +148,29 @@ class MapComponent extends Component {
             color: white;
             font-weight: 400;
             border-radius: 4px;
+            border: none;
+            margin-right: 1%;`
+        const SaveButton = styled.button`
+            display: inline-block;
+            width: 48.5%;
+            height: 45px;
+            background-color: white;
+            cursor: pointer;
+            font-size: 16px;
+            color: #6ACC58;
+            font-weight: 400;
+            border-radius: 4px;
             border: none;`
         const LocationButtonWrapper = styled.div`
             position: relative;
             text-align: center;
             margin-top: 10px;`
+        const SmallerButtonWrapper = styled.div`
+            position: relative;
+            text-align: center;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 505px;`
         const PredictionsBoxWrapper = styled.div`
             position: absolute;
             text-align: left;
@@ -129,9 +194,38 @@ class MapComponent extends Component {
             width: 505px;
             left: 50%;
             transform: translateX(-50%);`
-        const divStyle = {backgroundColor: 'blue'}
+        const divStyle = { backgroundColor: 'blue'}
+        const Message = styled.div`
+            font-size: 16px;
+            color: lightgrey;
+            margin-top: 30px;
+            text-align: center;`
+        const SmallMessage = styled.div`
+            font-size: 16px;
+            color: lightgrey;
+            margin-top: 5px;
+            text-align: center;`
+        const ErrorMessage = styled.div`
+            font-size: 18px;
+            color: red;
+            font-weight: 400;
+            margin-top: 5px;
+            text-align: center;`
+        const SuccessMessage = styled.div`
+            font-size: 18px;
+            color: #6ACC58;
+            font-weight: 400;
+            margin-top: 5px;
+            text-align: center;`
+        const SavedAddress = styled.div`
+            font-size: 16px;
+            color: black;
+            font-weight: bold;
+            margin-top: 10px;
+            text-align: center;`
         return (
             <div>
+                <Message>Select an address for your headquarters</Message>
                 <div id="search-map-input-wrapper">
                     <div id="input-line-wrapper">
                         <input
@@ -142,7 +236,7 @@ class MapComponent extends Component {
                             value={this.state.inputValue}
                             id="search-map-input"
                         />
-                        <SubmitButton onClick={ this.searchLocation }>Search</SubmitButton>
+                        <SubmitButton className="scale-on-hover" onClick={ this.searchLocation }>Search</SubmitButton>
                     </div>
                 </div>
                 { this.state.displayPredictions &&
@@ -167,8 +261,15 @@ class MapComponent extends Component {
                 <Wrapper>
                 </Wrapper>
                 <GoogleMap placeId={ this.state.placeId } />
+                { this.state.warningMessage && <SmallMessage>{ this.state.warningMessage }</SmallMessage> }
+                { this.state.errorMessage && <ErrorMessage>{ this.state.errorMessage }</ErrorMessage> }
+                { this.state.savedAddress && <SavedAddress>{ this.state.savedAddress }</SavedAddress> }
+                { this.state.successMessage && <SuccessMessage>{ this.state.successMessage }</SuccessMessage> }
                 <LocationButtonWrapper>
-                    <CurrentLocationButton onClick={ this.findMyPostion }>Find myself</CurrentLocationButton>
+                    <SmallerButtonWrapper>
+                        <CurrentLocationButton className="shadow scale-on-hover" onClick={ this.findMyPostion }>Find myself</CurrentLocationButton>
+                        <SaveButton className="shadow scale-on-hover" onClick={ this.saveAddress }>Save Address</SaveButton>
+                    </SmallerButtonWrapper>
                 </LocationButtonWrapper>
             </div>
         )

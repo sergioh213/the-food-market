@@ -4,6 +4,7 @@ import BubbleOptions from './BubbleOptions'
 import CompanyDescriptionField from './CompanyDescriptionField'
 import Payment from './Payment'
 import BankInfo from './BankInfo'
+import styled from 'styled-components'
 import MapComponent from './MapComponent'
 
 class FinishProfile extends Component {
@@ -93,14 +94,20 @@ class FinishProfile extends Component {
         if (!this.state.id) {
             return null
         }
+        const Message = styled.div`
+            font-size: 16px;
+            color: #6ACC58;
+            margin-top: 10px;
+            text-align: center;`
         return (
             <div>
+                <Message>Please complete your profile</Message>
                 <BubbleOptions
                     toggleShowMenus={ this.toggleShowMenus }
                     showPaymentBubble={ this.state.showPaymentBubble }
                 />
                 { showBio && <CompanyDescriptionField setNewDescription={ this.props.setNewDescription }/> }
-                { showHeadquarters && <MapComponent /> }
+                { showHeadquarters && <MapComponent saveAddress={this.props.saveAddress}/> }
                 { showPayment && <Payment toggleShowPayment={ this.toggleShowPayment } setPaymentInfo={ this.setPaymentInfo } /> }
                 { showBank && <BankInfo /> }
             </div>

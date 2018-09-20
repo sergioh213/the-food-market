@@ -31,9 +31,15 @@ class BankInfo extends Component {
             z-index: 1;
             padding: 20px;
             margin-top: 15px;`
+        const Message = styled.div`
+            font-size: 16px;
+            color: lightgrey;
+            margin-top: 30px;
+            text-align: center;`
         return (
             <div>
             <div id="payment">
+                <Message>Add the bank account information where you want incoming transfers to be deposited</Message>
                 <MainDiv className="shadow">
                     <div className="payment-title">Your bank account information</div>
                     <div className="payment-title" id="card-details">Account Details</div>

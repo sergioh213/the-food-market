@@ -17,12 +17,13 @@ exports.getPlaceId = async function(place) {
                 key: googleMapsApiKey,
                 input: place,
                 inputtype: "textquery"
+                // result_type: 'street_address'
             }
         }
     );
 
     const candidates = data.candidates;
-
+    console.log("candidates.place_id: ", candidates.place_id);
     if (candidates) {
         return candidates.map(candidate => candidate.place_id);
     }
@@ -36,6 +37,7 @@ exports.autoCompletePlace = async function(place) {
             params: {
                 key: googleMapsApiKey,
                 input: place
+                // result_type: 'street_address'
             }
         }
     );
@@ -75,7 +77,7 @@ exports.getPlaceDetails = async function(placeId) {
         }
     );
 
-    console.log(data);
+    // console.log("getPlaceDetails data.result: ", data.result);
     return {
         longitude:
             data.result &&
@@ -87,6 +89,8 @@ exports.getPlaceDetails = async function(placeId) {
             data.result.geometry &&
             data.result.geometry.location &&
             data.result.geometry.location.lat,
-        address: data.result && data.result.formatted_address
+        address: data.result && data.result.formatted_address,
+        placeId: data.result && data.result.place_id,
+        types: data.result && data.result.types
     };
 };

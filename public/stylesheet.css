@@ -65,7 +65,7 @@ a{
 }
 #search-map-input-wrapper{
     text-align: center;
-    margin-top: 15px;
+    margin-top: 5px;
 }
 #search-map-input{
     width: 79%;
@@ -107,6 +107,10 @@ a{
     border: none;
     padding: 4px 8px;
     font-size: 14px;
+}
+.company-name-main{
+    position: relative;
+    width: 100%;
 }
 /* ////////////////////////////////  ACCOUNTS /////////////////////////////////// */
 .registration-background{
@@ -158,6 +162,9 @@ a{
 .icon:hover{
     transform: scale(1.05);
 }
+#last-bubble{
+    margin-right: none;
+}
 .scale-on-hover:hover{
     transform: scale(1.05);
 }
@@ -191,7 +198,7 @@ a{
 .choice-name{
     margin-top: 10px;
     font-weight: 400;
-    color: #2d2d2d;
+    color: lightgrey;
 }
 #producer-choice-name{
     margin-top: 5px;
@@ -238,13 +245,6 @@ a{
     left: 50vw;
     top: 45vh;
     transform: translate(-50%, -50%);
-}
-#title{
-    text-align: center;
-    font-size: 40px;
-    font-weight: 400;
-    color: #2d2d2d;
-    margin-bottom: 30px;
 }
 .registration-header{
     background-color: rgba(0, 0, 0, 0);

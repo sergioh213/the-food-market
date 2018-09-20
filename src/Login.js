@@ -44,7 +44,7 @@ class Login extends Component {
     render() {
         return (
             <div id="login">
-            <Logo black/>
+            <Logo />
                 <div id="registration-style-div">
                     {
                         this.state.error
@@ -52,12 +52,13 @@ class Login extends Component {
                             : null
                     }
                     <form id="registration-form" onSubmit={ this.handleSubmit }>
-
-                        <div className="registration-input-box">
-                            <input onChange={ this.handleChange } name="email" placeholder='Email' type='email'/>
-                        </div>
-                        <div className="registration-input-box">
-                            <input onChange={ this.handleChange } name="password" placeholder='Password' type='password'/>
+                        <div id="input-box">
+                            <div className="registration-input-box">
+                                <input onChange={ this.handleChange } name="email" placeholder='Email' type='email'/>
+                            </div>
+                            <div className="registration-input-box">
+                                <input id="no-bottom-border" onChange={ this.handleChange } name="password" placeholder='Password' type='password'/>
+                            </div>
                         </div>
                         <div className="registration-input-box">
                             <button id="submit-button-registration">Login</button>

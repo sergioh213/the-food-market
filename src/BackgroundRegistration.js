@@ -9,7 +9,11 @@ function BackgroundRegistration(props) {
             { props.wholesaler && <img className="registration-background" src="/content/wholesaler.png" alt=""/> }
             { props.retailer && <img className="registration-background" src="/content/retailer.jpg" alt=""/> }
             { props.rebuyer && <img className="registration-background" src="/content/rebuyer.jpg" alt=""/> }
-            <DimBackground />
+            { props.login && <img className="registration-background" src="/content/food3.jpg" alt=""/> }
+            { props.landing && <img className="registration-background" src="/content/food.jpg" alt=""/> }
+            { props.darker && <DimBackground darker/> }
+            { props.lighter && <DimBackground lighter/> }
+            { ( !props.lighter && !props.darker ) && <DimBackground /> }
         </div>
     )
 }

@@ -69,8 +69,14 @@ class CompanyDescriptionField extends Component {
             font-weight: 400;
             border-radius: 4px;
             border: none;`
+        const Message = styled.div`
+            font-size: 16px;
+            color: lightgrey;
+            margin-top: 30px;
+            text-align: center;`
         return (
             <MainDiv>
+                <Message>Describe what your company does in a few sentences</Message>
                 <form onSubmit={ (e) => this.handleSubmit(e)  }>
                     <Wrapper>
                         <textarea id="description-textarea"

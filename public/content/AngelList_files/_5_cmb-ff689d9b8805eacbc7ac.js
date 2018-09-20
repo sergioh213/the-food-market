@@ -1,1 +1,0 @@
-webpackJsonp([120],{1218:function(n,i){n.exports=Promise.all([]).then(function(){return function(){return window.Modernizr}.apply(void 0,arguments[0])}.bind(this))}});

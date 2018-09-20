@@ -25,7 +25,7 @@ const {
 
 let domain
 if (process.env.NODE_ENV == "production") {
-    domain = 'https://co-living.herokuapp.com:*'
+    domain = 'https://the-food-market.herokuapp.com:*'
 } else {
     domain = 'localhost:8080'
 }
@@ -173,7 +173,8 @@ app.get("/producer.json", (req, res) => {
 
 app.get("/place", async (req, res) => {
     const place = req.query.input;
-    const result = await getPlaceId(place);
+    const placeId = await getPlaceId(place);
+    const result = await getPlaceDetails(placeId[0])
     res.json(result);
 });
 
@@ -189,6 +190,12 @@ app.get("/place-text", async (req, res) => {
     res.json(result);
 });
 
+app.get("/place-details", async (req, res) => {
+    const placeId = req.query.input;
+    const result = await getPlaceDetails(placeId);
+    res.json(result);
+})
+
 app.get("/place-autocomplete", async (req, res) => {
     const place = req.query.input;
     const result = await autoCompletePlace(place);
@@ -196,10 +203,21 @@ app.get("/place-autocomplete", async (req, res) => {
 });
 
 app.post("/change-company-name.json", (req, res) => {
+    console.log("req.body at /change-company-name.json: ", req.body);
     db.updateCompanyName(req.session.user.id, req.body.new_company_name).then(companyName => {
         res.json({
             name_change_success: true,
             company_legal_name: companyName
+        })
+    })
+})
+
+app.post("/save-headquarters.json", (req, res) => {
+    console.log("req.body at /save-headquarters.json: ", req.body);
+    db.updateHeadquarters(req.session.user.id, req.body.placeId, req.body.address, req.body.latitude , req.body.longitude).then(newCompanyInfo => {
+        res.json({
+            success: true,
+            ...newCompanyInfo
         })
     })
 })

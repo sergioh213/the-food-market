@@ -37,7 +37,8 @@ class BubbleOptions extends Component {
                     lableDisplay: false,
                     classes: "fas fa-pencil-alt",
                     text: "Add a description for your company",
-                    display: true
+                    display: true,
+                    last: true
                 }
             ]
         }
@@ -53,110 +54,7 @@ class BubbleOptions extends Component {
                 this.setState(data)
             }
         ).then( () => {
-            this.setIcons()
-            // const {
-            //     company_description,
-            //     headquarter_country,
-            //     headquarter_city,
-            //     headquarter_postal_code,
-            //     headquarter_street,
-            //     headquarter_address_number,
-            //     payment_card_number,
-            //     payment_card_expiration_month,
-            //     payment_card_expiration_year,
-            //     payment_card_ccv,
-            //     bank_account_number,
-            //     bank_iban
-            // } = this.state
-            // var clone = this.state
-            // if (!company_description) {
-            //     this.setState(clone => ({
-            //         icons: [...this.state.icons, {
-            //             id: 4,
-            //             lableDisplay: false,
-            //             classes: "fas fa-pencil-alt",
-            //             text: "Add a description for your company"
-            //         }]
-            //     }))
-            // }
-            // if (
-            //     !headquarter_country ||
-            //     !headquarter_city ||
-            //     !headquarter_postal_code ||
-            //     !headquarter_street ||
-            //     !headquarter_address_number
-            // ) {
-            //     this.setState(clone => ({
-            //         icons: [...this.state.icons, {
-            //             id: 1,
-            //             lableDisplay: false,
-            //             classes: "fas fa-home",
-            //             text: "Add your headquarters"
-            //         }]
-            //     }))
-            // }
-            // if (
-            //     !payment_card_number ||
-            //     !payment_card_expiration_month ||
-            //     !payment_card_expiration_year ||
-            //     !payment_card_ccv
-            // ) {
-            //     this.setState(clone => ({
-            //         icons: [...this.state.icons, {
-            //             id: 2,
-            //             lableDisplay: false,
-            //             classes: "fas fa-credit-card",
-            //             text: "Add payment info"
-            //         }]
-            //     }))
-            // }
-            // if (
-            //     !bank_account_number ||
-            //     !bank_iban
-            // ) {
-            //     this.setState(clone => ({
-            //         icons: [...this.state.icons, {
-            //             id: 3,
-            //             lableDisplay: false,
-            //             classes: 'fas fa-piggy-bank',
-            //             text: "Add a deposit bank account"
-            //         }]
-            //     }))
-            // }
         })
-    }
-    componentDidUpdate(){
-        console.log("componentDidUpdate happening");
-        var clone = this.state.icons
-        if (!this.props.showPaymentBubble) {
-            this.state.icons.map(item => {
-                if (item.id == 2) {
-                    item.display = false
-                }
-            })
-        }
-        if (!this.props.showHeadquartersBubble) {
-            this.state.icons.map(item => {
-                if (item.id == 1) {
-                    item.display = false
-                }
-            })
-        }
-        if (!this.props.showBankBubble) {
-            this.state.icons.map(item => {
-                if (item.id == 1) {
-                    item.display = false
-                }
-            })
-        }
-        if (!this.props.showDescriptionBubble) {
-            this.state.icons.map(item => {
-                if (item.id == 1) {
-                    item.display = false
-                }
-            })
-        }
-        this.setState({ icons: clone })
     }
     setIcons() {
         const {
@@ -239,13 +137,14 @@ class BubbleOptions extends Component {
             display: flex;
             justify-content: center;
             align-items: center;
-            margin-top: 20px;`
+            margin-top: 10px;`
         const Bubble = styled.div`
             position: relative;
             border-radius: 100%;
             width: 50px;
             height: 50px;
             display: flex;
+            margin-right: 10px;
             justify-content: center;
             align-items: center;
             background-color: #6ACC58;`
@@ -257,7 +156,6 @@ class BubbleOptions extends Component {
             font-size: 20px;`
         const Wrapper = styled.div`
             position: relative;
-            margin-right: 10px;
             z-index: 2;`
         const Label = styled.div`
             position: relative;
@@ -295,6 +193,7 @@ class BubbleOptions extends Component {
             right: 10px;
             background-color: white;
             border-radius: 100%;`
+        const lastStyle = { marginRight: "none" }
         return (
             <EditsButtons>
                 {

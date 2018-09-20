@@ -65,7 +65,7 @@ function RegistrationChoice() {
                     </div>
                     <div>
                         <Link to="/wholeseller"><div className="icon-big icon"><i className="acount-type fas fa-warehouse"></i></div></Link>
-                        <div className="choice-name">Wholeseller</div>
+                        <div className="choice-name">Wholesaler</div>
                     </div>
                     <div>
                         <Link to="/retailer"><div className="icon-big icon"><i className="acount-type fas fa-shopping-cart"></i></div></Link>
