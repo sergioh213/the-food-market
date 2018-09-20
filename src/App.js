@@ -1,6 +1,5 @@
 import React, {Component} from 'react'
 import axios from './axios'
-import Nav from './Nav'
 import Profile from './Profile'
 import Chat from './Chat'
 import Opp from './Opp'

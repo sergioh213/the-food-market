@@ -1,0 +1,49 @@
+import React, {Component} from 'react'
+import axios from './axios'
+import DimBackground from './DimBackground'
+import styled from 'styled-components'
+
+class Cookies extends Component {
+    constructor(props) {
+        super(props)
+
+        this.state = {}
+    }
+    componentDidMount() {
+        this.setState({ mounted: true })
+    }
+    render() {
+        if (!this.state.mounted) {
+            return null
+        }
+        const CookiesModal = styled.div`
+            position: relative;
+            background-color: white;
+            width: 500px;
+            z-index: 4;
+            padding: 30px
+            text-align: center;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);`
+        const SmallerText = styled.div`
+            font-size: 10px;`
+        return (
+            <div id="cookies">
+                <DimBackground top/>
+                <CookiesModal>BEWARE!<br/>
+                    This is just a DEMO, not a real website.<br/>
+                    PLEASE, DO NOT ADD any of your real information.<br/><br/>
+                    Also... We use cookies.<br/><br/>
+                    <SmallerText>If you agree, click below</SmallerText>
+                    <button
+                        id="submit-button-registration"
+                        onClick={ this.props.acceptCookies }
+                    >I Agree</button>
+                </CookiesModal>
+            </div>
+        )
+    }
+}
+
+export default Cookies

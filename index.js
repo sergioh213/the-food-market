@@ -84,6 +84,30 @@ if (process.env.NODE_ENV != 'production') {
     app.use('/bundle.js', (req, res) => res.sendFile(`${__dirname}/bundle.js`));
 }
 
+//////////////// ROUTES ///////////////////
+
+app.get("/user-cookies.json", (req, res) => {
+    console.log("getting to get user-cookies.json.json");
+    if ( req.session.cookiesAccepted ) {
+        res.json({ hasAccepted: true })
+    } else {
+        res.json({ hasAccepted: false })
+    }
+})
+
+app.post("/user-cookies.json", (req, res) => {
+    console.log("getting to post user-cookies.json.json");
+    console.log("body: ", req.body);
+    if ( req.body.clientAccepted ) {
+        console.log("getting into first if");
+        req.session.cookiesAccepted = true
+        res.json({ hasAccepted: true })
+    } else {
+        console.log("getting into else");
+        res.json({ hasAccepted: false })
+    }
+})
+
 app.post("/new-producer.json", (req, res) => {
     const {company_legal_name, email, password} = req.body
     if (

@@ -54,6 +54,13 @@ a{
     -moz-box-shadow:    0 1px 9px -1px #ccc;  /* Firefox 3.5 - 3.6 */
     box-shadow:         0 1px 9px -1px #ccc;  /* Opera 10.5, IE 9, Firefox 4+, Chrome 6+, iOS 5 */
 }
+#cookies{
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
 /* ////////////////////////////////  MAP  /////////////////////////////////// */
 #map-box{
     position: relative;

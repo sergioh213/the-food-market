@@ -3,6 +3,11 @@ import styled from 'styled-components'
 
 function DimBackground(props) {
     const MainDiv = styled.div`
+        z-index: ${() => {
+            if (props.top) {
+                return '3'
+            }
+        }};
         position: absolute;
         width: 100vw;
         height: 100vh;
