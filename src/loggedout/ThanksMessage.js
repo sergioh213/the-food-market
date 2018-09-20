@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import axios from './axios'
+import axios from '../axios'
 import DimBackground from './DimBackground'
 import styled from 'styled-components'
 
@@ -24,11 +24,14 @@ class Cookies extends Component {
             display: inline-block;
             z-index: 4;
             left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%);`
+            top: 40%;
+            transform: translate(-50%, -50%);
+            font-size: 40px;
+            color: darkgrey;
+            font-weight: 400;`
         return (
             <div id="cookies">
-                <DimBackground top/>
+                <DimBackground darker top/>
                 <MainDiv>Thank You</MainDiv>
             </div>
         )

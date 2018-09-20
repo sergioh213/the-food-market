@@ -5,6 +5,7 @@ import Uploader from './Uploader'
 import FinishProfile from './FinishProfile'
 import CompanyName from './CompanyName'
 import CompanyDescriptionText from './CompanyDescriptionText'
+import CompanyAddress from './CompanyAddress'
 
 class Profile extends Component {
     constructor() {
@@ -80,6 +81,7 @@ class Profile extends Component {
         if ( !this.state.id ) {
             return null;
         }
+        console.log("profile state: ", this.state);
         const MainPage = styled.div`
             position: relative;
             width: 100vw;
@@ -99,6 +101,7 @@ class Profile extends Component {
             <MainPage id="main-profile-page">
                 <CompanyLogo className="shadow" src={company_image_url}></CompanyLogo>
                 <CompanyName />
+                <CompanyAddress />
                 { this.state.company_description && <CompanyDescriptionText setNewDescription={ this.setNewDescription }/> }
                 <FinishProfile setNewDescription={ this.setNewDescription } />
             </MainPage>

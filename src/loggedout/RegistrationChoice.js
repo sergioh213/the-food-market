@@ -1,6 +1,5 @@
 import React from 'react'
 import Login from './Login'
-import Nav from './Nav'
 import Accounts from './Accounts'
 // import styled from 'styled-components'
 import { HashRouter, Route, Link } from 'react-router-dom'

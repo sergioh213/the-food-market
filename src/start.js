@@ -4,11 +4,11 @@ import Welcome from './Welcome'
 import axios from './axios'
 import App from './App'
 import { Provider } from 'react-redux';
-import reducer from './reducers';
+import reducer from './redux-socket/reducers';
 import { createStore, applyMiddleware } from 'redux';
 import reduxPromise from 'redux-promise';
 import { composeWithDevTools } from 'redux-devtools-extension';
-import { init } from './socket'
+import { init } from './redux-socket/socket'
 
 const store = createStore(reducer, composeWithDevTools(applyMiddleware(reduxPromise)));
 

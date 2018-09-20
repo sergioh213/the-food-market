@@ -1,9 +1,9 @@
 import React, {Component} from 'react'
-import axios from './axios'
+import axios from '../axios'
 import { Link } from 'react-router-dom'
-import Logo from './Logo'
+import Logo from '../Logo'
 
-class Login extends Component {
+class ProducerRegistration extends Component {
     constructor() {
         super()
 
@@ -19,7 +19,7 @@ class Login extends Component {
         this.setState({
             [ e.target.name ]: e.target.value
         }, () => {
-            console.log(this.state);
+            // console.log(this.state);
         })
         console.log('hey');
     }
@@ -28,7 +28,7 @@ class Login extends Component {
         e.preventDefault()
         console.log("running handleSubmit()", this.state);
 
-        axios.post("/login", this.state)
+        axios.post("/new-producer.json", this.state)
             .then((res) => {
                 console.log(res.data.error);
                 if (res.data.error) {
@@ -43,16 +43,20 @@ class Login extends Component {
 
     render() {
         return (
-            <div id="login">
-            <Logo />
+            <div id="registration">
+                <Logo />
                 <div id="registration-style-div">
+                <div id="account-type-title">Producer</div>
                     {
                         this.state.error
-                            ? <div id="registration-error-box">ERROR:<br />{this.state.error}</div>
-                            : null
+                        ? <div id="registration-error-box">ERROR:<br />{this.state.error}</div>
+                        : null
                     }
                     <form id="registration-form" onSubmit={ this.handleSubmit }>
                         <div id="input-box">
+                            <div className="registration-input-box">
+                                <input onChange={ this.handleChange } name="company_legal_name" placeholder='Company full legal name' type='text'/>
+                            </div>
                             <div className="registration-input-box">
                                 <input onChange={ this.handleChange } name="email" placeholder='Email' type='email'/>
                             </div>
@@ -60,15 +64,13 @@ class Login extends Component {
                                 <input id="no-bottom-border" onChange={ this.handleChange } name="password" placeholder='Password' type='password'/>
                             </div>
                         </div>
-                        <div className="registration-input-box">
-                            <button id="submit-button-registration">Login</button>
-                        </div>
+                        <button id="submit-button-registration">Create account</button>
                     </form>
-                    <Link to="/create-account"><button id="signup-button-registration">Create an account</button></Link>
+                    <Link to="/"><button id="signup-button-registration">Already have an account?</button></Link>
                 </div>
             </div>
         )
     }
 }
 
-export default Login
+export default ProducerRegistration

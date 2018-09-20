@@ -1,9 +1,9 @@
 import React, {Component} from 'react'
-import axios from './axios'
-import Logo from './Logo'
+import axios from '../axios'
+import Logo from '../Logo'
 import { Link } from 'react-router-dom'
 
-class RebuyerRegistration extends Component {
+class WholesalerRegistration extends Component {
     constructor() {
         super()
 
@@ -46,7 +46,7 @@ class RebuyerRegistration extends Component {
             <div id="registration">
                 <Logo />
                 <div id="registration-style-div">
-                <div id="account-type-title">Re-Buyer</div>
+                <div id="account-type-title">Wholesaler</div>
                     {
                         this.state.error
                         ? <div id="registration-error-box">ERROR:<br />{this.state.error}</div>
@@ -76,4 +76,4 @@ class RebuyerRegistration extends Component {
     }
 }
 
-export default RebuyerRegistration
+export default WholesalerRegistration

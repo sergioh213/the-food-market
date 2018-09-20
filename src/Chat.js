@@ -1,8 +1,8 @@
 import React, {Component} from 'react'
 import axios from './axios'
 import { connect } from 'react-redux';
-import { newChatMessage } from './socket'
-import { receiveFriendsWannabes, acceptFriendRequest, endFriendship } from './actions';
+import { newChatMessage } from './redux-socket/socket'
+import { receiveFriendsWannabes, acceptFriendRequest, endFriendship } from './redux-socket/actions';
 
 const mapStateToProps = state => {
     console.log("state.messages: ", state.messages);

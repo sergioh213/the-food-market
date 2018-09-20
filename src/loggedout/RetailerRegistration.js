@@ -1,9 +1,9 @@
 import React, {Component} from 'react'
-import axios from './axios'
+import axios from '../axios'
+import Logo from '../Logo'
 import { Link } from 'react-router-dom'
-import Logo from './Logo'
 
-class ProducerRegistration extends Component {
+class RetailerRegistration extends Component {
     constructor() {
         super()
 
@@ -28,7 +28,7 @@ class ProducerRegistration extends Component {
         e.preventDefault()
         console.log("running handleSubmit()", this.state);
 
-        axios.post("/new-producer.json", this.state)
+        axios.post("/registration", this.state)
             .then((res) => {
                 console.log(res.data.error);
                 if (res.data.error) {
@@ -46,7 +46,7 @@ class ProducerRegistration extends Component {
             <div id="registration">
                 <Logo />
                 <div id="registration-style-div">
-                <div id="account-type-title">Producer</div>
+                <div id="account-type-title">Retailer</div>
                     {
                         this.state.error
                         ? <div id="registration-error-box">ERROR:<br />{this.state.error}</div>
@@ -55,7 +55,10 @@ class ProducerRegistration extends Component {
                     <form id="registration-form" onSubmit={ this.handleSubmit }>
                         <div id="input-box">
                             <div className="registration-input-box">
-                                <input onChange={ this.handleChange } name="company_legal_name" placeholder='Company full legal name' type='text'/>
+                                <input onChange={ this.handleChange } name="first_name" placeholder='First name' type='text'/>
+                            </div>
+                            <div className="registration-input-box">
+                                <input onChange={ this.handleChange } name="last_name" placeholder='Last name' type='text'/>
                             </div>
                             <div className="registration-input-box">
                                 <input onChange={ this.handleChange } name="email" placeholder='Email' type='email'/>
@@ -73,4 +76,4 @@ class ProducerRegistration extends Component {
     }
 }
 
-export default ProducerRegistration
+export default RetailerRegistration

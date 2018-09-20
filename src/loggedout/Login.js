@@ -1,9 +1,9 @@
 import React, {Component} from 'react'
-import axios from './axios'
-import Logo from './Logo'
+import axios from '../axios'
 import { Link } from 'react-router-dom'
+import Logo from '../Logo'
 
-class WholesalerRegistration extends Component {
+class Login extends Component {
     constructor() {
         super()
 
@@ -19,7 +19,7 @@ class WholesalerRegistration extends Component {
         this.setState({
             [ e.target.name ]: e.target.value
         }, () => {
-            // console.log(this.state);
+            console.log(this.state);
         })
         console.log('hey');
     }
@@ -28,7 +28,7 @@ class WholesalerRegistration extends Component {
         e.preventDefault()
         console.log("running handleSubmit()", this.state);
 
-        axios.post("/registration", this.state)
+        axios.post("/login", this.state)
             .then((res) => {
                 console.log(res.data.error);
                 if (res.data.error) {
@@ -43,23 +43,16 @@ class WholesalerRegistration extends Component {
 
     render() {
         return (
-            <div id="registration">
-                <Logo />
+            <div id="login">
+            <Logo />
                 <div id="registration-style-div">
-                <div id="account-type-title">Wholesaler</div>
                     {
                         this.state.error
-                        ? <div id="registration-error-box">ERROR:<br />{this.state.error}</div>
-                        : null
+                            ? <div id="registration-error-box">ERROR:<br />{this.state.error}</div>
+                            : null
                     }
                     <form id="registration-form" onSubmit={ this.handleSubmit }>
                         <div id="input-box">
-                            <div className="registration-input-box">
-                                <input onChange={ this.handleChange } name="first_name" placeholder='First name' type='text'/>
-                            </div>
-                            <div className="registration-input-box">
-                                <input onChange={ this.handleChange } name="last_name" placeholder='Last name' type='text'/>
-                            </div>
                             <div className="registration-input-box">
                                 <input onChange={ this.handleChange } name="email" placeholder='Email' type='email'/>
                             </div>
@@ -67,13 +60,15 @@ class WholesalerRegistration extends Component {
                                 <input id="no-bottom-border" onChange={ this.handleChange } name="password" placeholder='Password' type='password'/>
                             </div>
                         </div>
-                        <button id="submit-button-registration">Create account</button>
+                        <div className="registration-input-box">
+                            <button id="submit-button-registration">Login</button>
+                        </div>
                     </form>
-                    <Link to="/"><button id="signup-button-registration">Already have an account?</button></Link>
+                    <Link to="/create-account"><button id="signup-button-registration">Create an account</button></Link>
                 </div>
             </div>
         )
     }
 }
 
-export default WholesalerRegistration
+export default Login

@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
-import axios from './axios'
-import Logo from './Logo'
+import axios from '../axios'
+import Logo from '../Logo'
 import { Link } from 'react-router-dom'
 
 class TransporterRegistration extends Component {
