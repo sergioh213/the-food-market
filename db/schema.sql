@@ -1,5 +1,5 @@
-DROP TABLE IF EXISTS producers;
-DROP TABLE IF EXISTS production_facilities;
+-- DROP TABLE IF EXISTS producers;
+-- DROP TABLE IF EXISTS production_facilities;
 
 CREATE TABLE producers (
     id SERIAL PRIMARY KEY,
@@ -35,3 +35,4 @@ CREATE TABLE production_facilities (
 
 -- ALTER TABLE producers ADD column_name VARCHAR(500), ADD column_name2 VARCHAR(200);
 -- ALTER TABLE producers DROP column_name, DROP column_name2;
+-- UPDATE producers SET bank_account_number = NULL, bank_iban = NULL WHERE id = 1;

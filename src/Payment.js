@@ -32,7 +32,7 @@ class Payment extends Component {
     handleSubmit(e){
         console.log("submit happening");
         e.preventDefault()
-        axios.post("/savePaymentInfo.json", this.state)
+        axios.post("/saveBankInfo.json", this.state)
             .then(({data}) => {
                 console.log("data as received: ", data.payment_info);
                 this.setState({
@@ -42,8 +42,8 @@ class Payment extends Component {
                     payment_card_number: data.payment_info.payment_card_number,
                 }, () => {
                     console.log("State before sending it back to FinishProfile: ", this.state);
-                    this.props.setPaymentInfo(this.state)
-                    this.props.toggleShowPayment()
+                    this.props.setBankInfo(this.state)
+                    this.props.toggleShowBank()
                 })
             })
     }

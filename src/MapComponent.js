@@ -102,6 +102,12 @@ class MapComponent extends Component {
                         successMessage: "Has succesfully been saved as the companies headquarters",
                         warningMessage: null
                     })
+                    setTimeout(() => {
+                        this.props.setNewAddress(data.data.headquarter_formatted_address)
+                        if (this.props.toggleShowMap) {
+                            this.props.toggleShowMap()
+                        }
+                    }, 1300)
                 }
             })
         } else {
@@ -197,8 +203,9 @@ class MapComponent extends Component {
         const divStyle = { backgroundColor: 'blue'}
         const Message = styled.div`
             font-size: 16px;
+            display: inline-block;
             color: lightgrey;
-            margin-top: 30px;
+            line-height: 40px;
             text-align: center;`
         const SmallMessage = styled.div`
             font-size: 16px;
@@ -223,9 +230,34 @@ class MapComponent extends Component {
             font-weight: bold;
             margin-top: 10px;
             text-align: center;`
+        const CloseX = styled.div`
+            position: relative;
+            font-size: 30px;
+            font-weight: 400;
+            color: darkgrey;
+            display: inline-block;
+            float: right;
+            cursor: pointer;
+            margin-right: 8px;
+            padding: none;
+
+            &:hover{
+                color: black;
+                transform: scale(1.2);
+            }`
+        const InstructionsWrapper = styled.div`
+            position: relative;
+            text-align: center;
+            width: 505px;
+            left: 50%;
+            transform: translateX(-50%);
+            margin-top: 15px;
+            height: 40px;`
         return (
             <div>
-                <Message>Select an address for your headquarters</Message>
+                <InstructionsWrapper>
+                    <Message>Select an address for your headquarters</Message><CloseX onClick={this.props.toggleShowMap}>x</CloseX>
+                </InstructionsWrapper>
                 <div id="search-map-input-wrapper">
                     <div id="input-line-wrapper">
                         <input

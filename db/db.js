@@ -143,6 +143,18 @@ exports.savePaymentInfo = function(id, payment_card_number, payment_card_expirat
     })
 }
 
+exports.saveBankInfo = function(id, bank_account_number, bank_iban) {
+    const params = [id, bank_account_number, bank_iban]
+    const q = `
+        UPDATE producers SET bank_account_number = $2, bank_iban = $3
+        WHERE id = $1
+        RETURNING *;
+        `
+    return db.query(q, params).then(newBankInfo => {
+        return newBankInfo.rows[0]
+    })
+}
+
 exports.deletePaymentInfo = function(id) {
     const params = [id]
     const q = `

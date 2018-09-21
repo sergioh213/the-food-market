@@ -272,6 +272,18 @@ app.post("/savePaymentInfo.json", (req, res) => {
         })
 })
 
+app.post("/saveBankInfo.json", (req, res) => {
+    console.log("/saveBankInfo.json: ", req.body);
+    db.saveBankInfo(req.session.user.id, req.body.bank_account_number, req.body.bank_iban)
+        .then( bankInfo => {
+            console.log("bankInfo when returning from db: ", bankInfo);
+            res.json({
+                success: true,
+                bank_info: bankInfo
+            })
+        })
+})
+
 app.get("/reservations.json", (req, res) => {
     db.getUsersReservations(req.session.user.id)
         .then( reservations => {

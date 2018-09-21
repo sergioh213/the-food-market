@@ -7,6 +7,9 @@ class BankInfo extends Component {
         super(props)
 
         this.state = {}
+
+        this.handleSubmit = this.handleSubmit.bind(this)
+        this.handleChange = this.handleChange.bind(this)
     }
     componentDidMount() {
         axios.get("/producer.json").then(
@@ -15,22 +18,31 @@ class BankInfo extends Component {
             }
         )
     }
-    submitInfo() {
-
+    handleChange(e) {
+        console.log("handleChange happening");
+        this.setState({
+            [ e.target.name ]: e.target.value
+        }, () => {
+            // console.log(e.target.name, e.target.value);
+        })
+    }
+    handleSubmit(e){
+        console.log("submit happening");
+        e.preventDefault()
+        axios.post("/saveBankInfo.json", this.state)
+            .then(({data}) => {
+                console.log("data as received THIS ONE: ", data.bank_info);
+                this.setState({
+                    bank_account_number: data.bank_info.bank_account_number,
+                    bank_iban: data.bank_info.bank_iban
+                }, () => {
+                    console.log("State before sending it back to FinishProfile: ", this.state);
+                    this.props.setBankInfo(this.state)
+                    this.props.toggleShowBank()
+                })
+            })
     }
     render() {
-        const MainDiv = styled.div`
-            position: relative;
-            text-align: left;
-            background-color: white;
-            display: inline-block;
-            width: 510px;
-            height: auto;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 1;
-            padding: 20px;
-            margin-top: 15px;`
         const Message = styled.div`
             font-size: 16px;
             color: lightgrey;
@@ -40,7 +52,7 @@ class BankInfo extends Component {
             <div>
             <div id="payment">
                 <Message>Add the bank account information where you want incoming transfers to be deposited</Message>
-                <MainDiv className="shadow">
+                <div className="shadow" id="bank-style">
                     <div className="payment-title">Your bank account information</div>
                     <div className="payment-title" id="card-details">Account Details</div>
                     <form id="payment-form" onSubmit={ this.handleSubmit }>
@@ -57,7 +69,7 @@ class BankInfo extends Component {
                             <button className="button">Save</button>
                         </div>
                     </form>
-                </MainDiv>
+                </div>
             </div>
             </div>
         )

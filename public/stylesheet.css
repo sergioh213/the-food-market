@@ -865,6 +865,19 @@ a{
     padding: 20px;
     margin-top: 15px;
 }
+#bank-style{
+    position: relative;
+    text-align: left;
+    background-color: white;
+    display: inline-block;
+    width: 510px;
+    height: auto;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1;
+    padding: 20px;
+    margin-top: 15px;
+}
 .payment-title{
     width: 100%;
     text-align: left;

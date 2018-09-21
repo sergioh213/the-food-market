@@ -15,19 +15,14 @@ class FinishProfile extends Component {
             showPayment: false,
             showBank: false,
             showBio: false,
-            showHeadquarters: false,
-            showBankBubble: true,
-            showBioBubble: true,
-            showPaymentBubble: true,
-            showHeadquartersBubble: true
+            showMap: false
         }
 
         this.toggleShowMenus = this.toggleShowMenus.bind(this)
-        this.toggleShowHeadquarters = this.toggleShowHeadquarters.bind(this)
+        this.toggleShowMap = this.toggleShowMap.bind(this)
         this.toggleShowPayment = this.toggleShowPayment.bind(this)
         this.toggleShowBank = this.toggleShowBank.bind(this)
         this.toggleShowBio = this.toggleShowBio.bind(this)
-        this.setPaymentInfo = this.setPaymentInfo.bind(this)
     }
     componentDidMount() {
         axios.get("/producer.json").then(
@@ -36,19 +31,9 @@ class FinishProfile extends Component {
             }
         )
     }
-    setPaymentInfo(data) {
-        console.log("data received at setPaymentInfo: ", data);
-        this.setState({
-            payment_card_number: data.payment_card_number,
-            payment_card_expiration_month: data.payment_card_expiration_month,
-            payment_card_expiration_year: data.payment_card_expiration_year,
-            payment_card_ccv: data.payment_card_ccv,
-            showPaymentBubble: false
-        }, () => console.log("state after setPaymentInfo: ", this.state))
-    }
     toggleShowMenus(itemId){
         if (itemId == 1) {
-            this.toggleShowHeadquarters()
+            this.toggleShowMap()
         } else if (itemId == 2) {
             this.toggleShowPayment()
         } else if (itemId == 3) {
@@ -57,9 +42,9 @@ class FinishProfile extends Component {
             this.toggleShowBio()
         }
     }
-    toggleShowHeadquarters(){
+    toggleShowMap(){
         this.setState({
-            showHeadquarters: !this.state.showHeadquarters,
+            showMap: !this.state.showMap,
             showPayment: false,
             showBank: false,
             showBio: false
@@ -68,7 +53,7 @@ class FinishProfile extends Component {
     toggleShowPayment(){
         this.setState({
             showPayment: !this.state.showPayment,
-            showHeadquarters: false,
+            showMap: false,
             showBank: false,
             showBio: false
         })
@@ -77,7 +62,7 @@ class FinishProfile extends Component {
         this.setState({
             showBank: !this.state.showBank,
             showPayment: false,
-            showHeadquarters: false,
+            showMap: false,
             showBio: false
         })
     }
@@ -86,14 +71,15 @@ class FinishProfile extends Component {
             showBio: !this.state.showBio,
             showPayment: false,
             showBank: false,
-            showHeadquarters: false,
+            showMap: false,
         })
     }
     render() {
-        const { showHeadquarters, showPayment, showBank, showBio } = this.state
+        const { showMap, showPayment, showBank, showBio } = this.state
         if (!this.state.id) {
             return null
         }
+        console.log("logging props at FinishProfile: ", this.props);
         const Message = styled.div`
             font-size: 16px;
             color: #6ACC58;
@@ -104,12 +90,15 @@ class FinishProfile extends Component {
                 <Message>Please complete your profile</Message>
                 <BubbleOptions
                     toggleShowMenus={ this.toggleShowMenus }
-                    showPaymentBubble={ this.state.showPaymentBubble }
+                    showBankBubble={ this.props.showBankBubble }
+                    showBioBubble={ this.props.showBioBubble }
+                    showPaymentBubble={ this.props.showPaymentBubble }
+                    showMapBubble={ this.props.showMapBubble }
                 />
                 { showBio && <CompanyDescriptionField setNewDescription={ this.props.setNewDescription }/> }
-                { showHeadquarters && <MapComponent saveAddress={this.props.saveAddress}/> }
-                { showPayment && <Payment toggleShowPayment={ this.toggleShowPayment } setPaymentInfo={ this.setPaymentInfo } /> }
-                { showBank && <BankInfo /> }
+                { showMap && <MapComponent setNewAddress={this.props.setNewAddress} toggleShowMap={this.toggleShowMap}/> }
+                { showPayment && <Payment toggleShowPayment={ this.toggleShowPayment } setPaymentInfo={ this.props.setPaymentInfo } /> }
+                { showBank && <BankInfo toggleShowBank={ this.toggleShowBank } setBankInfo={ this.props.setBankInfo }/> }
             </div>
         )
     }

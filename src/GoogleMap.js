@@ -1,4 +1,5 @@
 import React from "react";
+import styled from 'styled-components'
 
 // let secrets;
 // if (process.env.NODE_ENV == "production") {
@@ -11,13 +12,43 @@ import React from "react";
 
 var googleMapsApiKey = "AIzaSyBBtYjKj6CmulQ-UX6-VwIf7CieDLAu5XA"
 
-function GoogleMap({ placeId }) {
+function GoogleMap(props) {
+    const CloseX = styled.div`
+        position: relative;
+        font-size: 30px;
+        font-weight: 400;
+        color: darkgrey;
+        display: inline-block;
+        float: right;
+        cursor: pointer;
+        margin-right: 8px;
+        padding: none;
+
+        &:hover{
+            color: black;
+            transform: scale(1.2);
+        }`
+    const InstructionsWrapper = styled.div`
+        position: relative;
+        text-align: center;
+        width: 505px;
+        left: 50%;
+        transform: translateX(-50%);
+        margin-top: 15px;
+        height: 40px;`
    return (
-       <iframe id="map-box"
+       <div>
+            { props.toggleShowMap &&
+                <InstructionsWrapper>
+                    <CloseX onClick={props.toggleShowMap}>x</CloseX>
+                </InstructionsWrapper>
+            }
+           <iframe id="map-box"
            src={`https://www.google.com/maps/embed/v1/place?key=${googleMapsApiKey}&q=place_id:${encodeURIComponent(
-               placeId
+               props.placeId
            )}`}
-       />
+           />
+       </div>
    );
 }
 

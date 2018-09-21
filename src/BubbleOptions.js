@@ -46,15 +46,59 @@ class BubbleOptions extends Component {
         this.toggleShowLable = this.toggleShowLable.bind(this)
         this.toggleHideLable = this.toggleHideLable.bind(this)
         this.setIcons = this.setIcons.bind(this)
+        this.setBubbles = this.setBubbles.bind(this)
     }
     componentDidMount() {
         this.setState({ mounted: true})
         axios.get("/producer.json").then(
             ({data}) => {
+                this.setBubbles()
+                console.log("logging props at bubbles: ", this.props);
                 this.setState(data)
             }
-        ).then( () => {
-        })
+        )
+    }
+    async setBubbles() {
+        var clone = this.state.icons
+        const {
+            showBankBubble,
+            showBioBubble,
+            showPaymentBubble,
+            showMapBubble
+        } = this.props
+        if (!showBankBubble) {
+            console.log("turning off showBankBubble");
+            clone.map(item => {
+                if (item.id == 3) {
+                    item.display = false
+                }
+            })
+        }
+        if (!showBioBubble) {
+            console.log("turning off showBioBubble");
+            clone.map(item => {
+                if (item.id == 4) {
+                    item.display = false
+                }
+            })
+        }
+        if (!showPaymentBubble) {
+            console.log("turning off showPaymentBubble");
+            clone.map(item => {
+                if (item.id == 2) {
+                    item.display = false
+                }
+            })
+        }
+        if (!showMapBubble) {
+            console.log("turning off showMapBubble");
+            clone.map(item => {
+                if (item.id == 1) {
+                    item.display = false
+                }
+            })
+        }
+        this.setState({ icons: clone })
     }
     setIcons() {
         const {
