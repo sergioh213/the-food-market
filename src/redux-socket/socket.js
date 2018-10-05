@@ -30,7 +30,6 @@ export function init(store) {
         // })
 
         // socket.on('welcome', function(data) {
-        //     console.log(data);
         //     socket.emit('thanks', {
         //         message: 'Thank you. It is great to be here.'
         //     });

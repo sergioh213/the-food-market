@@ -42,7 +42,6 @@ class CompanyDescriptionField extends Component {
         this.lm.focus()
     }
     handleChange(e) {
-        console.log("e.target.value: ", e.target.value);
         this.setState({
             [ e.target.name ]: e.target.value
         })

@@ -57,7 +57,6 @@ class BubbleOptions extends Component {
     async setIcons() {
         const clone = this.state.icons
         if (this.props.profile.bank_account_number && this.props.profile.bank_iban) {
-            console.log("turning off showBankBubble");
             clone.map(item => {
                 if (item.id == 3) {
                     item.display = false
@@ -65,23 +64,30 @@ class BubbleOptions extends Component {
             })
         }
         if (this.props.profile.company_description) {
-            console.log("turning off showBioBubble");
             clone.map(item => {
                 if (item.id == 4) {
                     item.display = false
                 }
             })
         }
-        if (this.props.profile.payment_card_number && this.props.profile.payment_card_expiration_month && this.props.profile.payment_card_expiration_year && this.props.profile.payment_card_ccv) {
-            console.log("turning off showPaymentBubble");
+        if (
+            this.props.profile.payment_card_number &&
+            this.props.profile.payment_card_expiration_month &&
+            this.props.profile.payment_card_expiration_year &&
+            this.props.profile.payment_card_ccv
+        ) {
             clone.map(item => {
                 if (item.id == 2) {
                     item.display = false
                 }
             })
         }
-        if (this.props.profile.headquarter_google_maps_place_id && this.props.profile.headquarter_formatted_address && this.props.profile.headquarter_latitude && this.props.profile.headquarter_longitude) {
-            console.log("turning off showMapBubble");
+        if (
+            this.props.profile.headquarter_google_maps_place_id &&
+            this.props.profile.headquarter_formatted_address &&
+            this.props.profile.headquarter_latitude &&
+            this.props.profile.headquarter_longitude
+        ) {
             clone.map(item => {
                 if (item.id == 1) {
                     item.display = false

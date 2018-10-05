@@ -21,19 +21,13 @@ class Landing extends Component {
     handleChange(e) {
         this.setState({
             [ e.target.name ]: e.target.value
-        }, () => {
-            // console.log(this.state);
         })
-        console.log('hey');
     }
 
     handleSubmit(e) {
         e.preventDefault()
-        console.log("running handleSubmit()", this.state);
-
         axios.post("/registration", this.state)
             .then((res) => {
-                console.log(res.data.error);
                 if (res.data.error) {
                     this.setState({
                         error: res.data.error

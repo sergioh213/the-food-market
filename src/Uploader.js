@@ -28,7 +28,6 @@ class Uploader extends Component {
             submit: false,
             selectFile: true
         })
-        console.log("changing selectFile to false: ", this.state.selectFile);
     }
     upload() {
         var self = this

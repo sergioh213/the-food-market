@@ -28,7 +28,6 @@ class Welcome extends Component {
     componentDidMount() {
         this.setState({ mounted: true })
         axios.get("/user-cookies.json").then(resp => {
-            console.log("get resp: ", resp);
             if (resp.data.hasAccepted) {
                 this.setState({
                     showMessage: false,
@@ -44,7 +43,6 @@ class Welcome extends Component {
     async acceptCookies(){
         await this.setState({ clientAccepted: true })
         await axios.post("/user-cookies.json", this.state).then(resp => {
-            console.log("post resp: ", resp);
             if (resp.data.hasAccepted) {
                 this.setState({
                     showMessage: false,

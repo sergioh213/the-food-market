@@ -5,7 +5,6 @@ import { newChatMessage } from './redux-socket/socket'
 import { receiveFriendsWannabes, acceptFriendRequest, endFriendship } from './redux-socket/actions';
 
 const mapStateToProps = state => {
-    console.log("state.messages: ", state.messages);
     return {
         messages: state.messages
     }
@@ -21,8 +20,7 @@ class Chat extends Component {
         this.handleChange = this.handleChange.bind(this)
         this.formatDate = this.formatDate.bind(this)
     }
-    componentDidMount() {
-    }
+    componentDidMount() {}
     sendMessage() {
         newChatMessage(this.state.message)
         this.setState({
@@ -37,7 +35,6 @@ class Chat extends Component {
     formatDate(dateValue) {
         if (!dateValue) {
             var newDate = new Date()
-            // console.log("newDate: ", newDate);
             var date = new Date('' + newDate)
             var indexOfMonth = date.getMonth()
             var yearValue = date.getFullYear() // dateValue.slice(0, 4)
@@ -56,7 +53,6 @@ class Chat extends Component {
                     timeValue = date.getHours() + ":" + date.getMinutes() + "pm"
                 }
             }
-            // console.log("dateValue: ", dateValue, " indexOfMonth: ", indexOfMonth, " yearValue: ", yearValue, " dayValue: ", dayValue, " timeValue: ", timeValue);
             var listOfMonths = [
                 'Jan',
                 'Feb',
@@ -104,7 +100,6 @@ class Chat extends Component {
                     timeValue = date.getHours() + ":" + date.getMinutes() + "pm"
                 }
             }
-            // console.log("dateValue: ", dateValue, " indexOfMonth: ", indexOfMonth, " yearValue: ", yearValue, " dayValue: ", dayValue, " timeValue: ", timeValue);
             var listOfMonths = [
                 'Jan',
                 'Feb',

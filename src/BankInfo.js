@@ -23,17 +23,14 @@ class BankInfo extends Component {
         this.setState({ mounted: true })
     }
     handleChange(e) {
-        console.log("handleChange happening");
         this.setState({
             [ e.target.name ]: e.target.value
         })
     }
     handleSubmit(e){
-        console.log("submit happening");
         e.preventDefault()
         axios.post("/saveBankInfo.json", this.state)
             .then(({data}) => {
-                console.log("data receive after saving bank info: ", data);
                 this.props.dispatch(saveBankInfo(data.bank_info));
                 setTimeout(() => {
                     this.props.toggleShowBank()
@@ -70,7 +67,13 @@ class BankInfo extends Component {
                     <div className="payment-title" id="card-details">Account Details</div>
                     <form id="payment-form" onSubmit={ this.handleSubmit }>
                         <div className="payment-subtitle">Account number</div>
-                        <input onChange={ this.handleChange } id="card-number-input" name="bank_account_number" placeholder="Account number" type="number"/>
+                        <input onChange={ this.handleChange }
+                            id="card-number-input"
+                            name="bank_account_number"
+                            placeholder="Account number"
+                            maxlength="40"
+                            type="text"
+                        />
                         <div id="payment-bottom-wrapper">
                             <div id="payment-input-left-side" className="payment-input-wrapper">
                                 <div className="payment-subtitle">IBAN</div>

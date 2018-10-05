@@ -7,27 +7,13 @@ import { HashRouter, Route, Link } from 'react-router-dom'
 function RegistrationChoice() {
     const componentStyle = {
         backgroundColor: 'grey',
-        // width: '100%',
         display: 'inline-block'
     }
-    // const AccountType = styled.div`
-    //     position: relative;
-    //     font-size: 20px;
-    //     color: red;
-    //     display: "inline-block"
-    // `
     const imageStyle = {
         position: 'relative',
         width: 100,
         display: "inline-block"
     }
-    // const WrapperIcon = styled.div`
-        // position: relative;
-        // width: 100px;
-        // height: 100px;
-        // display: inline-block;
-        // border-radius: 100%;
-        // background-color: #5EB648;`
     const iStyle = {
         position: 'relative',
         color: 'white',

@@ -72,9 +72,7 @@ class MapComponent extends Component {
         });
     }
     processData(info){
-        console.log("info: ", info);
         if (info.data.types) {
-            console.log("in side of first if statement");
             var data = info.data
             var otherTypes = ""
             for (var i = 0; i < data.types.length; i++) {
@@ -99,7 +97,6 @@ class MapComponent extends Component {
         } else {
             this.setState({ addressNotFound: "Address Not Found" })
         }
-        console.log("this.state after process: ", this.state);
     }
     populateInput(e, itemId, itemDescription) {
         this.setState({ inputValue: itemDescription, displayPredictions: false }, () => {
@@ -110,7 +107,6 @@ class MapComponent extends Component {
         if (this.state.save) {
             axios.post("/save-headquarters.json", this.state)
             .then(data => {
-                console.log("data.data after saving address: ", data.data);
                 if (data.data.success) {
                     this.setState({
                         savedAddress: data.data.headquarter_formatted_address,

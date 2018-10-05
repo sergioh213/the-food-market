@@ -28,7 +28,6 @@ export default function(state = {}, action) {
         }
     }
     if (action.type == 'TOGGLE_CHAT') {
-        console.log("showChat reducer happening: state.showChat: ", state.showChat, " !state.showChat: ", !state.showChat);
         state = {
             ...state,
             showChat: !state.showChat

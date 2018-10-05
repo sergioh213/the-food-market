@@ -32,14 +32,11 @@ class FinishProfile extends Component {
         this.setState({ mounted: true })
     }
     toggleShowMenus(itemId){
-        console.log("toggle show menu happening with itemId: ", itemId);
         if (itemId == 1) {
             this.toggleShowMap()
         } else if (itemId == 2) {
-            console.log("payment id detected");
             this.toggleShowPayment()
         } else if (itemId == 3) {
-            console.log("bank id detected");
             this.toggleShowBank()
         } else if (itemId == 4) {
             this.toggleShowBio()
@@ -54,25 +51,19 @@ class FinishProfile extends Component {
         })
     }
     toggleShowPayment(){
-        console.log("toggleShowBank happening");
         this.setState({
             showPayment: !this.state.showPayment,
             showMap: false,
             showBank: false,
             showBio: false
-        }, () => {
-            console.log("state after toggleShowPayment: ", this.state);
         })
     }
     toggleShowBank(){
-        console.log("toggleShowBank happening");
         this.setState({
             showBank: !this.state.showBank,
             showPayment: false,
             showMap: false,
             showBio: false
-        }, () => {
-            console.log("state after toggleShowBank: ", this.state);
         })
     }
     toggleShowBio(){
