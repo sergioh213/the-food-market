@@ -1,8 +1,16 @@
 import React, {Component} from 'react'
 import axios from './axios'
 import styled from 'styled-components'
+import { getProfile } from './redux-socket/actions.js'
+import { connect } from 'react-redux';
 
-class ExampleComponent extends Component {
+const mapStateToProps = state => {
+    return {
+        profile: state.profile
+    }
+}
+
+class CompanyAddress extends Component {
     constructor(props) {
         super(props)
 
@@ -12,7 +20,7 @@ class ExampleComponent extends Component {
         this.setState({ mounted: true })
     }
     render() {
-        if (!this.state.mounted) {
+        if (!this.state.mounted && this.props) {
             return null
         }
         const MainDiv = styled.div`
@@ -45,11 +53,11 @@ class ExampleComponent extends Component {
             }`
         return (
             <MainDiv>
-                <AddressText onClick={this.props.toggleShowMap}>{ this.props.headquarter_formatted_address }</AddressText>
+                <AddressText onClick={this.props.toggleShowMap}>{ this.props.profile.headquarter_formatted_address }</AddressText>
                 <SearchIcon onClick={this.props.findOnMap} className="fas fa-search-location"></SearchIcon>
             </MainDiv>
         )
     }
 }
 
-export default ExampleComponent
+export default connect(mapStateToProps)(CompanyAddress)

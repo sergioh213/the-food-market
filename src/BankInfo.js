@@ -1,6 +1,14 @@
 import React, {Component} from 'react'
 import axios from './axios'
 import styled from 'styled-components'
+import { connect } from 'react-redux';
+import { saveBankInfo } from './redux-socket/actions.js'
+
+const mapStateToProps = state => {
+    return {
+        profile: state.profile
+    }
+}
 
 class BankInfo extends Component {
     constructor(props) {
@@ -12,18 +20,12 @@ class BankInfo extends Component {
         this.handleChange = this.handleChange.bind(this)
     }
     componentDidMount() {
-        axios.get("/producer.json").then(
-            ({data}) => {
-                this.setState(data)
-            }
-        )
+        this.setState({ mounted: true })
     }
     handleChange(e) {
         console.log("handleChange happening");
         this.setState({
             [ e.target.name ]: e.target.value
-        }, () => {
-            // console.log(e.target.name, e.target.value);
         })
     }
     handleSubmit(e){
@@ -31,28 +33,39 @@ class BankInfo extends Component {
         e.preventDefault()
         axios.post("/saveBankInfo.json", this.state)
             .then(({data}) => {
-                console.log("data as received THIS ONE: ", data.bank_info);
-                this.setState({
-                    bank_account_number: data.bank_info.bank_account_number,
-                    bank_iban: data.bank_info.bank_iban
-                }, () => {
-                    console.log("State before sending it back to FinishProfile: ", this.state);
-                    this.props.setBankInfo(this.state)
+                console.log("data receive after saving bank info: ", data);
+                this.props.dispatch(saveBankInfo(data.bank_info));
+                setTimeout(() => {
                     this.props.toggleShowBank()
-                })
+                }, 1300)
             })
     }
     render() {
+        if (!this.props && this.state.mounted) {
+            return null
+        }
         const Message = styled.div`
             font-size: 16px;
             color: lightgrey;
             margin-top: 30px;
             text-align: center;`
+        const CloseX = styled.div`
+            float: right;
+            color: lightgrey;
+            font-size: 18px;
+            cursor: pointer;
+
+            &:hover{
+                color: black;
+                transform: scale(1.2);
+                font-weight: 400;
+            }
+            `
         return (
-            <div>
             <div id="payment">
                 <Message>Add the bank account information where you want incoming transfers to be deposited</Message>
                 <div className="shadow" id="bank-style">
+                    <CloseX onCLick={this.props.toggleShowBank}>x</CloseX>
                     <div className="payment-title">Your bank account information</div>
                     <div className="payment-title" id="card-details">Account Details</div>
                     <form id="payment-form" onSubmit={ this.handleSubmit }>
@@ -71,9 +84,8 @@ class BankInfo extends Component {
                     </form>
                 </div>
             </div>
-            </div>
         )
     }
 }
 
-export default BankInfo
+export default connect(mapStateToProps)(BankInfo)

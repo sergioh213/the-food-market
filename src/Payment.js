@@ -1,6 +1,14 @@
 import React, {Component} from 'react'
 import axios from './axios'
 import styled from 'styled-components'
+import { connect } from 'react-redux';
+import { savePaymentInfo } from './redux-socket/actions.js'
+
+const mapStateToProps = state => {
+    return {
+        profile: state.profile
+    }
+}
 
 class Payment extends Component {
     constructor(props) {
@@ -15,40 +23,25 @@ class Payment extends Component {
         this.handleChange = this.handleChange.bind(this)
     }
     componentDidMount() {
-        axios.get("/producer.json").then(
-            ({data}) => {
-                this.setState(data)
-            }
-        )
+        this.setState({ mounted: true })
     }
     handleChange(e) {
-        console.log("handleChange happening");
         this.setState({
             [ e.target.name ]: e.target.value
-        }, () => {
-            // console.log(e.target.name, e.target.value);
         })
     }
     handleSubmit(e){
-        console.log("submit happening");
         e.preventDefault()
-        axios.post("/saveBankInfo.json", this.state)
+        axios.post("/savePaymentInfo.json", this.state)
             .then(({data}) => {
-                console.log("data as received: ", data.payment_info);
-                this.setState({
-                    payment_card_ccv: data.payment_info.payment_card_ccv,
-                    payment_card_expiration_month: data.payment_info.payment_card_expiration_month,
-                    payment_card_expiration_year: data.payment_info.payment_card_expiration_year,
-                    payment_card_number: data.payment_info.payment_card_number,
-                }, () => {
-                    console.log("State before sending it back to FinishProfile: ", this.state);
-                    this.props.setBankInfo(this.state)
-                    this.props.toggleShowBank()
-                })
+                this.props.dispatch(savePaymentInfo(data.payment_info));
+                setTimeout(() => {
+                    this.props.toggleShowPayment()
+                }, 1300)
             })
     }
     render() {
-        if (!this.state.id) {
+        if (!this.state.mounted && this.props) {
             return null
         }
         const Message = styled.div`
@@ -56,10 +49,23 @@ class Payment extends Component {
             color: lightgrey;
             margin-top: 30px;
             text-align: center;`
+        const CloseX = styled.div`
+            float: right;
+            color: lightgrey;
+            font-size: 18px;
+            cursor: pointer;
+
+            &:hover{
+                color: black;
+                transform: scale(1.2);
+                font-weight: 400;
+            }
+            `
         return (
             <div id="payment">
                 <Message>Add your payment information</Message>
                 <div className="shadow" id="payment-style">
+                    <CloseX onCLick={this.props.toggleShowPayment}>x</CloseX>
                     <div className="payment-title">Your payment information</div>
                     <div className="payment-subtitle">We accept</div>
                     <div id="payment-logo-wrapper">
@@ -92,4 +98,4 @@ class Payment extends Component {
     }
 }
 
-export default Payment
+export default connect(mapStateToProps)(Payment)

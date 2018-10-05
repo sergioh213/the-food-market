@@ -6,7 +6,11 @@ import Payment from './Payment'
 import BankInfo from './BankInfo'
 import styled from 'styled-components'
 import MapComponent from './MapComponent'
+import { connect } from 'react-redux';
 
+const mapStateToProps = state => {
+    return {}
+}
 class FinishProfile extends Component {
     constructor(props) {
         super(props)
@@ -25,18 +29,17 @@ class FinishProfile extends Component {
         this.toggleShowBio = this.toggleShowBio.bind(this)
     }
     componentDidMount() {
-        axios.get("/producer.json").then(
-            ({data}) => {
-                this.setState(data)
-            }
-        )
+        this.setState({ mounted: true })
     }
     toggleShowMenus(itemId){
+        console.log("toggle show menu happening with itemId: ", itemId);
         if (itemId == 1) {
             this.toggleShowMap()
         } else if (itemId == 2) {
+            console.log("payment id detected");
             this.toggleShowPayment()
         } else if (itemId == 3) {
+            console.log("bank id detected");
             this.toggleShowBank()
         } else if (itemId == 4) {
             this.toggleShowBio()
@@ -51,19 +54,25 @@ class FinishProfile extends Component {
         })
     }
     toggleShowPayment(){
+        console.log("toggleShowBank happening");
         this.setState({
             showPayment: !this.state.showPayment,
             showMap: false,
             showBank: false,
             showBio: false
+        }, () => {
+            console.log("state after toggleShowPayment: ", this.state);
         })
     }
     toggleShowBank(){
+        console.log("toggleShowBank happening");
         this.setState({
             showBank: !this.state.showBank,
             showPayment: false,
             showMap: false,
             showBio: false
+        }, () => {
+            console.log("state after toggleShowBank: ", this.state);
         })
     }
     toggleShowBio(){
@@ -76,10 +85,9 @@ class FinishProfile extends Component {
     }
     render() {
         const { showMap, showPayment, showBank, showBio } = this.state
-        if (!this.state.id) {
+        if (!this.state.mounted) {
             return null
         }
-        console.log("logging props at FinishProfile: ", this.props);
         const Message = styled.div`
             font-size: 16px;
             color: #6ACC58;
@@ -90,18 +98,14 @@ class FinishProfile extends Component {
                 <Message>Please complete your profile</Message>
                 <BubbleOptions
                     toggleShowMenus={ this.toggleShowMenus }
-                    showBankBubble={ this.props.showBankBubble }
-                    showBioBubble={ this.props.showBioBubble }
-                    showPaymentBubble={ this.props.showPaymentBubble }
-                    showMapBubble={ this.props.showMapBubble }
                 />
-                { showBio && <CompanyDescriptionField setNewDescription={ this.props.setNewDescription }/> }
-                { showMap && <MapComponent setNewAddress={this.props.setNewAddress} toggleShowMap={this.toggleShowMap}/> }
+                { showBio && <CompanyDescriptionField setNewDescription={ this.props.setNewDescription } toggleShowDescriptionField={this.toggleShowBio}/> }
+                { showMap && <MapComponent toggleShowMap={this.toggleShowMap}/> }
                 { showPayment && <Payment toggleShowPayment={ this.toggleShowPayment } setPaymentInfo={ this.props.setPaymentInfo } /> }
-                { showBank && <BankInfo toggleShowBank={ this.toggleShowBank } setBankInfo={ this.props.setBankInfo }/> }
+                { showBank && <BankInfo toggleShowBank={ this.toggleShowBank } /> }
             </div>
         )
     }
 }
 
-export default FinishProfile
+export default connect(mapStateToProps)(FinishProfile)

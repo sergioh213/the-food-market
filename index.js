@@ -299,7 +299,7 @@ app.get("/user/:id.json", (req, res) => {
             redirect: true
         })
     } else {
-        db.getUserById(req.params.id).then(data => {
+        db.getProducerById(req.params.id).then(data => {
             res.json({
                 ...data,
                 company_image_url: data.company_image_url || '/content/default_profile_picture.png'

@@ -1,9 +1,18 @@
 import React, {Component} from 'react'
 import axios from './axios'
 import Profile from './Profile'
+import styled from 'styled-components'
 import Chat from './Chat'
-import Opp from './Opp'
+import Opp from './Opp/Opp'
 import { BrowserRouter, Route, Link } from 'react-router-dom'
+import { getProfile } from './redux-socket/actions.js'
+import { connect } from 'react-redux';
+
+const mapStateToProps = state => {
+    return {
+        profile: state.profile
+    }
+}
 
 class App extends Component {
     constructor(props) {
@@ -12,36 +21,30 @@ class App extends Component {
         this.state = {
             showChat: false
         }
-
-        this.toggleShowChat = this.toggleShowChat.bind(this)
     }
     componentDidMount() {
-        axios.get("/producer.json").then(
-            ({data}) => {
-                this.setState(data)
-            }
-        )
-    }
-    toggleShowChat() {
-        this.setState({
-            showChat: !this.state.showChat
-        }, console.log("showChat changed to: ", this.state.showChat))
+        this.props.dispatch(getProfile());
+        this.setState({ mounted: true })
     }
     render() {
-        if (!this.state.id) {
+        if (!this.state.mounted) {
             return null
         }
+        const Main = styled.div`
+            padding: 18px;
+            padding-top: 30px;
+            `
         return (
-            <div id="app">
+            <Main id="app">
                 <BrowserRouter>
                     <div>
                         <Route exact path='/' component={Profile} />
                         <Route exact path='/user/:id' component={Opp} />
                     </div>
                 </BrowserRouter>
-            </div>
+            </Main>
         )
     }
 }
 
-export default App
+export default connect(mapStateToProps)(App)

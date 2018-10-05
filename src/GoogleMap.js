@@ -36,19 +36,36 @@ function GoogleMap(props) {
         transform: translateX(-50%);
         margin-top: 15px;
         height: 40px;`
+    const Wrapper = styled.div`
+        position: relative;
+        display: ${() => {
+            if (props.inline) {
+                return "inline-block"
+            } else {
+                return "block"
+            }
+        }}
+        width: ${() => {
+            if (props.inline) {
+                return "70%"
+            } else {
+                return "100%"
+            }
+        }}
+        `
    return (
-       <div>
+       <Wrapper>
             { props.toggleShowMap &&
                 <InstructionsWrapper>
                     <CloseX onClick={props.toggleShowMap}>x</CloseX>
                 </InstructionsWrapper>
             }
-           <iframe id="map-box"
-           src={`https://www.google.com/maps/embed/v1/place?key=${googleMapsApiKey}&q=place_id:${encodeURIComponent(
-               props.placeId
-           )}`}
+            <iframe id={ props.shallow ? "shallow-map" : "map-box"}
+                src={`https://www.google.com/maps/embed/v1/place?key=${googleMapsApiKey}&q=place_id:${encodeURIComponent(
+                    props.placeId
+            )}`}
            />
-       </div>
+       </Wrapper>
    );
 }
 

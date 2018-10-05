@@ -1,6 +1,14 @@
 import React, {Component} from 'react'
-import axios from './axios'
+import { connect } from 'react-redux';
+import { getProfile } from './redux-socket/actions.js'
 import styled from 'styled-components'
+import axios from './axios'
+
+const mapStateToProps = state => {
+    return {
+        profile: state.profile
+    }
+}
 
 class ExampleComponent extends Component {
     constructor(props) {
@@ -8,7 +16,9 @@ class ExampleComponent extends Component {
 
         this.state = {}
     }
-    componentDidMount() {}
+    componentDidMount() {
+        // this.props.dispatch(getProfile());
+    }
     render() {
         return (
             <div>
@@ -18,4 +28,4 @@ class ExampleComponent extends Component {
     }
 }
 
-export default ExampleComponent
+export default connect(mapStateToProps)(ExampleComponent)

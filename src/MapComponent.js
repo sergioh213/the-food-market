@@ -1,7 +1,15 @@
 import React, {Component} from 'react'
+import { connect } from 'react-redux';
+import { saveNewAddress } from './redux-socket/actions.js'
 import axios from './axios'
 import styled from 'styled-components'
 import GoogleMap from './GoogleMap'
+
+const mapStateToProps = state => {
+    return {
+        profile: state.profile
+    }
+}
 
 class MapComponent extends Component {
     constructor(props) {
@@ -23,7 +31,7 @@ class MapComponent extends Component {
         this.setState({ mounted: true })
     }
     handleChange(e) {
-        this.setState({ inputValue: e.target.value, displayPredictions: true }, () => {
+        this.setState({ inputValue: e.target.value, displayPredictions: true, addressNotFound: null }, () => {
             axios.get("/place-autocomplete", {
                 params: { input: this.state.inputValue }
             }).then(resp => {
@@ -41,6 +49,7 @@ class MapComponent extends Component {
         })
     }
     findMyPostion() {
+        this.setState({ inputValue: "", displayPredictions: false })
         navigator.geolocation.getCurrentPosition(position => {
             axios.get("/place-coordinates", {
                     params: {
@@ -63,7 +72,9 @@ class MapComponent extends Component {
         });
     }
     processData(info){
-        if (!info.data.error) {
+        console.log("info: ", info);
+        if (info.data.types) {
+            console.log("in side of first if statement");
             var data = info.data
             var otherTypes = ""
             for (var i = 0; i < data.types.length; i++) {
@@ -85,11 +96,15 @@ class MapComponent extends Component {
                     })
                 }
             }
+        } else {
+            this.setState({ addressNotFound: "Address Not Found" })
         }
         console.log("this.state after process: ", this.state);
     }
     populateInput(e, itemId, itemDescription) {
-        this.setState({ inputValue: itemDescription, displayPredictions: false })
+        this.setState({ inputValue: itemDescription, displayPredictions: false }, () => {
+            this.searchLocation()
+        })
     }
     saveAddress() {
         if (this.state.save) {
@@ -101,9 +116,11 @@ class MapComponent extends Component {
                         savedAddress: data.data.headquarter_formatted_address,
                         successMessage: "Has succesfully been saved as the companies headquarters",
                         warningMessage: null
+                    }, () => {
+                        this.props.dispatch(saveNewAddress(data.data));
                     })
                     setTimeout(() => {
-                        this.props.setNewAddress(data.data.headquarter_formatted_address)
+                        // this.props.setNewAddress(data.data)
                         if (this.props.toggleShowMap) {
                             this.props.toggleShowMap()
                         }
@@ -127,7 +144,7 @@ class MapComponent extends Component {
             return null
         }
         const SearchBar = styled.input`
-            width: 505px;`
+            width: 100%;`
         const Wrapper = styled.div`
             position: relative;
             width: 100%;`
@@ -176,28 +193,31 @@ class MapComponent extends Component {
             text-align: center;
             left: 50%;
             transform: translateX(-50%);
-            width: 505px;`
+            width: 100%;`
         const PredictionsBoxWrapper = styled.div`
             position: absolute;
             text-align: left;
             z-index: 2;
-            left: 50%;
-            transform: translateX(-50%);`
+            width: 100%
+            left: 0;
+            padding-left: 20px;
+            padding-right: 20px;`
         const PredictionsBox = styled.div`
             position: relative;
             background-color: white;
             text-align: left;
             padding-left: 10px;
-            width: 79%;
+            width: 100%;
             border-top: 1px solid lightgrey;
             left: 0;`
         const LeftBox = styled.div`
             position: relative;
-            width: 505px;
+            width: 79%;
+            display: inline-block;
             text-align: left;`
         const InputLineWrapper = styled.div`
             position: relative;
-            width: 505px;
+            width: 100%;
             left: 50%;
             transform: translateX(-50%);`
         const divStyle = { backgroundColor: 'blue'}
@@ -248,7 +268,7 @@ class MapComponent extends Component {
         const InstructionsWrapper = styled.div`
             position: relative;
             text-align: center;
-            width: 505px;
+            width: 100%;
             left: 50%;
             transform: translateX(-50%);
             margin-top: 15px;
@@ -271,24 +291,23 @@ class MapComponent extends Component {
                         <SubmitButton className="scale-on-hover" onClick={ this.searchLocation }>Search</SubmitButton>
                     </div>
                 </div>
+                { this.state.addressNotFound && <ErrorMessage>{ this.state.addressNotFound }</ErrorMessage> }
                 { this.state.displayPredictions &&
-                    <div>
-                        <PredictionsBoxWrapper>
-                            <LeftBox className="shadow">
-                                { this.state.predictions && this.state.predictions.map(item => {
-                                    return (
-                                        <PredictionsBox
-                                            key={item.id}
-                                            className="prediction-box"
-                                            onClick={(e) => this.populateInput(e, item.id, item.description)}
-                                        >
-                                            { item.description }
-                                        </PredictionsBox>
-                                    )
-                                })}
-                            </LeftBox>
-                        </PredictionsBoxWrapper>
-                    </div>
+                    <PredictionsBoxWrapper id="1">
+                        <LeftBox className="shadow" id="2">
+                            { this.state.predictions && this.state.predictions.map(item => {
+                                return (
+                                    <PredictionsBox  id="3"
+                                        key={item.id}
+                                        className="prediction-box"
+                                        onClick={(e) => this.populateInput(e, item.id, item.description)}
+                                    >
+                                        { item.description }
+                                    </PredictionsBox>
+                                )
+                            })}
+                        </LeftBox>
+                    </PredictionsBoxWrapper>
                 }
                 <Wrapper>
                 </Wrapper>
@@ -305,8 +324,7 @@ class MapComponent extends Component {
                 </LocationButtonWrapper>
             </div>
         )
-        // <i class="fas map-marker"></i>
     }
 }
 
-export default MapComponent
+export default connect(mapStateToProps)(MapComponent)

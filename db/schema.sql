@@ -15,7 +15,7 @@ CREATE TABLE producers (
     payment_card_expiration_year INT,
     payment_card_ccv INT,
     bank_account_number INT,
-    bank_iban VARCHAR(300),
+    bank_iban VARCHAR(100),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     headquarter_google_maps_place_id VARCHAR(500),
     headquarter_formatted_address VARCHAR(200),
@@ -35,4 +35,6 @@ CREATE TABLE production_facilities (
 
 -- ALTER TABLE producers ADD column_name VARCHAR(500), ADD column_name2 VARCHAR(200);
 -- ALTER TABLE producers DROP column_name, DROP column_name2;
+-- UPDATE producers SET headquarter_google_maps_place_id = NULL, headquarter_formatted_address = NULL, headquarter_latitude = NULL, headquarter_longitude = NULL WHERE id = 1;
 -- UPDATE producers SET bank_account_number = NULL, bank_iban = NULL WHERE id = 1;
+-- UPDATE producers SET payment_card_number = NULL WHERE id = 1;

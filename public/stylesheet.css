@@ -5,7 +5,7 @@
 }
 body {
     margin: 0;
-    background-color: rgba(251, 251, 251, 1);
+    background-color: rgba(233, 234, 236, 1);
     height: 100vh;
 }
 .button{
@@ -64,11 +64,36 @@ a{
 /* ////////////////////////////////  MAP  /////////////////////////////////// */
 #map-box{
     position: relative;
-    left: 50%;
-    transform: translateX(-50%);
     margin-top: 15px;
-    width: 505px;
+    width: 100%;
     height: 505px;
+}
+#shallow-map{
+    width: 100%;
+    height: 300px;
+    margin-top: 10px;
+    /* background-color: blue; */
+    display: inline-block;
+}
+.find_me_icon{
+    position: relative;
+    display: inline-block;
+    background-color: #6ACC58;
+    width: 30px;
+    height: 30px;
+    text-align: center;
+    border-radius: 100%;
+    top: -15px;
+    margin-left: 10px;
+    padding: none;
+    border: none;
+}
+.fas.fa-male{
+    position: relative;
+    color: white;
+    top: 2px;
+    /* transform: translateY(50%); */
+    font-size: 18px;
 }
 #search-map-input-wrapper{
     text-align: center;
@@ -84,7 +109,7 @@ a{
 }
 #input-line-wrapper{
     position: relative;
-    width: 505px;
+    width: 100%;
     left: 50%;
     transform: translateX(-50%);
 }
@@ -100,16 +125,12 @@ a{
 }
 #company-description-button{
     position: relative;
-    width: 510px;
-    left: 50%;
-    transform: translateX(-50%);
+    width: 100%;
 }
 #description-textarea{
     position: relative;
     resize: none;
-    width: 510px;
-    left: 50%;
-    transform: translateX(-50%);
+    width: 100%;
     margin-top: 15px;
     border: none;
     padding: 4px 8px;
@@ -118,6 +139,25 @@ a{
 .company-name-main{
     position: relative;
     width: 100%;
+    text-align: center;
+}
+.company-name-text{
+    position: relative;
+    font-size: 30px;
+    color: #949596;
+    font-weight: 400;
+    /* left: 45.36px; */
+    margin-top: 10px;
+    background-color: white;
+    display: inline-block;
+    min-width: 200px;
+    border-radius: 4px;
+    height: 40px;
+    text-align: center;
+    padding: 0 8px;
+}
+.company-name-text-offset-left{
+    margin-left: 45.36px;
 }
 /* ////////////////////////////////  ACCOUNTS /////////////////////////////////// */
 .registration-background{
@@ -175,8 +215,19 @@ a{
 .scale-on-hover:hover{
     transform: scale(1.05);
 }
+.scale-on-hover-more:hover{
+    transform: scale(1.15);
+}
 .scale-on-hover-and-center:hover{
     transform: translateX(-50%) scale(1.05);
+}
+.desciption_edit_icon{
+    position: relative;
+    display: inline-block;
+    margin-left: 10px;
+    /* background-color: red; */
+    color: darkgrey;
+    font-size: 15px;
 }
 .acount-type{
     position: relative;
@@ -512,6 +563,34 @@ a{
 .nav-menu-options:hover{
     background-color: white;
     color: #3F88C5;
+}
+/* //////////////////////////////// BOTTOM PANEL /////////////////////////////////// */
+.input-wrapper{
+    width: 70%;
+    /* background-color: red; */
+    display: inline-block;
+    margin-right: 1%;
+}
+.input-wrapper input{
+    width: 79%;
+    display: inline-block;
+    margin-right: 1%;
+    height: 30px;
+    padding: 4px 8px;
+    font-size: 16px;
+}
+.input-wrapper .submit-button{
+    width: 19%;
+    background-color: #6ACC58;
+    cursor: pointer;
+    height: 30px;
+    padding: 4px 8px;
+    font-size: 16px;
+    color: white;
+    font-weight: 400;
+    border-radius: 4px;
+    border: none;
+    display: inline-block;
 }
 /* //////////////////////////////// PROFILE PAGE /////////////////////////////////// */
 #profile{
@@ -857,10 +936,8 @@ a{
     text-align: left;
     background-color: white;
     display: inline-block;
-    width: auto;
+    width: 100%;
     height: auto;
-    left: 50%;
-    transform: translateX(-50%);
     z-index: 1;
     padding: 20px;
     margin-top: 15px;
@@ -870,10 +947,8 @@ a{
     text-align: left;
     background-color: white;
     display: inline-block;
-    width: 510px;
+    width: 100%;
     height: auto;
-    left: 50%;
-    transform: translateX(-50%);
     z-index: 1;
     padding: 20px;
     margin-top: 15px;
@@ -881,7 +956,6 @@ a{
 .payment-title{
     width: 100%;
     text-align: left;
-    /* padding-left: 20px; */
     font-size: 24px;
     margin-bottom: 20px;
 }

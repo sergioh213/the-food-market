@@ -1,6 +1,14 @@
 import React, {Component} from 'react'
-import axios from './axios'
+import { connect } from 'react-redux';
+import { saveCompanyDescription } from './redux-socket/actions.js'
 import styled from 'styled-components'
+import axios from './axios'
+
+const mapStateToProps = state => {
+    return {
+        profile: state.profile
+    }
+}
 
 class CompanyDescriptionField extends Component {
     constructor(props) {
@@ -34,21 +42,21 @@ class CompanyDescriptionField extends Component {
         this.lm.focus()
     }
     handleChange(e) {
+        console.log("e.target.value: ", e.target.value);
         this.setState({
             [ e.target.name ]: e.target.value
         })
     }
     handleSubmit(e){
         e.preventDefault()
-        this.props.setNewDescription(this.state.company_description)
+        this.props.dispatch(saveCompanyDescription(this.state.company_description));
+        this.props.toggleShowDescriptionField()
     }
     render() {
         const DescriptionField = styled.textarea`
             resize: none;
-            width: 510px;
+            width: 100%;
             position: relative;
-            left: 50%;
-            transform: translateX(-50%);
             margin-top: 15px;
             border: none;
             padding: 4px 8px;
@@ -67,33 +75,64 @@ class CompanyDescriptionField extends Component {
             font-size: 16px;
             color: white;
             font-weight: 400;
+            position: relative;
+            width: 100%;
             border-radius: 4px;
             border: none;`
         const Message = styled.div`
             font-size: 16px;
+            display: inline-block;
             color: lightgrey;
-            margin-top: 30px;
-            text-align: center;`
+            line-height: 40px;
+            text-align: center;
+            `
+        const CloseX = styled.div`
+            position: relative;
+            font-size: 30px;
+            font-weight: 400;
+            color: darkgrey;
+            display: inline-block;
+            float: right;
+            cursor: pointer;
+            margin-right: 8px;
+            padding: none;
+
+            &:hover{
+                color: black;
+                transform: scale(1.2);
+            }
+            `
+        const InstructionsWrapper = styled.div`
+            position: relative;
+            text-align: center;
+            width: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            margin-top: 15px;
+            height: 40px;
+            `
         return (
-            <MainDiv>
-                <Message>Describe what your company does in a few sentences</Message>
+            <div>
+                <InstructionsWrapper>
+                    <Message>Describe what your company does in a few sentences</Message><CloseX onClick={this.props.toggleShowDescriptionField}>x</CloseX>
+                </InstructionsWrapper>
                 <form onSubmit={ (e) => this.handleSubmit(e)  }>
-                    <Wrapper>
+                    <div>
                         <textarea id="description-textarea"
                             className="shadow"
                             ref={(lm) => this.lm = lm}
                             name="company_description"
-                            defaultValue={this.state.company_description}
+                            defaultValue={this.props.profile.company_description}
                             onChange={(e) => {this.handleChange(e)}}
                         ></textarea>
-                    </Wrapper>
+                    </div>
                     <Wrapper>
-                        <SubmitButton id="company-description-button">{this.state.buttonText}</SubmitButton>
+                        <SubmitButton className="shadow scale-on-hover">{this.state.buttonText}</SubmitButton>
                     </Wrapper>
                 </form>
-            </MainDiv>
+            </div>
         )
     }
 }
 
-export default CompanyDescriptionField
+export default connect(mapStateToProps)(CompanyDescriptionField)

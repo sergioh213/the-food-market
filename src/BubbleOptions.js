@@ -1,15 +1,19 @@
 import React, {Component} from 'react'
+import { connect } from 'react-redux';
 import axios from './axios'
-import Uploader from './Uploader'
-import CompanyNameInput from './CompanyNameInput'
 import styled from 'styled-components'
+
+const mapStateToProps = state => {
+    return {
+        profile: state.profile
+    }
+}
 
 class BubbleOptions extends Component {
     constructor() {
         super()
 
         this.state = {
-            // icons: []
             icons: [
                 {
                     id: 1,
@@ -37,8 +41,7 @@ class BubbleOptions extends Component {
                     lableDisplay: false,
                     classes: "fas fa-pencil-alt",
                     text: "Add a description for your company",
-                    display: true,
-                    last: true
+                    display: true
                 }
             ]
         }
@@ -46,27 +49,14 @@ class BubbleOptions extends Component {
         this.toggleShowLable = this.toggleShowLable.bind(this)
         this.toggleHideLable = this.toggleHideLable.bind(this)
         this.setIcons = this.setIcons.bind(this)
-        this.setBubbles = this.setBubbles.bind(this)
     }
     componentDidMount() {
         this.setState({ mounted: true})
-        axios.get("/producer.json").then(
-            ({data}) => {
-                this.setBubbles()
-                console.log("logging props at bubbles: ", this.props);
-                this.setState(data)
-            }
-        )
+        this.setIcons()
     }
-    async setBubbles() {
-        var clone = this.state.icons
-        const {
-            showBankBubble,
-            showBioBubble,
-            showPaymentBubble,
-            showMapBubble
-        } = this.props
-        if (!showBankBubble) {
+    async setIcons() {
+        const clone = this.state.icons
+        if (this.props.profile.bank_account_number && this.props.profile.bank_iban) {
             console.log("turning off showBankBubble");
             clone.map(item => {
                 if (item.id == 3) {
@@ -74,7 +64,7 @@ class BubbleOptions extends Component {
                 }
             })
         }
-        if (!showBioBubble) {
+        if (this.props.profile.company_description) {
             console.log("turning off showBioBubble");
             clone.map(item => {
                 if (item.id == 4) {
@@ -82,7 +72,7 @@ class BubbleOptions extends Component {
                 }
             })
         }
-        if (!showPaymentBubble) {
+        if (this.props.profile.payment_card_number && this.props.profile.payment_card_expiration_month && this.props.profile.payment_card_expiration_year && this.props.profile.payment_card_ccv) {
             console.log("turning off showPaymentBubble");
             clone.map(item => {
                 if (item.id == 2) {
@@ -90,7 +80,7 @@ class BubbleOptions extends Component {
                 }
             })
         }
-        if (!showMapBubble) {
+        if (this.props.profile.headquarter_google_maps_place_id && this.props.profile.headquarter_formatted_address && this.props.profile.headquarter_latitude && this.props.profile.headquarter_longitude) {
             console.log("turning off showMapBubble");
             clone.map(item => {
                 if (item.id == 1) {
@@ -99,48 +89,6 @@ class BubbleOptions extends Component {
             })
         }
         this.setState({ icons: clone })
-    }
-    setIcons() {
-        const {
-            company_description,
-            headquarter_country,
-            headquarter_city,
-            headquarter_postal_code,
-            headquarter_street,
-            headquarter_address_number,
-            payment_card_number,
-            payment_card_expiration_month,
-            payment_card_expiration_year,
-            payment_card_ccv,
-            bank_account_number,
-            bank_iban
-        } = this.state
-        if (!company_description) {
-            this.setState({})
-        }
-        if (
-            !headquarter_country ||
-            !headquarter_city ||
-            !headquarter_postal_code ||
-            !headquarter_street ||
-            !headquarter_address_number
-        ) {
-            this.setState({})
-        }
-        if (
-            !payment_card_number ||
-            !payment_card_expiration_month ||
-            !payment_card_expiration_year ||
-            !payment_card_ccv
-        ) {
-            this.setState({})
-        }
-        if (
-            !bank_account_number ||
-            !bank_iban
-        ) {
-            this.setState({})
-        }
     }
     toggleShowLable(itemId){
         const clone = this.state.icons.map(item => {
@@ -173,7 +121,7 @@ class BubbleOptions extends Component {
         this.setState({ icons: clone })
     }
     render() {
-        if (!this.state.mounted) {
+        if (!this.props) {
             return null
         }
         const EditsButtons = styled.div`
@@ -194,7 +142,7 @@ class BubbleOptions extends Component {
             background-color: #6ACC58;`
         const IconsTags = styled.i`
             position: relative;
-            color: white;
+            color: rgba(255, 255, 255, 1);
             top: 5px;
             right: 5px;
             font-size: 20px;`
@@ -269,4 +217,4 @@ class BubbleOptions extends Component {
     }
 }
 
-export default BubbleOptions
+export default connect(mapStateToProps)(BubbleOptions)
