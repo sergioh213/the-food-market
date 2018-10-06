@@ -22,7 +22,11 @@ export default function(state = {}, action) {
     if (action.type == 'GET_PROFILE') {
         state = {
             ...state,
-            showChat: false,
+            chat: {
+                showChat: false,
+                expanded: false
+            },
+            showBottomMenu: false,
             profile: action.profile,
             profileComplete: checkProfileCompleteness(action.profile)
         }
@@ -30,7 +34,25 @@ export default function(state = {}, action) {
     if (action.type == 'TOGGLE_CHAT') {
         state = {
             ...state,
-            showChat: !state.showChat
+            chat: {
+                ...state.chat,
+                showChat: !state.chat.showChat
+            }
+        }
+    }
+    if (action.type == 'TOGGLE_EXPAND_CHAT') {
+        state = {
+            ...state,
+            chat: {
+                ...state.chat,
+                expanded: !state.chat.expanded
+            }
+        }
+    }
+    if (action.type == 'TOGGLE_BOTTOM_MENU') {
+        state = {
+            ...state,
+            showBottomMenu: !state.showBottomMenu
         }
     }
     if (action.type == 'SAVE_COMPANY_DESCRIPTION') {

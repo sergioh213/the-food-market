@@ -80,6 +80,17 @@ export function toggleShowChat() {
     }
 }
 
+export function toggleShowBottomMenu() {
+    return {
+        type: 'TOGGLE_BOTTOM_MENU'
+    }
+}
+export function toggleExpandChat() {
+    return {
+        type: 'TOGGLE_EXPAND_CHAT'
+    }
+}
+
 // export function receiveFriendsWannabes() {
 //     return axios.get("/friendsWannabes.json").then(({ data }) => {
 //         return {

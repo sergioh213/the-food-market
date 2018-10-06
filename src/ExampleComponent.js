@@ -20,10 +20,13 @@ class ExampleComponent extends Component {
         // this.props.dispatch(getProfile());
     }
     render() {
+        const Main = styled.div`
+        position: relative;
+        `
         return (
-            <div>
+            <Main>
 
-            </div>
+            </Main>
         )
     }
 }

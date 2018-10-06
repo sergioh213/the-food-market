@@ -61,6 +61,61 @@ a{
     right: 0;
     bottom: 0;
 }
+.fas.fa-expand{
+    position: relative;
+    font-size: 20px;
+    display: inline-block;
+    float: left;
+    color: #5EB648;
+    cursor: pointer;
+}
+.fas.fa-compress{
+    position: relative;
+    font-size: 20px;
+    display: inline-block;
+    float: left;
+    color: #5EB648;
+    cursor: pointer;
+}
+.contract-on-hover:hover{
+    color:  #6ACC58;
+    transform: scaleX(0.9);
+}
+.fas.fa-expand:hover{
+    color:  #6ACC58;
+}
+.chat-expanded{
+    width: 70%;
+}
+#company-score-main{
+    position: relative;
+    margin-top: 10px;
+    width: 100%;
+    padding: 20px;
+    background-color: rgba(251, 251, 251, 1);
+    text-align: center;
+}
+#company-score-bar{
+    position: relative;
+    background-color: lightgrey;
+    border-radius: 10px;
+    height: 10px;
+    width: 100%;
+}
+#company-score-filled-bar{
+    position: absolute;
+    background-color: #5EB648;
+    border-radius: 5px;
+    height: 10px;
+}
+#company-score-ball{
+    position: absolute;
+    transform: translateX(-50%);
+    background-color: #6ACC58;
+    border-radius: 100%;
+    height: 15px;
+    width: 15px;
+}
 /* ////////////////////////////////  MAP  /////////////////////////////////// */
 #map-box{
     position: relative;

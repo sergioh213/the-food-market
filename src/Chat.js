@@ -1,12 +1,14 @@
 import React, {Component} from 'react'
-import axios from './axios'
 import { connect } from 'react-redux';
-import { newChatMessage } from './redux-socket/socket'
-import { receiveFriendsWannabes, acceptFriendRequest, endFriendship } from './redux-socket/actions';
+import { toggleShowChat, toggleExpandChat } from './redux-socket/actions.js'
+import styled from 'styled-components'
+import axios from './axios'
 
 const mapStateToProps = state => {
     return {
-        messages: state.messages
+        profile: state.profile,
+        chat: state.chat,
+        showBottomMenu: state.showBottomMenu
     }
 }
 
@@ -16,166 +18,105 @@ class Chat extends Component {
 
         this.state = {}
 
-        this.sendMessage = this.sendMessage.bind(this)
-        this.handleChange = this.handleChange.bind(this)
-        this.formatDate = this.formatDate.bind(this)
+        this.toggleChat = this.toggleChat.bind(this)
+        this.expandChat = this.expandChat.bind(this)
     }
-    componentDidMount() {}
-    sendMessage() {
-        newChatMessage(this.state.message)
-        this.setState({
-            message: null
-        })
+    componentDidMount() {
+        this.setState({ mounted: true })
     }
-    handleChange(e) {
-        this.setState({
-            [ e.target.name ] : e.target.value
-        })
+    toggleChat() {
+        console.log("turning chat off from bottom section");
+        this.props.dispatch(toggleShowChat());
     }
-    formatDate(dateValue) {
-        if (!dateValue) {
-            var newDate = new Date()
-            var date = new Date('' + newDate)
-            var indexOfMonth = date.getMonth()
-            var yearValue = date.getFullYear() // dateValue.slice(0, 4)
-            var dayValue = date.getDate() // dateValue.slice(0, 4)
-            var timeValue // dateValue.slice(0, 4)
-            if (date.getHours() < 12) {
-                if (date.getMinutes() <= 9 ) {
-                    timeValue = date.getHours() + ":0" + date.getMinutes() + "am"
-                } else {
-                    timeValue = date.getHours() + ":" + date.getMinutes() + "am"
-                }
-            } else {
-                if (date.getMinutes() <= 9 ) {
-                    timeValue = date.getHours() + ":0" + date.getMinutes() + "pm"
-                } else {
-                    timeValue = date.getHours() + ":" + date.getMinutes() + "pm"
-                }
-            }
-            var listOfMonths = [
-                'Jan',
-                'Feb',
-                'Mar',
-                'Apr',
-                'May',
-                'Jun',
-                'Jul',
-                'Aug',
-                'Sep',
-                'Oct',
-                'Nov',
-                'Dec'
-            ]
-
-            return {
-                year: yearValue,
-                month: listOfMonths[indexOfMonth],
-                day: dayValue,
-                time: timeValue
-            }
-            return {
-                year: null,
-                month: null,
-                day: null,
-                time: null
-            }
-
-        } else {
-            var date = new Date('' + dateValue)
-            var indexOfMonth = date.getMonth()
-            var yearValue = date.getFullYear() // dateValue.slice(0, 4)
-            var dayValue = date.getDate() // dateValue.slice(0, 4)
-            var timeValue // dateValue.slice(0, 4)
-            if (date.getHours() < 12) {
-                if (date.getMinutes() <= 9 ) {
-                    timeValue = date.getHours() + ":0" + date.getMinutes() + "am"
-                } else {
-                    timeValue = date.getHours() + ":" + date.getMinutes() + "am"
-                }
-            } else {
-                if (date.getMinutes() <= 9 ) {
-                    timeValue = date.getHours() + ":0" + date.getMinutes() + "pm"
-                } else {
-                    timeValue = date.getHours() + ":" + date.getMinutes() + "pm"
-                }
-            }
-            var listOfMonths = [
-                'Jan',
-                'Feb',
-                'Mar',
-                'Apr',
-                'May',
-                'Jun',
-                'Jul',
-                'Aug',
-                'Sep',
-                'Oct',
-                'Nov',
-                'Dec'
-            ]
-
-            return {
-                year: yearValue,
-                month: listOfMonths[indexOfMonth],
-                day: dayValue,
-                time: timeValue
-            }
-        }
+    expandChat() {
+        console.log("expandChat happening");
+        // this.lm.classList.add("chat-expanded")
+        this.props.dispatch(toggleExpandChat())
     }
     render() {
+        if (!this.state.mounted || !this.props) {
+            return null
+        }
+        const Chat = styled.div`
+            display: inline-block;
+            width: ${() => {
+                if (!this.props.showBottomMenu) {
+                    console.log("chat 100%");
+                    return "100%"
+                } else if (this.props.showBottomMenu && this.props.chat.expanded) {
+                    console.log("chat 70%");
+                    return "70%"
+                } else {
+                    return "29%"
+                }
+            }};
+            min-height: 200px;
+            padding: 20px;
+            background-color: rgba(251, 251, 251, 1);
+            transition: width 1s;
+            -webkit-transition: width 2s; /* Safari */
+            `
+        const SectionTitle = styled.div`
+            position: relative;
+            text-align: left;
+            width: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            height: 40px;
+            `
+        const ExpandChatIcon = styled.i`
+            position: relative;
+            font-size: 30px;
+            display: inline-block;
+            float: left;
+            color: #6ACC58;
+            `
+        const CloseX = styled.div`
+            position: relative;
+            font-size: 30px;
+            font-weight: 400;
+            color: darkgrey;
+            display: inline-block;
+            float: right;
+            cursor: pointer;
+            margin-right: 8px;
+            padding: none;
+
+            &:hover{
+                color: black;
+                transform: scale(1.2);
+            }
+            `
+        const FormHeader = styled.div`
+            font-size: 16px;
+            display: inline-block;
+            color: black;
+            font-weight: 400;
+            line-height: 40px;
+            text-align: center;
+            `
         return (
-            <div id="chat" className="effect1">
-                <div id="top-chat-bar">
-                    <i id="chat-icon" className="far fa-comment"></i>
-                    <div onClick={ this.props.toggleShowChat } id="chat-close-x">x</div>
-                </div>
-                <div>
-                    { this.props.messages &&
-                        this.props.messages.map(
-                            message => (
-                                <div className="chat-gridBox" key={ message.id } >
-                                    <div className="chat-image-box">
-                                        <a href={`/user/${message.sender_id}`}><img className="chat-profile-picture" src={ message.profile_image_url } alt=""/></a>
-                                    </div>
-                                    <div className="chat-message-box-wrapper">
-                                        <div className="chat-message-box">
-                                            <div className="chat-name-div">
-                                                <a className="chat-username-link" href={`/user/${message.sender_id}`}>{ `${message.first_name} ${message.last_name}` }</a>
-                                            </div>
-                                            <div className="chat-message-text">
-                                                { message.message }
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="chat-date-box">
-                                        <div className="chat-message-time">
-                                            {`
-                                                ${ this.formatDate(message.created_at).time }
-                                            `}
-                                        </div>
-                                        <div className="chat-message-date">
-                                            {`
-                                                ${ this.formatDate(message.created_at).day }
-                                                 of
-                                                ${ this.formatDate(message.created_at).month }
-                                            `}
-                                            <br />
-                                            {`
-                                                ${ this.formatDate(message.created_at).year }
-                                             `}
-                                         </div>
-                                    </div>
-                                </div>
-                            )
+            <Chat
+                ref={(lm) => this.lm = lm}
+                >
+                <SectionTitle>
+                    { this.props.showBottomMenu &&
+                        ( this.props.chat.expanded ?
+                            <ExpandChatIcon
+                                class="fas fa-compress contract-on-hover"
+                                onClick={this.expandChat}
+                            ></ExpandChatIcon> :
+                            <ExpandChatIcon
+                            className="fas fa-expand scale-on-hover-more"
+                            onClick={this.expandChat}
+                        ></ExpandChatIcon>
                         )
                     }
-                </div>
-                <div id="chat-input-section">
-                    <textarea id="messages-textarea" onChange={ e => this.handleChange(e) } name="message" defaultValue={ this.state.message } cols="30" rows="10"></textarea>
-                    <button className="button" id="submit-chat-message-button" onClick={ () => this.sendMessage() }>Send</button>
-                </div>
-            </div>
+                    <CloseX onClick={this.toggleChat}>x</CloseX>
+                </SectionTitle>
+                <FormHeader>Chat</FormHeader>
+                <div>hello</div>
+            </Chat>
         )
     }
 }
