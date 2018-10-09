@@ -6,21 +6,18 @@ export function userJoined(user) {
         user
     }
 }
-
 export function onlineUsers(users) {
     return {
         type: 'ONLINE_USERS',
         users
     }
 }
-
 export function userLeft(id) {
     return {
         type: 'USER_LEFT',
         id
     }
 }
-
 export async function getProfile() {
     return await axios.get("/producer.json").then(
         ({data}) => {
@@ -28,10 +25,17 @@ export async function getProfile() {
                 type: 'GET_PROFILE',
                 profile: data
             }
-        }
-    )
+        })
 }
-
+export async function getFacilities() {
+    return axios.get("/production-facilities.json").then(
+        ({data}) => {
+            return {
+                type: 'GET_FACILITIES',
+                productionFacilities: data && data.productionFacilities
+            }
+        })
+}
 export function saveCompanyDescription(newDescription) {
     var description = newDescription
     if ( description == "" ){
@@ -45,41 +49,35 @@ export function saveCompanyDescription(newDescription) {
             }
         })
 }
-
 export function saveNewAddress(data) {
     return {
         type: 'SAVE_NEW_ADDRESS',
         data
     }
 }
-
 export function savePaymentInfo(data) {
     return {
         type: 'SAVE_PAYMENT_INFO',
         data
     }
 }
-
 export function saveBankInfo(data) {
     return {
         type: 'SAVE_BANK_INFO',
         data
     }
 }
-
 export function saveNewCompanyName(data) {
     return {
         type: 'SAVE_COMPANY_NAME',
         data
     }
 }
-
 export function toggleShowChat() {
     return {
         type: 'TOGGLE_CHAT'
     }
 }
-
 export function toggleShowBottomMenu() {
     return {
         type: 'TOGGLE_BOTTOM_MENU'
@@ -88,6 +86,46 @@ export function toggleShowBottomMenu() {
 export function toggleExpandChat() {
     return {
         type: 'TOGGLE_EXPAND_CHAT'
+    }
+}
+export function saveNewProductionFacilityPage1(data) {
+    return {
+        type: 'SAVE_PRODUCTION_FACILITY_PAGE1',
+        data
+    }
+}
+export function saveNewProductionFacilityPage2(data) {
+    return {
+        type: 'SAVE_PRODUCTION_FACILITY_PAGE2',
+        data
+    }
+}
+export function saveCompanyLogo(data) {
+    return {
+        type: 'SAVE_COMPANY_LOGO',
+        data
+    }
+}
+export function toggleShowLogoUploader() {
+    return {
+        type: 'TOGGLE_SHOW_LOGO_UPLOADER'
+    }
+}
+export function toggleShowFacilityImagesUploader() {
+    return {
+        type: 'TOGGLE_SHOW_FACILITY_IMAGES_UPLOADER'
+    }
+}
+export function saveFacilityImages(data) {
+    return {
+        type: 'SAVE_FACILITY_IMAGES',
+        data
+    }
+}
+export function setNewCompleteFacility(data) {
+    return {
+        type: 'SET_NEW_COMPLETE_FACILITY',
+        data
     }
 }
 

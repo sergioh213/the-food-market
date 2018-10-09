@@ -76,7 +76,7 @@ class MapComponent extends Component {
             var data = info.data
             var otherTypes = ""
             for (var i = 0; i < data.types.length; i++) {
-                if (info.data.types[i] === "street_address") {
+                if ((info.data.types[i] === "street_address") || (info.data.types[i] === "premise") || (info.data.types[i] === "subpremise")) {
                     this.setState({
                         ...data,
                         save: true,

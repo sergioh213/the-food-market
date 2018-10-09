@@ -10,7 +10,7 @@ body {
 }
 .button{
     height: auto;
-    background-color: #6ACC58;
+    background-color: #5EB648;
     cursor: pointer;
     font-size: 14px;
     color: white;
@@ -19,12 +19,15 @@ body {
     padding-bottom: 5px;
     padding-left: 20px;
     padding-right: 20px;
+    border-radius: 4px;
+    border: none;
 }
 a{
     text-decoration: none;
 }
 .button:hover{
-    background-color: #51a1e2;
+    background-color: #6ACC58;
+    transform: scale(1.1);
 }
 .effect1{
     -webkit-box-shadow: 0 10px 6px -6px #777;
@@ -115,6 +118,15 @@ a{
     border-radius: 100%;
     height: 15px;
     width: 15px;
+}
+#facilities-map-main{
+    position: relative;
+    width: 100%;
+    display: inline-block;
+    min-height: 200px;
+    padding: 20px;
+    margin-right: none;
+    background-color: rgba(251, 251, 251, 1);
 }
 /* ////////////////////////////////  MAP  /////////////////////////////////// */
 #map-box{
@@ -506,136 +518,32 @@ a{
     display: block;
     text-align: center;
 }
-/* //////////////////////////////// NAVIGATION BAR /////////////////////////////////// */
-#navheader {
-    position: relative;
-    z-index: 200;
-    display: grid;
-    grid-template-columns: auto auto auto 1fr auto auto;
-    background-color: #3F88C5;
-    text-align: center;
-}
-.nav-item {
-    text-align: center;
-    display: inline-block;
-    font-size: 24px;
-}
-.nav-item .links-header {
-    display: inline-block;
-    width: 100%;
-    text-decoration: none;
-    color: white;
-}
-.nav-item:hover {
-    background-color: white;
-}
-.nav-item .links-header:hover {
-    color: #3F88C5;
-}
-#nav-home-box{
-    width: 80px;
-    height: 50px;
-    font-size: 24px;
-}
-#nav-home-box:hover{
-    background-color: white;
-}
-#nav-home-link{
-    position: relative;
-    width: 40px;
-    text-align: center;
-    margin-top: 40px;
-}
-#nav-home-box a i{
-    width: 100%;
-    height: 100%;
-    padding-top: 10px;
-    color: white;
-}
-#nav-home-box a i:hover{
-    color: #3F88C5;
-}
-#search-bar{
-    margin-left: 85px;
-    width: 300px;
-    margin-top: 10px;
-    height: 30px;
-}
-#city-name-nav{
-    width: inherit;
-    height: inherit;
-    cursor: pointer;
-    vertical-align: middle;
-    color: white;
-    padding-top: 10px;
-}
-#city-name-nav:hover{
-    color: #3F88C5;
-}
-#nav-profile-pic-link{
-    /* background-color: red; */
-    margin-top: 5px;
-    margin-bottom: 5px;
-    margin-right: 30px;
-    margin-left: 10px;
-    width: 40px;
-    height: 40px;
-}
-#nav-profile-pic{
-    border-radius: 100%;
-    border: grey solid 2px;
-    object-fit: cover;
-    object-position: center;
-    margin-top: 5px;
-    margin-bottom: 5px;
-    margin-right: 30px;
-    margin-left: 10px;
-    width: 40px;
-    height: 40px;
-    cursor: pointer;
-}
-#nav-menu{
-    margin-right: 10px;
-    margin-top: 10px;
-    background-color: #3F88C5;
-    position: absolute;
-    text-align: center;
-    right: 0;
-    z-index: 200;
-    min-width: 200px;
-}
-#nav-menu-links{
-    text-decoration: none;
-    width: 100%;
-}
-.nav-menu-options{
-    width: 100%;
-    padding-bottom: 9px;
-    padding-top: 9px;
-    border-bottom: 1px solid #bfbfbf;
-    color: white;
-}
-.nav-menu-options:hover{
-    background-color: white;
-    color: #3F88C5;
-}
 /* //////////////////////////////// BOTTOM PANEL /////////////////////////////////// */
+.address-input-wrapper{
+    position: relative;
+    display: flex;
+    width: 100%;
+}
 .input-wrapper{
+    position: relative;
     width: 70%;
-    /* background-color: red; */
     display: inline-block;
-    margin-right: 1%;
+    margin-right: 10px;
+    display: flex;
 }
 .input-wrapper input{
+    position: relative;
     width: 79%;
     display: inline-block;
-    margin-right: 1%;
+    margin-right: 8px;
     height: 30px;
     padding: 4px 8px;
     font-size: 16px;
 }
 .input-wrapper .submit-button{
-    width: 19%;
+    position: relative;
+    width: 20%;
+    right: 0;
     background-color: #6ACC58;
     cursor: pointer;
     height: 30px;
@@ -646,6 +554,22 @@ a{
     border-radius: 4px;
     border: none;
     display: inline-block;
+}
+#facility-form-page2{
+    position: relative;
+}
+#facility-form-page2 .facility-page2-input{
+    min-width: 40%;
+    font-size: 16px;
+}
+#facility-form-page2 .facility-page2-textarea{
+    resize: none;
+    min-width: 40%;
+    height: 180px;
+    font-size: 16px;
+}
+#facility-form-page2 .facility-form-input-wrapper{
+    display: flex;
 }
 /* //////////////////////////////// PROFILE PAGE /////////////////////////////////// */
 #profile{
@@ -875,6 +799,25 @@ a{
     text-align: center;
     background-color: white;
 }
+#multiple-image-uploader{
+    position: absolute;
+    top: 300px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 200;
+    width: 400px;
+    text-align: center;
+    background-color: white;
+    min-height: 120px;
+}
+.facility-preview-image{
+    width: 100px;
+    height: 100px;
+    background-color: lightgrey;
+    cursor: pointer;
+    object-fit: contain;
+    object-position: center;
+}
 #close-x{
     position: absolute;
     right: 25px;
@@ -901,6 +844,9 @@ a{
 }
 #upload-button{
     margin-top: 10px;
+}
+#multiple-image-name{
+    margin-top: 8px;
 }
 /* //////////////////////////////// EDIT PROFILE /////////////////////////////////// */
 #edit-profile-dim-background{

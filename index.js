@@ -187,10 +187,29 @@ app.get("/producer.json", (req, res) => {
     db.getProducerById(req.session.user.id).then(companyInfo => {
         res.json({
             ...companyInfo,
-            company_image_url: companyInfo.company_image_url || '/content/default_profile_picture.png'
+            company_image_url: companyInfo.company_image_url || '/content/default_company_logo_picture.png'
         })
     }).catch((err) => {
-        console.log("logging error", err);
+        res.sendStatus(500)
+    })
+})
+
+app.get("/production-facilities.json", (req, res) => {
+    db.getProductionFacilitiesById(req.session.user.id).then(productionFacilities => {
+        // var productionFacilitiesWithImages = productionFacilities
+        productionFacilities.map(facility => {
+            db.getProductionFacilitiesImages(facility.id).then(images => {
+                console.log("images: ", images);
+                facility.images_urls = images
+            })
+        })
+        setTimeout(()=>{
+            console.log("productionFacilities before sending: ", productionFacilities);
+            res.json({
+                productionFacilities: productionFacilities
+            })
+        }, 500)
+    }).catch((err) => {
         res.sendStatus(500)
     })
 })
@@ -238,20 +257,86 @@ app.post("/change-company-name.json", (req, res) => {
 
 app.post("/save-headquarters.json", (req, res) => {
     console.log("req.body at /save-headquarters.json: ", req.body);
-    db.updateHeadquarters(req.session.user.id, req.body.placeId, req.body.address, req.body.latitude , req.body.longitude).then(newCompanyInfo => {
-        res.json({
-            success: true,
-            ...newCompanyInfo
+    db.updateHeadquarters(req.session.user.id, req.body.placeId, req.body.address, req.body.latitude , req.body.longitude)
+        .then(newCompanyInfo => {
+            res.json({
+                success: true,
+                ...newCompanyInfo
+            })
         })
-    })
+})
+app.post("/save-production-facility.json", (req, res) => {
+    console.log("req.body at /save-production-facility.json: ", req.body);
+    db.saveProductionFacility()
+        .then(newFacilityInfo => {
+            res.json({
+                success: true,
+                ...newFacilityInfo
+            })
+        })
 })
 
-app.post("/upload", uploader.single('file'), s3.upload, (req, res) => {
-    db.changeUserProfilePic(req.session.user.id, config.s3Url + req.file.filename).then(imgUrl => {
+app.post("/company-logo-upload.json", uploader.single('file'), s3.upload, (req, res) => {
+    console.log("getting to /company-logo-upload.json");
+    db.changeCompanyLogoImage(req.session.user.id, config.s3Url + req.file.filename).then(imgUrl => {
+        console.log("imgUrl as returned from db: ", imgUrl);
         res.json({
             success: true,
             company_image_url: imgUrl
         })
+    })
+})
+app.post('/upload-facility-images.json', uploader.array('file',10), s3.upload, (req, res) => {
+    console.log("getting to '/upload-facility-images.json'");
+    console.log("HEREEEEEEEEEEEEEEEEEEEEEEEEEEE\n req after s3: ", req);
+    console.log("HEREEEEEEEEEEEEEEEEEEEEEEEEEEE\n res after s3: ", res);
+    var imagesUrls = []
+    req.files.forEach(singleFile => {
+        imagesUrls.push(config.s3Url + singleFile.filename)
+    })
+    // var imageUrl = config.s3Url + req.file.filename
+    // console.log("imageUrl at facilities upload: ", imageUrl);
+    console.log("imagesUrls before sending: ", imagesUrls);
+    res.json({
+        success: true,
+        imagesUrls: imagesUrls
+    })
+})
+
+app.post("/save-new-complete-facility.json", (req, res) => {
+    console.log("req.body at /save-new-complete-facility.json: ", req.body);
+    db.saveNewFacility(
+        req.session.user.id,
+        req.body.google_maps_place_id,
+        req.body.formatted_address,
+        req.body.latitude,
+        req.body.longitude,
+        req.body.facility_name,
+        req.body.how_to_arrive_text
+    ).then(newFacilityInfo => {
+        if (req.body.arrayOfImagesUrls.length) {
+            var arrayOfReturnedImages = []
+            req.body.arrayOfImagesUrls.forEach(image_url => {
+                db.saveFacilityImage(newFacilityInfo.id, image_url).then(newImage_url => {
+                    arrayOfReturnedImages.push(newImage_url)
+                })
+            })
+            setTimeout(()=>{
+                console.log("arrayOfReturnedImages: ", arrayOfReturnedImages);
+                res.json({
+                    success: true,
+                    newFacilityInfo: {
+                        ...newFacilityInfo,
+                        images_urls: arrayOfReturnedImages
+                    }
+                })
+            }, 500)
+        } else {
+            res.json({
+                success: true,
+                newFacilityInfo: newFacilityInfo
+            })
+        }
     })
 })
 
@@ -302,7 +387,7 @@ app.get("/user/:id.json", (req, res) => {
         db.getProducerById(req.params.id).then(data => {
             res.json({
                 ...data,
-                company_image_url: data.company_image_url || '/content/default_profile_picture.png'
+                company_image_url: data.company_image_url || '/content/default_company_logo_picture.png'
             })
         })
     }
@@ -354,14 +439,14 @@ io.on('connection', function(socket) {
             socket.broadcast.emit('userJoined', {
                 id: userId,
                 company_legal_name: companyInfo.company_legal_name,
-                company_image_url: companyInfo.company_image_url || '/content/default_profile_picture.png'
+                company_image_url: companyInfo.company_image_url || '/content/default_company_logo_picture.png'
             })
         })
     }
 
     db.getCompaniesByIds(Object.values(onlineUsers)).then(onlineUsers => {
             for (let user of onlineUsers) {
-                user.company_image_url = user.company_image_url || '/content/default_profile_picture.png'
+                user.company_image_url = user.company_image_url || '/content/default_company_logo_picture.png'
             }
             socket.emit('onlineUsers', onlineUsers)
         }
@@ -394,7 +479,7 @@ io.on('connection', function(socket) {
     //                 created_at: data.created_at,
     //                 first_name: userInfo.first_name,
     //                 last_name: userInfo.last_name,
-    //                 company_image_url: userInfo.company_image_url || '/content/default_profile_picture.png'
+    //                 company_image_url: userInfo.company_image_url || '/content/default_company_logo_picture.png'
     //             }
     //             io.sockets.emit("newMessage", newMessage)
     //         })
@@ -403,7 +488,7 @@ io.on('connection', function(socket) {
 
     // db.getMessages().then( messages => {
     //     for (let message of messages) {
-    //         message.company_image_url = message.company_image_url || '/content/default_profile_picture.png'
+    //         message.company_image_url = message.company_image_url || '/content/default_company_logo_picture.png'
     //     }
     //     socket.emit("chatMessages", messages)
     // })

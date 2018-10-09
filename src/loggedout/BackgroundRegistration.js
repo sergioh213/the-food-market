@@ -1,5 +1,5 @@
 import React from 'react'
-import DimBackground from './DimBackground'
+import DimBackground from '../DimBackground'
 
 function BackgroundRegistration(props) {
     return (

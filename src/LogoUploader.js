@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import axios from './axios'
 
-class Uploader extends Component {
+class LogoUploader extends Component {
     constructor(props) {
         super(props)
 
@@ -15,6 +15,7 @@ class Uploader extends Component {
         this.removeFile = this.removeFile.bind(this)
     }
     imageSelected(e) {
+        console.log("imageSelected happening");
         this.setState({
             imageFile : e.target.files[0],
             imageName : e.target.files[0].name,
@@ -37,11 +38,13 @@ class Uploader extends Component {
                 error: 'Please select a file in order to upload'
             })
         } else {
+            console.log("file being appended to form data: ", this.state.imageFile);
             formData.append('file', this.state.imageFile);
-            axios.post('/upload', formData)
+            console.log("formData before being sent: ", formData);
+            axios.post('/company-logo-upload.json', formData)
                 .then((res) => {
                     if (res.data.success) {
-                        this.props.setImage(res.data.profile_image_url)
+                        this.props.setImage(res.data.company_image_url)
                     }
                 })
         }
@@ -49,10 +52,10 @@ class Uploader extends Component {
     render() {
         return (
             <div className="effect1" id="uploader">
-                <p id="close-x" onClick={ this.props.hideUploader }>x</p>
+                <p id="close-x" onClick={this.props.toggleShowLogoUploader}>x</p>
                 <h3 id="profile-header">Select a new picture</h3>
                 { this.state.selectFile && <label className="button" id="file-label" htmlFor="file-field">Select image</label> }
-                <input id="file-field" type="file" onChange={ this.imageSelected } name="" value=""></input>
+                <input id="file-field" type="file" onChange={(e) => this.imageSelected(e) } name="" value=""></input>
                 { this.state.submit &&
                     <div id="imageName">
                         <div id="filename-div">{ this.state.imageName }</div>
@@ -69,4 +72,4 @@ class Uploader extends Component {
     }
 }
 
-export default Uploader
+export default LogoUploader

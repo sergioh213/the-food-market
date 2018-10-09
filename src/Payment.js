@@ -75,7 +75,7 @@ class Payment extends Component {
                     <div className="payment-title" id="card-details">Card Details</div>
                     <form id="payment-form" onSubmit={ this.handleSubmit }>
                         <div className="payment-subtitle">Card number</div>
-                        <input onChange={ this.handleChange } id="card-number-input" name="card_number" placeholder="" type="number"/>
+                        <input onChange={ this.handleChange } id="card-number-input" name="card_number" placeholder="" type="text" maxlength="40"/>
                         <div id="payment-bottom-wrapper">
                             <div id="payment-input-left-side" className="payment-input-wrapper">
                                 <div className="payment-subtitle">Expiration date?</div>

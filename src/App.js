@@ -5,12 +5,14 @@ import styled from 'styled-components'
 import Chat from './Chat'
 import Opp from './Opp/Opp'
 import { BrowserRouter, Route, Link } from 'react-router-dom'
-import { getProfile } from './redux-socket/actions.js'
+import { getProfile, getFacilities } from './redux-socket/actions.js'
 import { connect } from 'react-redux';
 
 const mapStateToProps = state => {
     return {
-        profile: state.profile
+        profile: state.profile,
+        dimBackground: state.dimBackground,
+        productionFacilities: state.productionFacilities
     }
 }
 
@@ -24,15 +26,18 @@ class App extends Component {
     }
     componentDidMount() {
         this.props.dispatch(getProfile());
+        this.props.dispatch(getFacilities());
         this.setState({ mounted: true })
     }
     render() {
-        if (!this.state.mounted) {
+        if (!this.state.mounted || (!this.props.profile && this.props.dimBackground && this.props.productionFacilities)) {
             return null
         }
         const Main = styled.div`
             padding: 18px;
             padding-top: 30px;
+            max-width: 1076px;
+            margin: 0 auto;
             `
         return (
             <Main id="app">

@@ -27,8 +27,19 @@ export default function(state = {}, action) {
                 expanded: false
             },
             showBottomMenu: false,
+            dimBackground: {
+                show: false,
+                showUploader: false,
+                showFacilityImagesUploader: false
+            },
             profile: action.profile,
             profileComplete: checkProfileCompleteness(action.profile)
+        }
+    }
+    if (action.type == 'GET_FACILITIES') {
+        state = {
+            ...state,
+            productionFacilities: action.productionFacilities
         }
     }
     if (action.type == 'TOGGLE_CHAT') {
@@ -52,7 +63,8 @@ export default function(state = {}, action) {
     if (action.type == 'TOGGLE_BOTTOM_MENU') {
         state = {
             ...state,
-            showBottomMenu: !state.showBottomMenu
+            showBottomMenu: !state.showBottomMenu,
+            facilitySaveInProgress: null
         }
     }
     if (action.type == 'SAVE_COMPANY_DESCRIPTION') {
@@ -115,6 +127,86 @@ export default function(state = {}, action) {
             ...state,
             profile: newProfile,
             profileComplete: checkProfileCompleteness(newProfile)
+        }
+    }
+    if (action.type == 'SAVE_PRODUCTION_FACILITY_PAGE1') {
+        var facilitySaveInProgress = {
+            ...state.facilitySaveInProgress,
+            formatted_address: action.data.address,
+            latitude: action.data.latitude,
+            longitude: action.data.longitude,
+            google_maps_place_id: action.data.placeId,
+            formPage: 2
+        }
+        state = {
+            ...state,
+            facilitySaveInProgress: facilitySaveInProgress
+        }
+    }
+    if (action.type == 'SAVE_PRODUCTION_FACILITY_PAGE2') {
+        var facilitySaveInProgress = {
+            ...state.facilitySaveInProgress,
+            facility_name: action.data.facility_name,
+            how_to_arrive_text: action.data.how_to_arrive_text,
+            formPage: 3
+        }
+        state = {
+            ...state,
+            facilitySaveInProgress: facilitySaveInProgress
+        }
+    }
+    if (action.type == 'SAVE_COMPANY_LOGO') {
+        var newProfile = {
+            ...state.profile,
+            company_image_url: action.data
+        }
+        state = {
+            ...state,
+            profile: newProfile
+        }
+    }
+    if (action.type == 'TOGGLE_SHOW_LOGO_UPLOADER') {
+        state = {
+            ...state,
+            dimBackground: {
+                ...state.dimBackground,
+                show: !state.dimBackground.show,
+                showLogoUploader: !state.dimBackground.showLogoUploader
+            }
+        }
+    }
+    if (action.type == 'TOGGLE_SHOW_FACILITY_IMAGES_UPLOADER') {
+        state = {
+            ...state,
+            dimBackground: {
+                ...state.dimBackground,
+                show: !state.dimBackground.show,
+                showFacilityImagesUploader: !state.dimBackground.showFacilityImagesUploader
+            }
+        }
+    }
+    if (action.type == 'SAVE_FACILITY_IMAGES') {
+        state = {
+            ...state,
+            dimBackground: {
+                ...state.dimBackground,
+                show: !state.dimBackground.show,
+                showFacilityImagesUploader: !state.dimBackground.showFacilityImagesUploader
+            },
+            facilityImages: action.data
+        }
+    }
+    if (action.type == 'SET_NEW_COMPLETE_FACILITY') {
+        localStorage.removeItem("facility_name")
+        localStorage.removeItem("formatted_address")
+        localStorage.removeItem("google_maps_place_id")
+        localStorage.removeItem("how_to_arrive_text")
+        localStorage.removeItem("latitude")
+        localStorage.removeItem("longitude")
+        state = {
+            ...state,
+            productionFacilities: [action.data, ...state.productionFacilities],
+            facilitySaveInProgress: null
         }
     }
     if (action.type == 'ONLINE_USERS') {

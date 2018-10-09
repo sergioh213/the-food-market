@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import axios from '../axios'
-import DimBackground from './DimBackground'
+import DimBackground from '../DimBackground'
 import styled from 'styled-components'
 
 class Cookies extends Component {

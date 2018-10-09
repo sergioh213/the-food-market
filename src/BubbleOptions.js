@@ -135,7 +135,8 @@ class BubbleOptions extends Component {
             display: flex;
             justify-content: center;
             align-items: center;
-            margin-top: 10px;`
+            margin-top: 10px;
+            `
         const Bubble = styled.div`
             position: relative;
             border-radius: 100%;
@@ -154,7 +155,7 @@ class BubbleOptions extends Component {
             font-size: 20px;`
         const Wrapper = styled.div`
             position: relative;
-            z-index: 2;`
+            `
         const Label = styled.div`
             position: relative;
             background-color: #ededed;

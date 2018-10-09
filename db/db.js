@@ -42,6 +42,21 @@ exports.getProducerById = function(id) {
         })
 }
 
+exports.getProductionFacilitiesById = function(id) {
+    const params = [id]
+    return db.query(`SELECT * FROM production_facilities WHERE owner = $1;`, params)
+        .then(results => {
+            return results.rows
+        })
+}
+exports.getProductionFacilitiesImages = function(id) {
+    const params = [id]
+    return db.query(`SELECT * FROM production_facilities_images WHERE facility = $1;`, params)
+        .then(results => {
+            return results.rows
+        })
+}
+
 exports.saveDescription = function(id, company_description) {
     const params = [id, company_description];
     const q = `
@@ -55,16 +70,16 @@ exports.saveDescription = function(id, company_description) {
     })
 }
 
-exports.changeUserProfilePic = function(user_id, profile_image_url) {
-    const params = [user_id, profile_image_url];
+exports.changeCompanyLogoImage = function(user_id, company_image_url) {
+    const params = [user_id, company_image_url];
     const q = `
-        UPDATE users SET
-        profile_image_url = $2
+        UPDATE producers SET
+        company_image_url = $2
         WHERE id = $1
         RETURNING *;
         `;
     return db.query(q, params).then(userInfo => {
-        return userInfo.rows[0].profile_image_url
+        return userInfo.rows[0].company_image_url
     })
 }
 
@@ -169,24 +184,28 @@ exports.deletePaymentInfo = function(id) {
 }
 // UPDATE producers SET payment_card_number = NULL, payment_card_expiration_month = NULL, payment_card_expiration_year = NULL, payment_card_ccv = NULL WHERE id = 1;
 
-exports.newReservation = function(user_id, location_id, arrival_date, departure_date) {
-    const params = [user_id, location_id, arrival_date, departure_date]
+exports.saveNewFacility = function(owner, google_maps_place_id, formatted_address, latitude, longitude, facility_name, how_to_arrive_text) {
+    const params = [owner, google_maps_place_id, formatted_address, latitude, longitude, facility_name, how_to_arrive_text]
     const q = `
-        INSERT INTO user_reservations (user_id, location_id, arrival_date, departure_date)
-        VALUES ($1, $2, $3, $4)
+        INSERT INTO production_facilities (owner, google_maps_place_id, formatted_address, latitude, longitude, facility_name, how_to_arrive_text)
+        VALUES ($1, $2, $3, $4, $5, $6, $7)
         RETURNING *;
         `
-    return db.query(q, params).then(reservationInfo => {
-        return reservationInfo.rows[0]
+    return db.query(q, params).then(newFacilityInfo => {
+        return newFacilityInfo.rows[0]
     })
 }
 
-exports.getUsersReservations = function(user_id) {
-    const params = [user_id]
-    return db.query('SELECT * FROM user_reservations WHERE user_id = $1;', params)
-        .then(reservations => {
-            return reservations.rows
-        })
+exports.saveFacilityImage = function(facility, image_url) {
+    const params = [facility, image_url]
+    const q = `
+    INSERT INTO production_facilities_images (facility, image_url)
+    VALUES ($1, $2)
+    RETURNING *;
+    `
+    return db.query(q, params).then(image => {
+        return image.rows[0].image_url
+    })
 }
 
 exports.getCompaniesByIds = function(ids) {

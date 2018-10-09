@@ -3,13 +3,19 @@ import styled from 'styled-components'
 
 function DimBackground(props) {
     const MainDiv = styled.div`
+        position: fixed;
         z-index: ${() => {
             if (props.top) {
-                return '3'
+                return "3"
             }
         }};
-        position: absolute;
         width: 100vw;
+        top: 0;
+        left: ${() => {
+            if (props.app) {
+                return '0px'
+            }
+        }};
         height: 100vh;
         background-color: ${() => {
             if (props.darker) {
