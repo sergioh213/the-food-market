@@ -42,6 +42,15 @@ exports.getProducerById = function(id) {
         })
 }
 
+exports.getAllProducers = function() {
+    console.log("getting to getAllProducers in db");
+    return db.query(`SELECT * FROM producers;`)
+        .then(results => {
+            console.log("db results.rows: ", results.rows);
+            return results.rows
+        })
+}
+
 exports.getProductionFacilitiesById = function(id) {
     const params = [id]
     return db.query(`SELECT * FROM production_facilities WHERE owner = $1;`, params)

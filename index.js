@@ -194,17 +194,23 @@ app.get("/producer.json", (req, res) => {
     })
 })
 
+app.get("/all-companies.json", (req, res) => {
+    console.log("getting to /all-companies.json");
+    db.getAllProducers(req.session.user.id).then(producers => {
+        res.json({ producers })
+    }).catch((err) => {
+        res.sendStatus(500)
+    })
+})
+
 app.get("/production-facilities.json", (req, res) => {
     db.getProductionFacilitiesById(req.session.user.id).then(productionFacilities => {
-        // var productionFacilitiesWithImages = productionFacilities
         productionFacilities.map(facility => {
             db.getProductionFacilitiesImages(facility.id).then(images => {
-                console.log("images: ", images);
                 facility.images_urls = images
             })
         })
         setTimeout(()=>{
-            console.log("productionFacilities before sending: ", productionFacilities);
             res.json({
                 productionFacilities: productionFacilities
             })
@@ -314,7 +320,7 @@ app.post("/save-new-complete-facility.json", (req, res) => {
         req.body.facility_name,
         req.body.how_to_arrive_text
     ).then(newFacilityInfo => {
-        if (req.body.arrayOfImagesUrls.length) {
+        if (req.body.arrayOfImagesUrls && req.body.arrayOfImagesUrls.length) {
             var arrayOfReturnedImages = []
             req.body.arrayOfImagesUrls.forEach(image_url => {
                 db.saveFacilityImage(newFacilityInfo.id, image_url).then(newImage_url => {

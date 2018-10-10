@@ -161,7 +161,8 @@ class BubbleOptions extends Component {
             background-color: #ededed;
             padding: 5px;
             color: #5b5b5b;
-            border-radius: 4px;`
+            border-radius: 4px;
+            `
         const ArrowUp = styled.div`
             width: 0;
             height: 0;
@@ -176,7 +177,9 @@ class BubbleOptions extends Component {
             top: 50px;
             transform: translateX(-50%);
             top: 55px;
-            text-align: center;`
+            text-align: center;
+            z-index: 1;
+            `
         const IconsPlusSigns = styled.i`
             position: relative;
             color: #6ACC58;

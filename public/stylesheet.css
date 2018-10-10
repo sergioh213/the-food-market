@@ -813,7 +813,7 @@ a{
 .facility-preview-image{
     width: 100px;
     height: 100px;
-    background-color: lightgrey;
+    /* background-color: lightgrey; */
     cursor: pointer;
     object-fit: contain;
     object-position: center;

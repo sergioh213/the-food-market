@@ -168,7 +168,7 @@ class NewFacilityForm extends Component {
                 <SectionTitle>
                     <FormHeader>NEW PRODUCTION FACILITY FORM</FormHeader><CloseX onClick={this.toggleShowBottom}>x</CloseX>
                 </SectionTitle>
-                { !this.props.facilitySaveInProgress && <FacilitiesMap /> }
+                { (this.props.facilitySaveInProgress && this.props.facilitySaveInProgress.formPage == 1) && <FacilitiesMap /> }
                 { (this.props.facilitySaveInProgress && this.props.facilitySaveInProgress.formPage == 2) && <NewFacilityPage2 /> }
                 { (this.props.facilitySaveInProgress && this.props.facilitySaveInProgress.formPage == 3) && <NewFacilityPage3 /> }
             </div>

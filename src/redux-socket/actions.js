@@ -36,6 +36,16 @@ export async function getFacilities() {
             }
         })
 }
+export async function getAllCompanies() {
+    return axios.get("/all-companies.json").then(
+        ({data}) => {
+            console.log("THE ERROR WILL BE HERE data.producers: ", data.producers);
+            return {
+                type: 'GET_ALL_COMPANIES',
+                producers: data.producers
+            }
+        })
+}
 export function saveCompanyDescription(newDescription) {
     var description = newDescription
     if ( description == "" ){
@@ -83,6 +93,11 @@ export function toggleShowBottomMenu() {
         type: 'TOGGLE_BOTTOM_MENU'
     }
 }
+export function openFacilityForm() {
+    return {
+        type: 'OPEN_FACILITY_FORM'
+    }
+}
 export function toggleExpandChat() {
     return {
         type: 'TOGGLE_EXPAND_CHAT'
@@ -126,6 +141,13 @@ export function setNewCompleteFacility(data) {
     return {
         type: 'SET_NEW_COMPLETE_FACILITY',
         data
+    }
+}
+export function openFacility(facility) {
+    console.log("openFacility action with: ", facility);
+    return {
+        type: 'OPEN_FACILITY',
+        facility
     }
 }
 

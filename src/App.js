@@ -5,7 +5,7 @@ import styled from 'styled-components'
 import Chat from './Chat'
 import Opp from './Opp/Opp'
 import { BrowserRouter, Route, Link } from 'react-router-dom'
-import { getProfile, getFacilities } from './redux-socket/actions.js'
+import { getProfile, getFacilities, getAllCompanies } from './redux-socket/actions.js'
 import { connect } from 'react-redux';
 
 const mapStateToProps = state => {
@@ -27,6 +27,7 @@ class App extends Component {
     componentDidMount() {
         this.props.dispatch(getProfile());
         this.props.dispatch(getFacilities());
+        this.props.dispatch(getAllCompanies());
         this.setState({ mounted: true })
     }
     render() {

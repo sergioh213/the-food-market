@@ -42,6 +42,12 @@ export default function(state = {}, action) {
             productionFacilities: action.productionFacilities
         }
     }
+    if (action.type == 'GET_ALL_COMPANIES') {
+        state = {
+            ...state,
+            otherCompanies: action.producers.filter(company => company.id != state.profile.id )
+        }
+    }
     if (action.type == 'TOGGLE_CHAT') {
         state = {
             ...state,
@@ -64,9 +70,33 @@ export default function(state = {}, action) {
         state = {
             ...state,
             showBottomMenu: !state.showBottomMenu,
-            facilitySaveInProgress: null
+            facilitySaveInProgress: false,
+            showFacility: false
         }
     }
+    if (action.type == 'OPEN_FACILITY_FORM') {
+        state = {
+            ...state,
+            showBottomMenu: true,
+            facilitySaveInProgress: {
+                ...state.facilitySaveInProgress,
+                formPage: 1
+            }
+        }
+    }
+    if (action.type == 'OPEN_FACILITY') {
+        console.log("OPEN_FACILITY with action.facility: ", action.facility);
+        state = {
+            ...state,
+            showBottomMenu: true,
+            showFacility: {
+                show: true,
+                facility: action.facility
+            }
+        }
+        console.log("state after setting facility: ", state);
+    }
+
     if (action.type == 'SAVE_COMPANY_DESCRIPTION') {
         var newProfile = {
             ...state.profile,
@@ -231,53 +261,3 @@ export default function(state = {}, action) {
 }
 
 // dispatch // action // reducer
-
-
-// import React, {Component} from 'react'
-// import axios from './axios'
-// import BubbleOptions from './BubbleOptions'
-// import CompanyDescriptionField from './CompanyDescriptionField'
-// import Payment from './Payment'
-// import BankInfo from './BankInfo'
-// import styled from 'styled-components'
-// import MapComponent from './MapComponent'
-//
-// class FinishProfile extends Component {
-//     constructor(props) {
-//         super(props)
-//
-//         this.state = {
-//             showPayment: false,
-//             showBank: false,
-//             showBio: false,
-//             showMap: false
-//         }
-//
-//     }
-//     componentDidMount() {
-//         this.setState({ mounted: true })
-//     }
-//     render() {
-//         const { showMap, showPayment, showBank, showBio } = this.state
-//         if (!this.state.mounted) {
-//             return null
-//         }
-//         const Message = styled.div`
-//             font-size: 16px;
-//             color: #6ACC58;
-//             margin-top: 10px;
-//             text-align: center;`
-//         return (
-//             <div>
-//                 <Message>Please complete your profile</Message>
-//                 <BubbleOptions />
-//                 { showBio && <CompanyDescriptionField /> }
-//                 { showMap && <MapComponent setNewAddress={this.props.setNewAddress} toggleShowMap={this.toggleShowMap}/> }
-//                 { showPayment && <Payment toggleShowPayment={ this.toggleShowPayment } setPaymentInfo={ this.props.setPaymentInfo } /> }
-//                 { showBank && <BankInfo toggleShowBank={ this.toggleShowBank } setBankInfo={ this.props.setBankInfo }/> }
-//             </div>
-//         )
-//     }
-// }
-//
-// export default FinishProfile

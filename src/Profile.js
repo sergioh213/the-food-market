@@ -16,10 +16,11 @@ import CompanyDescriptionField from './CompanyDescriptionField'
 import BottomProfileSection from './bottomProfileSection/BottomProfileSection'
 import {
     toggleShowChat,
-    toggleShowBottomMenu,
     saveCompanyLogo,
     toggleShowLogoUploader,
-    toggleShowFacilityImagesUploader
+    toggleShowFacilityImagesUploader,
+    openFacility,
+    openFacilityForm
 } from './redux-socket/actions.js'
 
 const mapStateToProps = state => {
@@ -29,7 +30,8 @@ const mapStateToProps = state => {
         chat: state.chat,
         showBottomMenu: state.showBottomMenu,
         dimBackground: state.dimBackground,
-        productionFacilities: state.productionFacilities
+        productionFacilities: state.productionFacilities,
+        otherCompanies: state.otherCompanies
     }
 }
 
@@ -63,9 +65,10 @@ class Profile extends Component {
         this.toggleShowFacilityImagesUploader = this.toggleShowFacilityImagesUploader.bind(this)
         this.toggleShowMap = this.toggleShowMap.bind(this)
         this.findOnMap = this.findOnMap.bind(this)
-        this.toggleShowBottom = this.toggleShowBottom.bind(this)
+        this.toggleShowFacilityForm = this.toggleShowFacilityForm.bind(this)
         this.toggleChat = this.toggleChat.bind(this)
         this.toggleTab = this.toggleTab.bind(this)
+        this.toggleFacility = this.toggleFacility.bind(this)
     }
     componentDidMount() {
         this.setState({ mounted: true })
@@ -105,14 +108,18 @@ class Profile extends Component {
     findOnMap() {
         this.setState({ showSimpleMap: !this.state.showSimpleMap })
     }
-    toggleShowBottom() {
-        this.props.dispatch(toggleShowBottomMenu())
+    toggleShowFacilityForm() {
+        this.props.dispatch(openFacilityForm())
     }
     toggleChat() {
         this.props.dispatch(toggleShowChat());
     }
     toggleTab(){
         this.setState({ tab: !this.state.tab })
+    }
+    toggleFacility(facility) {
+        console.log("toggleFacility happening with facility: ", facility);
+        this.props.dispatch(openFacility(facility))
     }
     render() {
         const {
@@ -131,7 +138,6 @@ class Profile extends Component {
             showBottom,
         } = this.state
         if ( (!this.props.profile && !this.props.productionFacilities) || !this.state.mounted ) {
-            console.log("profile stuck");
             return null;
         }
         const MainPage = styled.div`
@@ -351,19 +357,47 @@ class Profile extends Component {
             color: grey;
             margin-top: 4px;
             `
+        const OtherCompany = styled.div`
+            background-color: lightgrey;
+            display: flex;
+            margin-bottom: 5px;
+            border-radius: 15px 0 0 15px;
+            `
+        const OtherCompaniesLogo = styled.img`
+            display: inline-block;
+            margin-right: 10px;
+            width: 30px;
+            height: 30px;
+            border-radius: 100%;
+            object-fit: cover;
+            object-position: center;
+            `
+        const OtherCompanyName = styled.div`
+            display: inline-block;
+            font-weight: 400;
+            font-size: 14px;
+            padding-right: 5px;
+            display: flex;
+            align-items: center;
+            `
         return (
             <div>
                 <MainPage id="main-profile-page">
                     <LeftPanel>
                         <ProductionFacilities className="shadow">
-                            <AddNewFacility onClick={ this.toggleShowBottom }>
+                            <AddNewFacility onClick={ this.toggleShowFacilityForm }>
                                 <AddFacilityIcon>+</AddFacilityIcon><AddFacilityText>Add new production facility</AddFacilityText>
                             </AddNewFacility>
                             <Line></Line>
                             { (this.props.productionFacilities && this.props.productionFacilities.length) ?
                                 this.props.productionFacilities.map(facility => {
                                     return (
-                                        <Facility key={facility.id}>{facility.facility_name}<DeployFacility className="fas fa-angle-down"></DeployFacility></Facility>
+                                        <Facility
+                                            key={facility.id}
+                                            onClick={() => this.toggleFacility(facility)}
+                                        >{facility.facility_name}
+                                            <DeployFacility className="fas fa-angle-down"></DeployFacility>
+                                        </Facility>
                                     )
                                 }) :
                                 <SmallMessage>Your list of facilities will be shown here</SmallMessage>
@@ -403,16 +437,28 @@ class Profile extends Component {
                             <TabsBox onClick={this.toggleTab}>
                                 { this.state.tab && <TabRightOverlap></TabRightOverlap> }
                                 { !this.state.tab && <TabLeftOverlap></TabLeftOverlap> }
-                                <UsersTab>users</UsersTab>
-                                <ChatTab>chat</ChatTab>
+                                <UsersTab>Users</UsersTab>
+                                <ChatTab>Invoices</ChatTab>
                             </TabsBox>
-                            <RightPanelTopBox className="shadow">
-                                <div>Chat</div>
-                                <div>text</div>
-                            </RightPanelTopBox>
+                            { !this.state.tab ?
+                                <RightPanelTopBox className="shadow">
+                                    { this.props.otherCompanies &&
+                                        this.props.otherCompanies.map(company => {
+                                            return (
+                                                <OtherCompany>
+                                                    <OtherCompaniesLogo src={company.company_image_url}></OtherCompaniesLogo><OtherCompanyName>{company.company_legal_name}</OtherCompanyName>
+                                                </OtherCompany>
+                                            )
+                                        })
+                                    }
+                                </RightPanelTopBox> :
+                                <RightPanelTopBox className="shadow">
+                                    Invoices not yet implemented
+                                </RightPanelTopBox>
+                            }
                             <RightPanelBottomBox className="shadow">
-                                <div>Photos</div>
-                                <div>text</div>
+                                <div>Pending</div>
+                                <div>...</div>
                             </RightPanelBottomBox>
                             <ChatButton
                                 className="shadow scale-on-hover"
