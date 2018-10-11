@@ -17,18 +17,45 @@ class Opp extends Component {
 
         this.toggleShowDescription = this.toggleShowDescription.bind(this)
         this.findOnMap = this.findOnMap.bind(this)
+        this.getUser = this.getUser.bind(this);
+        this.componentDidMount = this.componentDidMount.bind(this);
     }
     componentDidMount() {
-        axios.get('/user/' + this.props.match.params.id + '.json')
-            .then(({data}) => {
+        console.log("OPP mounts");
+        const id = this.props.match.params.id;
+        this.getUser(id);
+    }
+    componentDidUpdate() {
+        !this.state.id && this.getUser(this.props.match.params.id);
+    }
+    static getDerivedStateFromProps(nextProps, state) {
+        console.log("getDerivedStateFromProps");
+        if (
+            nextProps.match &&
+            nextProps.match.params &&
+            nextProps.match.params.id != state.id
+        ) {
+            return {
+                id: null
+            };
+        }
+        return null;
+    }
+    getUser(id) {
+        axios
+            .get(`/user/${id}.json`)
+            .then(({ data }) => {
                 if (data.redirect) {
-                    this.props.history.push("/profile")
+                    this.props.history.push("/");
                 } else {
-                    console.log("visited profile info: ", data);
-                    this.setState(data)
+                    this.setState(data);
                 }
             })
+            .catch(err =>
+                console.log("Error in axios.get('/user/:id.json') ", err)
+            );
     }
+
     findOnMap() {
         this.setState({ showSimpleMap: !this.state.showSimpleMap, showDescription: !this.state.showDescription })
     }
@@ -49,6 +76,7 @@ class Opp extends Component {
             showSimpleMap
         } = this.state
         if (!id) {
+            console.log("opp stuck");
             return null;
         }
         const MainPage = styled.div`
@@ -65,7 +93,6 @@ class Opp extends Component {
             width: 56%;
             text-align: center;
             height: 100%;
-            margin-top: 30px;
             padding: 20px;
             background-color: rgba(251, 251, 251, 1);
             `
@@ -78,7 +105,6 @@ class Opp extends Component {
             border-radius: 4px;
             `
         const LeftPanel = styled.div`
-            margin-top: 30px;
             padding: 20px;
             width: 20%;
             height: 100%;
@@ -86,7 +112,6 @@ class Opp extends Component {
             background-color: rgba(251, 251, 251, 1);
             `
         const RightPanel = styled.div`
-            margin-top: 30px;
             padding: 20px;
             width: 20%;
             height: 100%;

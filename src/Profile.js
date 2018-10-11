@@ -1,5 +1,6 @@
 import React, {Component} from 'react'
 import { connect } from 'react-redux';
+import { BrowserRouter, Link } from 'react-router-dom'
 import axios from './axios'
 import styled from 'styled-components'
 import LogoUploader from './LogoUploader'
@@ -54,7 +55,17 @@ class Profile extends Component {
             showPaymentBubble: true,
             showMapBubble: true,
             showBottom: true,
-            tab: false
+            tab: false,
+            temporaryArrayOfInvoices: [
+                {
+                    id: 1,
+                    file_name: "MPO_billing"
+                },
+                {
+                    id: 2,
+                    file_name: "apples_and_more_receipt"
+                }
+            ]
         }
 
         this.handleChange = this.handleChange.bind(this)
@@ -210,7 +221,13 @@ class Profile extends Component {
             `
         const RightPanelTopBox = styled.div`
             background-color: rgba(251, 251, 251, 1);
-            padding: 20px;
+            ${() => {
+                if (!this.state.tab) {
+                    return "padding: 20px;"
+                } else {
+                    return "padding: 20px 10px 20px 10px;"
+                }
+            } }
             width: 100%;
             height: 50%;
             `
@@ -380,6 +397,58 @@ class Profile extends Component {
             display: flex;
             align-items: center;
             `
+        const FileWrapper = styled.div`
+            display: flex;
+            margin-bottom: 5px;
+            `
+        const FileBox = styled.div`
+            background-color: lightgrey;
+            display: flex;
+            border-radius: 15px 0 0 15px;
+            width: 100%;
+            cursor: pointer;
+
+            &:hover{
+                transform: scale(1.05);
+            }
+            `
+        const PdfIconWrapper = styled.div`
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 5px;
+            width: 25px;
+            height: 25px;
+            border-radius: 100%;
+            background-color: grey;
+            `
+        const FileName = styled.div`
+            position: relative;
+            display: inline-block;
+            font-weight: 400;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            `
+        const PdfIcon = styled.i`
+            color: white;
+            `
+        const DownloadIconWrapper = styled.div`
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-left: 5px;
+            height: 25px;
+            cursor: pointer;
+
+            &:hover{
+                transform: scale(1.2);
+            }
+            `
+        const DownloadPdfIcon = styled.i`
+            display: inline-block;
+            color: grey;
+            `
         return (
             <div>
                 <MainPage id="main-profile-page">
@@ -441,19 +510,44 @@ class Profile extends Component {
                                 <ChatTab>Invoices</ChatTab>
                             </TabsBox>
                             { !this.state.tab ?
+                                <BrowserRouter>
+                                    <RightPanelTopBox className="shadow">
+                                        { this.props.otherCompanies &&
+                                            this.props.otherCompanies.map(company => {
+                                                return (
+                                                    <a href={`/user/${company.id}`} key={company.id}>
+                                                        <OtherCompany>
+                                                            <OtherCompaniesLogo src={company.company_image_url}></OtherCompaniesLogo><OtherCompanyName>{company.company_legal_name}</OtherCompanyName>
+                                                        </OtherCompany>
+                                                    </a>
+                                                )
+                                                // <Link to={`/user/${company.id}`} key={company.id}>
+                                                //     <OtherCompany key={company.id}>
+                                                //         <OtherCompaniesLogo src={company.company_image_url}></OtherCompaniesLogo><OtherCompanyName>{company.company_legal_name}</OtherCompanyName>
+                                                //     </OtherCompany>
+                                                // </Link>
+                                            })
+                                        }
+                                    </RightPanelTopBox>
+                                </BrowserRouter> :
                                 <RightPanelTopBox className="shadow">
-                                    { this.props.otherCompanies &&
-                                        this.props.otherCompanies.map(company => {
+                                    { this.state.temporaryArrayOfInvoices ?
+                                        this.state.temporaryArrayOfInvoices.map(file => {
                                             return (
-                                                <OtherCompany>
-                                                    <OtherCompaniesLogo src={company.company_image_url}></OtherCompaniesLogo><OtherCompanyName>{company.company_legal_name}</OtherCompanyName>
-                                                </OtherCompany>
-                                            )
-                                        })
+                                                <FileWrapper key={file.id}>
+                                                    <FileBox>
+                                                        <PdfIconWrapper>
+                                                            <PdfIcon className="far fa-file-pdf"></PdfIcon>
+                                                        </PdfIconWrapper>
+                                                        <FileName>{file.file_name}</FileName>
+                                                    </FileBox>
+                                                    <DownloadIconWrapper>
+                                                        <DownloadPdfIcon className="fas fa-file-download"></DownloadPdfIcon>
+                                                    </DownloadIconWrapper>
+                                                </FileWrapper>
+                                            ) }) :
+                                        "Your invoices will be display here"
                                     }
-                                </RightPanelTopBox> :
-                                <RightPanelTopBox className="shadow">
-                                    Invoices not yet implemented
                                 </RightPanelTopBox>
                             }
                             <RightPanelBottomBox className="shadow">

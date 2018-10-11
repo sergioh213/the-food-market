@@ -1,15 +1,6 @@
 import React from "react";
 import styled from 'styled-components'
 
-// let secrets;
-// if (process.env.NODE_ENV == "production") {
-//     secrets = process.env; //
-// } else {
-//     secrets = require("./secrets");
-//     import { GOOGLE_MAPS_API_KEY } from "./secrets"
-// }
-// const googleMapsApiKey = secrets.GOOGLE_MAPS_API_KEY;
-
 var googleMapsApiKey = "AIzaSyBBtYjKj6CmulQ-UX6-VwIf7CieDLAu5XA"
 
 function GoogleMap(props) {

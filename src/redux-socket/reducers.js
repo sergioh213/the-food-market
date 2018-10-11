@@ -23,7 +23,7 @@ export default function(state = {}, action) {
         state = {
             ...state,
             chat: {
-                showChat: false,
+                showChat: true,
                 expanded: false
             },
             showBottomMenu: false,
@@ -85,7 +85,6 @@ export default function(state = {}, action) {
         }
     }
     if (action.type == 'OPEN_FACILITY') {
-        console.log("OPEN_FACILITY with action.facility: ", action.facility);
         state = {
             ...state,
             showBottomMenu: true,
@@ -94,7 +93,6 @@ export default function(state = {}, action) {
                 facility: action.facility
             }
         }
-        console.log("state after setting facility: ", state);
     }
 
     if (action.type == 'SAVE_COMPANY_DESCRIPTION') {
@@ -237,6 +235,12 @@ export default function(state = {}, action) {
             ...state,
             productionFacilities: [action.data, ...state.productionFacilities],
             facilitySaveInProgress: null
+        }
+    }
+    if (action.type == 'SET_MATCHES') {
+        state = {
+            ...state,
+            searchBarMatches: action.matches
         }
     }
     if (action.type == 'ONLINE_USERS') {

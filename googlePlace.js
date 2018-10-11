@@ -37,7 +37,7 @@ exports.autoCompletePlace = async function(place) {
             params: {
                 key: googleMapsApiKey,
                 input: place
-                // result_type: 'street_address'
+                // result_type: 'street_address' // unfurtunatly the result_type is legacy code and you shouldn't use it. That only means that they wont filter the results for you, but they still have a result_type property, so you can filter them yourself
             }
         }
     );
@@ -47,7 +47,7 @@ exports.autoCompletePlace = async function(place) {
 };
 
 exports.getPlaceIdByCoords = async function(placeCoordinates) {
-    // 40.714224,-73.961452 //example of coordinates formating
+    // 40.714224,-73.961452 // example of coordinates formating for when you pass them here as arguments
     const { data } = await axios.get(
         `https://maps.googleapis.com/maps/api/geocode/json?latlng=${placeCoordinates}&key=${googleMapsApiKey}`,
         {
@@ -77,7 +77,6 @@ exports.getPlaceDetails = async function(placeId) {
         }
     );
 
-    // console.log("getPlaceDetails data.result: ", data.result);
     return {
         longitude:
             data.result &&

@@ -38,7 +38,8 @@ class Chat extends Component {
             return null
         }
         const Chat = styled.div`
-            display: inline-block;
+            display: flex;
+            flex-direction: column;
             width: ${() => {
                 if (!this.props.showBottomMenu) {
                     console.log("chat 100%");
@@ -51,18 +52,24 @@ class Chat extends Component {
                 }
             }};
             min-height: 200px;
-            padding: 20px;
+            padding: 10px 8px 8px 8px;
             background-color: rgba(251, 251, 251, 1);
             transition: width 1s;
-            -webkit-transition: width 2s; /* Safari */
+            -webkit-transition: width 2s;
+            justify-content: space-between;
             `
         const SectionTitle = styled.div`
             position: relative;
             text-align: left;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             width: 100%;
-            left: 50%;
-            transform: translateX(-50%);
-            height: 40px;
+            padding: 0 12px 0 12px;
+            `
+        const ChatHeader = styled.div`
+            color: #5EB648;
+            font-weight: 400;
             `
         const ExpandChatIcon = styled.i`
             position: relative;
@@ -95,6 +102,48 @@ class Chat extends Component {
             line-height: 40px;
             text-align: center;
             `
+        const ChatBody = styled.div`
+            width: 100%;
+            display: flex;
+            height: 100%;
+            flex-direction: column;
+            `
+        const MessagesField =  styled.div`
+            flex-direction: column;
+            width: 100%;
+            background-color: rgba(228, 221, 214, 1);
+            padding: 8px 12px 8px 12px;
+            height: 100%;
+            `
+        const ChatBottom =  styled.div`
+            width: 100%;
+            background-color: #f2f2f2;
+            height: 40px;
+            padding: 3px 6px 3px 6px;
+            display: flex;
+            align-items: center;
+            `
+        const ChatInput = styled.input`
+            width: 100%;
+            height: 100%;
+            border: none;
+            background-color: white;
+            border-radius: 15px 15px 15px 15px;
+            `
+        const SendButton = styled.button`
+            width: 26px;
+            height: 26px;
+            color: white;
+            margin-left: 5px;
+            background-color: #5EB648;
+            border: none;
+            border-radius: 100%;
+            cursor: pointer;
+
+            &:hover{
+                background-color: #6ACC58;
+            }
+            `
         return (
             <Chat
                 ref={(lm) => this.lm = lm}
@@ -112,10 +161,15 @@ class Chat extends Component {
                         ></ExpandChatIcon>
                         )
                     }
+                    <ChatHeader>Chat</ChatHeader>
                     <CloseX onClick={this.toggleChat}>x</CloseX>
                 </SectionTitle>
-                <FormHeader>Chat</FormHeader>
-                <div>hello</div>
+                <ChatBody>
+                    <MessagesField>hello</MessagesField>
+                    <ChatBottom>
+                        <ChatInput type="text"/><SendButton>s</SendButton>
+                    </ChatBottom>
+                </ChatBody>
             </Chat>
         )
     }

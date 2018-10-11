@@ -43,10 +43,8 @@ exports.getProducerById = function(id) {
 }
 
 exports.getAllProducers = function() {
-    console.log("getting to getAllProducers in db");
     return db.query(`SELECT * FROM producers;`)
         .then(results => {
-            console.log("db results.rows: ", results.rows);
             return results.rows
         })
 }
@@ -112,13 +110,11 @@ exports.updateCompanyName = function(id, company_legal_name) {
     `;
     const params = [id, company_legal_name];
     return db.query(q, params).then(updatedCompanyName => {
-        console.log("in db updatedCompanyName.rows[0].company_legal_name: ", updatedCompanyName.rows[0].company_legal_name);
         return updatedCompanyName.rows[0].company_legal_name;
     });
 };
 
 exports.updateHeadquarters = function(id, headquarter_google_maps_place_id, headquarter_formatted_address, headquarter_latitude, headquarter_longitude) {
-    console.log("loging arguments in db: ", headquarter_google_maps_place_id, ", ", headquarter_formatted_address, ", ", headquarter_latitude, ", ", headquarter_longitude);
     const q = `
         UPDATE producers SET headquarter_google_maps_place_id = $2, headquarter_formatted_address = $3, headquarter_latitude = $4, headquarter_longitude = $5
         WHERE id = $1
@@ -126,7 +122,6 @@ exports.updateHeadquarters = function(id, headquarter_google_maps_place_id, head
     `;
     const params = [id, headquarter_google_maps_place_id, headquarter_formatted_address, headquarter_latitude, headquarter_longitude];
     return db.query(q, params).then(updatedCompanyInfo => {
-        console.log("in db updatedCompanyName.rows[0].company_legal_name: ", updatedCompanyInfo.rows[0]);
         return updatedCompanyInfo.rows[0];
     });
 };
@@ -301,7 +296,6 @@ exports.acceptFriend = function(sender_id, receiver_id) {
         RETURNING *;
         `;
     return db.query(q, params).then(results => {
-        console.log("accept in db results.rows[0]: ", results.rows[0]);
         return results.rows[0]
     })
 }
@@ -386,7 +380,6 @@ exports.attendEvent = function(event_id, user_id) {
         RETURNING *;
         `;
     return db.query(q, params).then(results => {
-        console.log("in db attendEvent results.rows[0]: ", results.rows[0]);
         return results.rows[0]
     })
 }

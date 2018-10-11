@@ -385,12 +385,14 @@ app.get("/reservations.json", (req, res) => {
 })
 
 app.get("/user/:id.json", (req, res) => {
+    console.log("getting to /user/", req.params.id);
     if (req.session.user.id == req.params.id) {
         res.json({
             redirect: true
         })
     } else {
         db.getProducerById(req.params.id).then(data => {
+            console.log("data received from db at opp route: ", data);
             res.json({
                 ...data,
                 company_image_url: data.company_image_url || '/content/default_company_logo_picture.png'
