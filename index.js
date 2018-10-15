@@ -3,6 +3,7 @@ const app = express();
 const compression = require('compression');
 const bodyParser = require('body-parser')
 const db = require("./db/db.js");
+const accounts = require("./db/AutomaticAccountGenerator.js");
 const cookieParser = require("cookie-parser");
 const cookieSession = require("cookie-session");
 const bc = require("./db/bcrypt.js")
@@ -196,12 +197,22 @@ app.get("/producer.json", (req, res) => {
 
 app.get("/all-companies.json", (req, res) => {
     console.log("getting to /all-companies.json");
-    db.getAllProducers(req.session.user.id).then(producers => {
+    db.getAllProducers().then(producers => {
         res.json({ producers })
     }).catch((err) => {
         res.sendStatus(500)
     })
 })
+app.get("/all-users.json", (req, res) => {
+    console.log("getting to /all-users.json");
+    db.getAllUsers().then(users => {
+        console.log("/all-users.json returned users: ", users);
+        res.json({ users })
+    }).catch((err) => {
+        res.sendStatus(500)
+    })
+})
+
 
 app.get("/production-facilities.json", (req, res) => {
     db.getProductionFacilitiesById(req.session.user.id).then(productionFacilities => {
@@ -476,30 +487,29 @@ io.on('connection', function(socket) {
         console.log(data);
     });
 
-    // socket.on("newMessage", message => {
-    //     db.saveMessage(socket.request.session.user.id, message, socket.request.session.user.currently_at).then( data => {
-    //         db.getUserById(userId).then( userInfo => {
-    //             let newMessage = {
-    //                 message: data.message,
-    //                 sender_id: data.sender_id,
-    //                 id: data.id,
-    //                 location_id: data.location_id,
-    //                 created_at: data.created_at,
-    //                 first_name: userInfo.first_name,
-    //                 last_name: userInfo.last_name,
-    //                 company_image_url: userInfo.company_image_url || '/content/default_company_logo_picture.png'
-    //             }
-    //             io.sockets.emit("newMessage", newMessage)
-    //         })
-    //     })
-    // })
+    socket.on("newMessage", message => {
+        console.log("event newMessage, width message: ", message);
+        db.saveMessage(socket.request.session.user.id, message).then( data => {
+            db.getProducerById(userId).then( companyInfo => {
+                let newMessage = {
+                    message: data.message,
+                    sender_id: data.sender_id,
+                    id: data.id,
+                    created_at: data.created_at,
+                    company_legal_name: companyInfo.company_legal_name,
+                    company_image_url: companyInfo.company_image_url || '/content/default_company_logo_picture.png'
+                }
+                io.sockets.emit("newMessage", newMessage)
+            })
+        })
+    })
 
-    // db.getMessages().then( messages => {
-    //     for (let message of messages) {
-    //         message.company_image_url = message.company_image_url || '/content/default_company_logo_picture.png'
-    //     }
-    //     socket.emit("chatMessages", messages)
-    // })
+    db.getMessages().then( messages => {
+        for (let message of messages) {
+            message.company_image_url = message.company_image_url || '/content/default_company_logo_picture.png'
+        }
+        socket.emit("chatMessages", messages)
+    })
 
     socket.emit('welcome', {
         message: 'Welome. It is nice to see you'

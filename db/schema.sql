@@ -1,6 +1,7 @@
 -- DROP TABLE IF EXISTS producers;
 -- DROP TABLE IF EXISTS production_facilities_images;
 -- DROP TABLE IF EXISTS production_facilities;
+-- DROP TABLE IF EXISTS general_messages;
 --
 -- CREATE TABLE producers (
 --     id SERIAL PRIMARY KEY,
@@ -43,34 +44,46 @@
 --     image_url VARCHAR(500) NOT NULL,
 --     uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 -- );
-
--- CREATE TABLE rolls (
+--
+-- CREATE TABLE general_messages (
 --     id SERIAL PRIMARY KEY,
---     company INT REFERENCES producers(id),
---     email VARCHAR(100) NOT NULL UNIQUE,
---     hashed_password VARCHAR(100) NOT NULL,
---     user_name INT NOT NULL,
---     user_password VARCHAR(300),
---     user_bio VARCHAR(500),
---     user_roll INT REFERENCES rolls(id),
+--     sender_id INT REFERENCES producers(id),
+--     message VARCHAR(400),
+--     -- chat_id INT NOT NULL REFERENCES chat_rooms(id),
 --     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 -- );
 --
--- CREATE TABLE users (
+-- CREATE TABLE private_messages (
 --     id SERIAL PRIMARY KEY,
---     works_for INT REFERENCES producers(id),
---     email VARCHAR(100) NOT NULL UNIQUE,
---     hashed_password VARCHAR(100) NOT NULL,
---     user_name VARCHAR(100) NOT NULL,
---     user_lastname VARCHAR(100),
---     user_bio VARCHAR(500),
---     user_roll INT REFERENCES rolls(id),
+--     sender_id INT REFERENCES producers(id),
+--     receiver_id INT REFERENCES producers(id),
+--     message VARCHAR(400),
 --     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 -- );
 
--- ALTER TABLE producers ADD payment_card_number VARCHAR(40);
+CREATE TABLE rolls (
+    id SERIAL PRIMARY KEY,
+    company INT REFERENCES producers(id),
+    roll_name VARCHAR(100),
+    roll_description VARCHAR(500),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    hashed_password VARCHAR(100) NOT NULL,
+    user_name VARCHAR(100) NOT NULL,
+    user_lastname VARCHAR(100),
+    profile_image_url VARCHAR(300),
+    user_bio VARCHAR(500),
+    user_roll INT REFERENCES rolls(id),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- ALTER TABLE rolls ADD roll_name VARCHAR(100);
 -- ALTER TABLE producers DROP column_name, DROP column_name2;
--- ALTER TABLE producers DROP payment_card_number;
+-- ALTER TABLE users DROP works_for;
 -- UPDATE producers SET headquarter_google_maps_place_id = NULL, headquarter_formatted_address = NULL, headquarter_latitude = NULL, headquarter_longitude = NULL WHERE id = 1;
 -- UPDATE producers SET bank_account_number = NULL, bank_iban = NULL WHERE id = 1;
 -- UPDATE producers SET payment_card_number = NULL WHERE id = 1;

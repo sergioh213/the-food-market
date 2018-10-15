@@ -21,13 +21,13 @@ export function init(store) {
             store.dispatch(userLeft(userId))
         })
 
-        // socket.on("chatMessages", messages => {
-        //     store.dispatch(receiveMessages(messages))
-        // })
+        socket.on("chatMessages", messages => {
+            store.dispatch(receiveMessages(messages))
+        })
 
-        // socket.on("newMessage", message => {
-        //     store.dispatch(newMessage(message))
-        // })
+        socket.on("newMessage", message => {
+            store.dispatch(newMessage(message))
+        })
 
         // socket.on('welcome', function(data) {
         //     socket.emit('thanks', {
@@ -37,6 +37,7 @@ export function init(store) {
     }
 }
 
-// export function newChatMessage(newMessage) {
-//     socket.emit("newMessage", newMessage)
-// }
+export function newChatMessage(newMessage) {
+    console.log("socket newChatMessage with message text: ", newMessage);
+    socket.emit("newMessage", newMessage)
+}

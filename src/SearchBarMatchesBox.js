@@ -78,7 +78,7 @@ class SearchBarMatchesBox extends Component {
                                     { (this.props.searchBarMatches && this.props.searchBarMatches.length>=1) &&
                                         this.props.searchBarMatches.map(item => {
                                             return(
-                                                <a href="/user/2" key={item}><MatchesBox>{item}</MatchesBox></a>
+                                                <a href={`/user/${item.id}`} key={item.id}><MatchesBox>{item.company_legal_name}</MatchesBox></a>
                                             )
                                             // <Link to="/user/2" key={item}><MatchesBox>{item}</MatchesBox></Link>
                                         })

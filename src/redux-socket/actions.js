@@ -45,6 +45,16 @@ export async function getAllCompanies() {
             }
         })
 }
+export async function getAllUsers() {
+    return axios.get("/all-users.json").then(
+        ({data}) => {
+            console.log("getAllUsers action data: ", data);
+            return {
+                type: 'GET_ALL_USERS',
+                users: data.users
+            }
+        })
+}
 export function saveCompanyDescription(newDescription) {
     var description = newDescription
     if ( description == "" ){
@@ -154,42 +164,21 @@ export function setMatches(matches) {
         matches
     }
 }
-
-// export function receiveFriendsWannabes() {
-//     return axios.get("/friendsWannabes.json").then(({ data }) => {
-//         return {
-//             type: 'RECEIVE_LIST',
-//             friendsWannabes: data.friendsWannabes
-//         }
-//     })
-// }
-
-// export function acceptFriendRequest(wannabeId) {
-//     return axios.get("/user/" + wannabeId + ".json").then( ({data})  => {
-//         return {
-//             type: 'ACCEPT_FRIEND',
-//             data
-//         }
-//     })
-// }
-
-// export function endFriendship(friendId) {
-//     return {
-//         type: 'END_FRIEND',
-//         friendId
-//     }
-// }
-
-// export function receiveMessages(messages) {
-//     return {
-//         type: 'RECEIVE_MESSAGES',
-//         messages
-//     }
-// }
-
-// export function newMessage(message) {
-//     return {
-//         type: 'NEW_MESSAGE',
-//         message
-//     }
-// }
+export function setChatMatches(matches) {
+    return {
+        type: 'SET_CHAT_MATCHES',
+        matches
+    }
+}
+export function receiveMessages(messages) {
+    return {
+        type: 'RECEIVE_MESSAGES',
+        messages
+    }
+}
+export function newMessage(message) {
+    return {
+        type: 'NEW_MESSAGE',
+        message
+    }
+}

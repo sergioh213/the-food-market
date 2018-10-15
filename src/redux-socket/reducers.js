@@ -24,16 +24,20 @@ export default function(state = {}, action) {
             ...state,
             chat: {
                 showChat: true,
-                expanded: false
+                expanded: true
             },
-            showBottomMenu: false,
+            showBottomMenu: true,
             dimBackground: {
                 show: false,
                 showUploader: false,
                 showFacilityImagesUploader: false
             },
             profile: action.profile,
-            profileComplete: checkProfileCompleteness(action.profile)
+            profileComplete: checkProfileCompleteness(action.profile),
+            facilitySaveInProgress: {
+                ...state.facilitySaveInProgress,
+                formPage: 1
+            }
         }
     }
     if (action.type == 'GET_FACILITIES') {
@@ -43,10 +47,20 @@ export default function(state = {}, action) {
         }
     }
     if (action.type == 'GET_ALL_COMPANIES') {
+        console.log("GET_ALL_COMPANIES action: ", action);
         state = {
             ...state,
-            otherCompanies: action.producers.filter(company => company.id != state.profile.id )
+            otherCompanies: action.producers.filter(company => company.id != state.profile.id)
         }
+        console.log("state.otherCompanies after GET_ALL_COMPANIES: ", state.otherCompanies);
+    }
+    if (action.type == 'GET_ALL_USERS') {
+        console.log("GET_ALL_USERS action.users: ", action.users);
+        state = {
+            ...state,
+            otherUsers: action.users
+        }
+        console.log("state.otherUsers after GET_ALL_USERS: ", state.otherCompanies);
     }
     if (action.type == 'TOGGLE_CHAT') {
         state = {
@@ -81,7 +95,8 @@ export default function(state = {}, action) {
             facilitySaveInProgress: {
                 ...state.facilitySaveInProgress,
                 formPage: 1
-            }
+            },
+            showFacility: false
         }
     }
     if (action.type == 'OPEN_FACILITY') {
@@ -91,7 +106,8 @@ export default function(state = {}, action) {
             showFacility: {
                 show: true,
                 facility: action.facility
-            }
+            },
+            facilitySaveInProgress: false
         }
     }
 
@@ -243,6 +259,12 @@ export default function(state = {}, action) {
             searchBarMatches: action.matches
         }
     }
+    if (action.type == 'SET_CHAT_MATCHES') {
+        state = {
+            ...state,
+            chatSearchBarMatches: action.matches
+        }
+    }
     if (action.type == 'ONLINE_USERS') {
         state = {
             ...state,
@@ -259,6 +281,23 @@ export default function(state = {}, action) {
         state = {
             ...state,
             users: state.users.filter(user => user.id != action.id )
+        }
+    }
+    if (action.type == 'RECEIVE_MESSAGES') {
+        console.log("reducer RECEIVE_MESSAGES happening");
+        state = {
+            ...state,
+            messages: action.messages
+        }
+    }
+    if (action.type == 'NEW_MESSAGE') {
+        console.log("slice happening");
+        // var previousArrayOfMessages = state.messages
+        var previousArrayOfMessages = state.messages.slice(1)
+        previousArrayOfMessages.push(action.message)
+        state = {
+            ...state,
+            messages: previousArrayOfMessages
         }
     }
     return state;

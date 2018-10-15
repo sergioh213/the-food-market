@@ -6,14 +6,16 @@ import Chat from './Chat'
 import SearchBarMatchesBox from './SearchBarMatchesBox'
 import Opp from './Opp/Opp'
 import { BrowserRouter, Route, Link, HashRouter } from 'react-router-dom'
-import { getProfile, getFacilities, getAllCompanies, setMatches } from './redux-socket/actions.js'
+import { getProfile, getFacilities, getAllCompanies, getAllUsers, setMatches } from './redux-socket/actions.js'
 import { connect } from 'react-redux';
 
 const mapStateToProps = state => {
     return {
         profile: state.profile,
         dimBackground: state.dimBackground,
-        productionFacilities: state.productionFacilities
+        productionFacilities: state.productionFacilities,
+        otherCompanies: state.otherCompanies,
+        otherUsers: state.otherUsers
     }
 }
 
@@ -37,6 +39,7 @@ class App extends Component {
         this.props.dispatch(getProfile());
         this.props.dispatch(getFacilities());
         this.props.dispatch(getAllCompanies());
+        this.props.dispatch(getAllUsers());
     }
     deploySearchBar(e) {
         if (this.searchBarElem.className == "icon") {
@@ -66,13 +69,13 @@ class App extends Component {
     handleChange(e) {
         var val = e.target.value
         var matches = [];
-        const { names } = this.state
-        for (var i = 0; i < names.length; i++) {
+        const { otherCompanies } = this.props
+        for (var i = 0; i < otherCompanies.length; i++) {
             if (
-                names[i].toLowerCase().startsWith(val.toLowerCase()) &&
+                otherCompanies[i].company_legal_name.toLowerCase().startsWith(val.toLowerCase()) &&
                 val != ""
             ) {
-                matches.push(names[i]);
+                matches.push(otherCompanies[i]);
             }
             if (matches.length >= 5) {
                 break;
@@ -88,7 +91,18 @@ class App extends Component {
         }
     }
     render() {
-        if (!this.state.mounted || (!this.props.profile && this.props.dimBackground && this.props.productionFacilities)) {
+        if (
+            !this.state.mounted ||
+            !this.props.profile ||
+            !this.props.dimBackground ||
+            !this.props.productionFacilities ||
+            !this.props.otherCompanies ||
+            !this.props.otherUsers
+        ) {
+            console.log("app stuck");
+            console.log("app this.props.otherCompanies: ", this.props.otherCompanies);
+            console.log("app this.props.otherUsers: ", this.props.otherUsers);
+            console.log("app this.props.productionFacilities: ", this.props.productionFacilities);
             return null
         }
         const Main = styled.div`
@@ -153,6 +167,7 @@ class App extends Component {
                                     ref={(inputElem) => this.inputElem = inputElem}
                                     onChange={(e) => this.handleChange(e)}
                                     onBlur={(e) => this.colapseSearchBar(e)}
+                                    placeholder='Type a name'
                                 />
                                 <SearchIconWrapper onClick={(e) => this.deploySearchBar(e)}><i className="fas fa-search"></i></SearchIconWrapper>
                             </div>

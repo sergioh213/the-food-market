@@ -513,14 +513,16 @@ class Profile extends Component {
                                 <BrowserRouter>
                                     <RightPanelTopBox className="shadow">
                                         { this.props.otherCompanies &&
-                                            this.props.otherCompanies.map(company => {
-                                                return (
-                                                    <a href={`/user/${company.id}`} key={company.id}>
+                                            this.props.otherCompanies.map((company, i) => {
+                                                if (i <= 4) {
+                                                    return (
+                                                        <a href={`/user/${company.id}`} key={company.id}>
                                                         <OtherCompany>
-                                                            <OtherCompaniesLogo src={company.company_image_url}></OtherCompaniesLogo><OtherCompanyName>{company.company_legal_name}</OtherCompanyName>
+                                                        <OtherCompaniesLogo src={company.company_image_url}></OtherCompaniesLogo><OtherCompanyName>{company.company_legal_name}</OtherCompanyName>
                                                         </OtherCompany>
-                                                    </a>
-                                                )
+                                                        </a>
+                                                    )
+                                                }
                                                 // <Link to={`/user/${company.id}`} key={company.id}>
                                                 //     <OtherCompany key={company.id}>
                                                 //         <OtherCompaniesLogo src={company.company_image_url}></OtherCompaniesLogo><OtherCompanyName>{company.company_legal_name}</OtherCompanyName>

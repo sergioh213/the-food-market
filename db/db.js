@@ -1,10 +1,109 @@
 const spicedPg = require("spiced-pg")
+const accounts = require("./AutomaticAccountGenerator.js");
 let db;
 if (process.env.DATABASE_URL) {
     db = spicedPg(process.env.DATABASE_URL)
 } else {
     db = spicedPg('postgres:sergioherrero:password@localhost:5432/food-market');
 }
+
+/////// uncoment to generate profiles ////////
+async function automaticallyGenerateAccounts(desiredAmountOfUsers, desiredAmountOfCompanies){
+    getAllProducers = async function() {
+            return db.query(`SELECT * FROM producers;`)
+            .then(results => {
+                return results.rows
+            })
+        }
+    getAllUsers = async function() {
+        return db.query(`SELECT * FROM users;`)
+        .then(results => {
+            return results.rows
+        })
+    }
+    getAllRolls = async function() {
+        return db.query(`SELECT * FROM rolls;`)
+        .then(results => {
+            return results.rows
+        })
+    }
+    saveCompany = async function(company_legal_name, email, hashed_password, company_image_url, company_description) {
+        const q = `
+            INSERT INTO producers (company_legal_name, email, hashed_password, company_type, company_image_url, company_description)
+            VALUES ($1, $2, $3, $4, $5, $6)
+            RETURNING *;
+            `
+        const params = [company_legal_name, email, hashed_password, 1, company_image_url, company_description]
+        return db.query(q, params).then(results => {
+            return results.rows[0]
+        })
+    }
+    saveRoll = async function(company, roll_name, roll_description) {
+        const q = `
+            INSERT INTO rolls (company, roll_name, roll_description)
+            VALUES ($1, $2, $3)
+            RETURNING *;
+            `
+        const params = [company, roll_name, roll_description]
+        return db.query(q, params).then(results => {
+            return results.rows[0]
+        })
+    }
+    saveUser = async function(email, hashed_password, user_name, user_lastname, profile_image_url, user_bio, user_roll) {
+        const q = `
+            INSERT INTO users (email, hashed_password, user_name, user_lastname, profile_image_url, user_bio, user_roll)
+            VALUES ($1, $2, $3, $4, $5, $6, $7)
+            RETURNING *;
+            `
+        const params = [email, hashed_password, user_name, user_lastname, profile_image_url, user_bio, user_roll]
+        return db.query(q, params).then(results => {
+            return results.rows[0]
+        })
+    }
+    ////////// companies ///////////
+    var existingCompanies = await getAllProducers()
+
+    if (existingCompanies.length <= 100) {
+        var numberOfCompaniesToCreate = desiredAmountOfCompanies - existingCompanies.length
+        var generatedCompanies = await accounts.createCompanies(numberOfCompaniesToCreate, desiredAmountOfCompanies)
+        var finalCompanies
+        await generatedCompanies.forEach(company => {
+            saveCompany(company.company_legal_name, company.email, company.hashed_password, company.company_image_url, company.company_description)
+        })
+        existingCompanies = await getAllProducers()
+    } else {
+        return console.log("AUTOMATIC GENERATION FAILED. 100 COMPANIES REACHED");
+    }
+    ////////// create rolls ///////////
+    var existingRolls = await getAllRolls()
+    console.log("existingRolls.length: ", existingRolls.length, " existingCompanies.length: ", existingCompanies.length);
+    if (existingRolls.length <= existingCompanies.length) {
+        console.log("got inside creation of rolls");
+        var numOfRollsToCreate = existingCompanies.length - existingRolls.length
+        var finalRolls = await accounts.createRolls(numOfRollsToCreate)
+        await finalRolls.forEach(roll => {
+            saveRoll(roll.company, roll.roll_name, roll.roll_description)
+        })
+        existingRolls = await getAllRolls()
+    } else {
+        return console.log("AUTOMATIC GENERATION FAILED. 100 ROLLS REACHED");
+    }
+    ////////// users ///////////
+    var ExistingUsers = await getAllUsers()
+
+    if (ExistingUsers.length <= 100) {
+        var numberOfUsersToCreate = desiredAmountOfUsers - ExistingUsers.length
+        var generatedUsers = await accounts.createUsers(numberOfUsersToCreate, desiredAmountOfUsers, existingRolls.length)
+        await generatedUsers.forEach(user => {
+            saveUser(user.email, user.hashed_password, user.user_name, user.user_lastname, user.profile_image_url, user.user_bio, user.user_roll)
+        })
+    } else {
+        return console.log("AUTOMATIC GENERATION FAILED. 100 USERS REACHED");
+    }
+    console.log("generatedCompanies: ", generatedCompanies);
+    console.log("generatedUsers: ", generatedUsers);
+}
+// automaticallyGenerateAccounts(100, 100)
 
 exports.newProducer = function(company_legal_name, email, hashed_password) {
     const q = `
@@ -44,6 +143,12 @@ exports.getProducerById = function(id) {
 
 exports.getAllProducers = function() {
     return db.query(`SELECT * FROM producers;`)
+        .then(results => {
+            return results.rows
+        })
+}
+exports.getAllUsers = function() {
+    return db.query(`SELECT * FROM users;`)
         .then(results => {
             return results.rows
         })
@@ -222,11 +327,11 @@ exports.getCompaniesByIds = function(ids) {
 
 exports.getMessages = function() {
     const q = `
-        SELECT hostel_chat.id, users.first_name, users.last_name, users.profile_image_url, hostel_chat.message, hostel_chat.sender_id, hostel_chat.created_at, hostel_chat.location_id
-        FROM hostel_chat
-        JOIN users
-        ON hostel_chat.sender_id = users.id
-        ORDER BY hostel_chat.id DESC LIMIT 9;
+        SELECT general_messages.id, producers.company_legal_name, producers.company_image_url, general_messages.message, general_messages.sender_id, general_messages.created_at
+        FROM general_messages
+        JOIN producers
+        ON general_messages.sender_id = producers.id
+        ORDER BY general_messages.id DESC LIMIT 9;
         `
     return db.query(q)
         .then(results => {
@@ -236,190 +341,15 @@ exports.getMessages = function() {
         })
 }
 
-exports.saveMessage = function(userId, message, location_id) {
-    const params = [userId, message, location_id]
+exports.saveMessage = function(userId, message) {
+    const params = [userId, message]
     const q = `
-            INSERT INTO hostel_chat (sender_id, message, location_id)
-            VALUES ($1, $2, $3)
+            INSERT INTO general_messages (sender_id, message)
+            VALUES ($1, $2)
             RETURNING *;
         `;
     return db.query(q, params).then(results => {
         return results.rows[0]
-    })
-}
-
-exports.getCurrentStatus = function(sender_id, receiver_id) {
-    const params = [sender_id, receiver_id]
-    const q = `
-        SELECT * FROM connections
-        WHERE ((sender_id = $1 AND receiver_id = $2)
-        OR (sender_id = $2 AND receiver_id = $1))
-        `;
-    return db.query(q, params).then(results => {
-        return results.rows[0]
-    }).catch(err => {
-        return err
-    })
-}
-
-exports.setStatus = function(sender_id, receiver_id) {
-    const params = [sender_id, receiver_id]
-    const q = `
-        INSERT INTO connections (sender_id, receiver_id)
-        VALUES ($1, $2)
-        RETURNING *;
-        `;
-    return db.query(q, params).then(results => {
-        return results.rows[0]
-    })
-}
-
-exports.deleteFriend = function(sender_id, receiver_id) {
-    const params = [sender_id, receiver_id]
-    const q = `
-        DELETE FROM connections
-        WHERE ((sender_id = $1 AND receiver_id = $2)
-        OR (sender_id = $2 AND receiver_id = $1));
-        `;
-    return db.query(q, params).then(results => {
-        return results.rows[0]
-    })
-}
-
-exports.acceptFriend = function(sender_id, receiver_id) {
-    const params = [sender_id, receiver_id]
-    const q = `
-        UPDATE connections
-        SET status = 2
-        WHERE ((sender_id = $1 AND receiver_id = $2)
-        OR (sender_id = $2 AND receiver_id = $1))
-        RETURNING *;
-        `;
-    return db.query(q, params).then(results => {
-        return results.rows[0]
-    })
-}
-
-// exports.getFriends = function(userid) {
-//     const params = [userid]
-//     const q = `SELECT * FROM connections
-//         WHERE ((sender_id = $1 OR receiver_id = $1)
-//         AND (status = 2))
-//         `;
-//     return db.query(q, params).then(results => {
-//         return results.rows
-//     })
-// }
-//
-// exports.getWannabes = function(userid) {
-//     const params = [userid]
-//     const q = `SELECT * FROM connections
-//         WHERE (receiver_id = $1
-//         AND status = 1)
-//         `;
-//     return db.query(q, params).then(results => {
-//         return results.rows
-//     })
-// }
-
-exports.getFriendsWannabes = function(userId) {
-    const params = [userId]
-
-    const q = `
-        SELECT users.id, first_name, last_name, profile_image_url, status
-        FROM connections
-        JOIN users
-        ON (status = 1 AND receiver_id = $1 AND sender_id = users.id)
-        OR (status = 2 AND receiver_id = $1 AND sender_id = users.id)
-        OR (status = 2 AND sender_id = $1 AND receiver_id = users.id)
-    `;
-
-    return db.query(q, params).then(results => {
-        return results.rows
-    })
-}
-
-exports.getLocations = function() {
-    const q = `SELECT * FROM locations;`;
-    return db.query(q).then(results => {
-        return results.rows
-    })
-}
-
-exports.getLocationsById = function(id) {
-    const q = `SELECT * FROM locations WHERE id = $1;`;
-    return db.query(q, [id]).then(results => {
-        return results.rows[0]
-    })
-}
-
-exports.createNewEvent = function(location_id, event_time, event_name, event_description, max_num_attendees, num_attendees_left, creator_id) {
-    const params = [location_id, event_time, event_name, event_description, max_num_attendees, num_attendees_left, creator_id]
-    const q = `
-        INSERT INTO events (location_id, event_time, event_name, event_description, max_num_attendees, num_attendees_left, creator_id)
-        VALUES ($1, $2, $3, $4, $5, $6, $7)
-        RETURNING *;
-        `;
-    return db.query(q, params).then(results => {
-        return results.rows[0]
-    })
-}
-
-exports.getEvents = function() {
-    const q = `SELECT * FROM events ORDER BY id DESC;`;
-    return db.query(q).then(results => {
-        return results.rows
-    })
-}
-
-exports.attendEvent = function(event_id, user_id) {
-    const params = [event_id, user_id]
-    const q = `
-        INSERT INTO user_events (event_id, user_id)
-        VALUES ($1, $2)
-        RETURNING *;
-        `;
-    return db.query(q, params).then(results => {
-        return results.rows[0]
-    })
-}
-
-exports.getAttendees = function() {
-    const q = `
-        SELECT event_id, users.*
-        FROM user_events
-        LEFT JOIN users
-        ON users.id = user_events.user_id;
-    `;
-    return db.query(q).then(results => {
-        return results.rows
-    })
-}
-
-exports.getCheckedInUsers = function() {
-    const q = `SELECT * FROM users WHERE checked_in = true`;
-    return db.query(q).then(results => {
-        return results.rows
-    })
-}
-
-exports.getUserEvents = function(event_id, user_id) {
-    const params = [event_id, user_id]
-    const q = `SELECT * FROM user_events WHERE (event_id = $1 AND user_id = $2);`;
-    return db.query(q, params).then(results => {
-        return results.rows[0]
-    })
-}
-
-exports.newHostel = function(city_name, area, coordinates, street, num, postal_code, hostel_main_img, total_num_beds, num_beds_left) {
-    const params = [city_name, area, coordinates, street, num, postal_code, hostel_main_img, total_num_beds, num_beds_left]
-    const q = `
-        INSERT INTO locations (city_name, area, coordinates, street, num, postal_code, hostel_main_img, total_num_beds, num_beds_left)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
-        RETURNING *;
-        `
-    return db.query(q, params).then(newHostelInfo => {
-        return newHostelInfo.rows[0]
     })
 }
 
