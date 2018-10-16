@@ -58,9 +58,11 @@ export default function(state = {}, action) {
         console.log("GET_ALL_USERS action.users: ", action.users);
         state = {
             ...state,
-            otherUsers: action.users
+            otherUsers: action.users,
+            allProfiles: [...action.users, ...state.otherCompanies]
         }
-        console.log("state.otherUsers after GET_ALL_USERS: ", state.otherCompanies);
+        console.log("state.otherUsers after GET_ALL_USERS: ", state.otherUsers);
+        console.log("state.allProfiles after GET_ALL_USERS: ", state.allProfiles);
     }
     if (action.type == 'TOGGLE_CHAT') {
         state = {
@@ -291,14 +293,20 @@ export default function(state = {}, action) {
         }
     }
     if (action.type == 'NEW_MESSAGE') {
-        console.log("slice happening");
-        // var previousArrayOfMessages = state.messages
-        var previousArrayOfMessages = state.messages.slice(1)
+        console.log("NEW_MESSAGE reducer");
+        var previousArrayOfMessages = state.messages
+        console.log("previousArrayOfMessages: ", previousArrayOfMessages);
+        if (state.messages.length >= 16) {
+            console.log("slice happening");
+            previousArrayOfMessages.shift()
+        }
         previousArrayOfMessages.push(action.message)
+        console.log("previousArrayOfMessages after push: ", previousArrayOfMessages);
         state = {
             ...state,
             messages: previousArrayOfMessages
         }
+        console.log("have messages updated: state.messages after reducer state: ", state.messages);
     }
     return state;
 }

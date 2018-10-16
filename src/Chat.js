@@ -13,7 +13,8 @@ const mapStateToProps = state => {
         messages: state.messages,
         otherCompanies: state.otherCompanies,
         chatSearchBarMatches: state.chatSearchBarMatches,
-        otherUsers: state.otherUsers
+        otherUsers: state.otherUsers,
+        allProfiles: state.allProfiles
     }
 }
 
@@ -22,6 +23,7 @@ class Chat extends Component {
         super(props)
 
         this.state = {
+            message: "",
             temporaryArrayOfMessages: [
                 {
                     sender_id: 1,
@@ -65,25 +67,24 @@ class Chat extends Component {
     componentDidMount() {
         this.setState({ mounted: true })
         if (!this.props.showBottomMenu) {
-            this.bodyWrapperElem.style.flexDirection = "row"
             this.bodyElem.style.width = "60%"
             this.lm.style.width = "100%"
         } else if (this.props.showBottomMenu && this.props.chat.expanded) {
-            this.bodyWrapperElem.style.flexDirection = "row"
             this.bodyElem.style.width = "60%"
             this.lm.style.width = "70%"
         } else {
             this.lm.style.width = "29%"
         }
     }
+    forceUpdate() {
+        console.log("forceUpdate happening");
+    }
     componentDidUpdate() {
         console.log("chat updated");
         if (!this.props.showBottomMenu) {
-            this.bodyWrapperElem.style.flexDirection = "row"
             this.bodyElem.style.width = "60%"
             this.lm.style.width = "100%"
         } else if (this.props.showBottomMenu && this.props.chat.expanded) {
-            this.bodyWrapperElem.style.flexDirection = "row"
             this.bodyElem.style.width = "60%"
             this.lm.style.width = "70%"
         } else {
@@ -93,15 +94,15 @@ class Chat extends Component {
     handleSearchChange(e) {
         var val = e.target.value
         var matches = [];
-        const { otherCompanies } = this.props
-        for (var i = 0; i < otherCompanies.length; i++) {
+        const { allProfiles } = this.props
+        for (var i = 0; i < allProfiles.length; i++) {
             if (
-                otherCompanies[i].company_legal_name.toLowerCase().startsWith(val.toLowerCase()) &&
+                ((allProfiles[i].company_legal_name && allProfiles[i].company_legal_name.toLowerCase().startsWith(val.toLowerCase())) || (allProfiles[i].user_name && allProfiles[i].user_name.toLowerCase().startsWith(val.toLowerCase()))) &&
                 val != ""
             ) {
-                matches.push(otherCompanies[i]);
+                matches.push(allProfiles[i]);
             }
-            if (matches.length >= 5) {
+            if (matches.length >= 11) {
                 break;
             }
         }
@@ -113,7 +114,6 @@ class Chat extends Component {
     }
     expandChat() {
         console.log("expandChat happening");
-        this.bodyWrapperElem.style.flexDirection = "row"
         this.props.dispatch(toggleExpandChat())
     }
     handleChange(e) {
@@ -121,16 +121,17 @@ class Chat extends Component {
             [ e.target.name ] : e.target.value
         })
     }
-    sendMessage() {
+    async sendMessage() {
         console.log("this.state.message at send message: ", this.state.message);
         if (this.state.message && this.state.message != "" && this.state.message != null) {
             console.log("sendMessage happening");
-            this.inputElem.value = ""
-            newChatMessage(this.state.message)
+            await newChatMessage(this.state.message)
+            await this.setState({ message: "" })
+            this.forceUpdate()
         }
     }
     render() {
-        if (!this.state.mounted && !this.props) {
+        if (!this.state.mounted && !this.props.messages) {
             return null
         }
         const Chat = styled.div`
@@ -312,11 +313,59 @@ class Chat extends Component {
             height: 100%;
             border-left: 1px lightgrey solid;
             `
-        const ActiveChatBubble = styled.div`
-            width: 45px;
+        const ActiveChatBubbleBox = styled.div`
+            width: 44px;
             height: 100%;
             border-left: 1px lightgrey solid;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             `
+        const ActiveChatBubble = styled.img`
+            position: relative;
+            width: 30px;
+            height: 30px;
+            border: 3px #5EB648 solid;
+            background-color: lightgrey;
+            border-radius: 100%;
+            bottom: 3px;
+            left: -1px;
+            `
+        const ResultBox = styled.div`
+            position: relative;
+            border-bottom: 1px lightgrey solid;
+            display: flex;
+            padding-top: 3px;
+            padding-bottom: 3px;
+            cursor: pointer;
+
+            &:hover{
+                background-color: rgb(206, 206, 206);
+            }
+            `
+        const ProfileImage = styled.img`
+            position: relative;
+            width: 30px;
+            height: 30px;
+            background-color: lightgrey;
+            border-radius: 100%;
+            `
+        const ProfileTextWrapper = styled.div`
+            display: flex;
+            padding: 0 4px 0 4px;
+            width: 100%;
+            justify-content: space-between;
+            `
+        const ProfileName = styled.div`
+            font-size: 14px;
+            display: inline-block;
+            `
+        const ProfileTypeLable = styled.div`
+            color: grey;
+            font-size: 12px;
+            display: inline-block;
+            `
+        console.log("this.props.messages before render: ", this.props.messages);
         return (
             <div id="chat-main"
                 ref={(lm) => this.lm = lm}
@@ -329,8 +378,8 @@ class Chat extends Component {
                                 <ExpandChatIcon
                                     className="fas fa-angle-right scale-on-hover-more"
                                     onClick={this.expandChat}
-                                    ></ExpandChatIcon> :
-                                    <ExpandChatIcon
+                                ></ExpandChatIcon> :
+                                <ExpandChatIcon
                                     className="fas fa-bars scale-on-hover-more"
                                     onClick={this.expandChat}
                                 ></ExpandChatIcon>
@@ -338,8 +387,10 @@ class Chat extends Component {
                         }
                         <ChatHeader>Chat</ChatHeader>
                     </LeftHeader>
-                    <ActiveChatBubble>
-                    </ActiveChatBubble>
+                    <ActiveChatBubbleBox>
+                        <ActiveChatBubble>
+                        </ActiveChatBubble>
+                    </ActiveChatBubbleBox>
                     <RightHeader>
                         <CloseX onClick={this.toggleChat}>x</CloseX>
                     </RightHeader>
@@ -362,9 +413,27 @@ class Chat extends Component {
                             <SearchArea>
                                 { this.props.chatSearchBarMatches &&
                                     this.props.chatSearchBarMatches.map(item => {
-                                        return(
-                                            <div key={item.id}>{item.company_legal_name}</div>
-                                        )
+                                        if (item.user_name) {
+                                            return(
+                                                <ResultBox key={item.id}>
+                                                    <ProfileImage src={item.profile_image_url}></ProfileImage>
+                                                    <ProfileTextWrapper>
+                                                        <ProfileName>{`${item.user_name} ${item.user_lastname}`}</ProfileName>
+                                                        <ProfileTypeLable>Person</ProfileTypeLable>
+                                                    </ProfileTextWrapper>
+                                                </ResultBox>
+                                            )
+                                        } else if (item.company_legal_name) {
+                                            return(
+                                                <ResultBox key={item.id}>
+                                                    <ProfileImage src={item.company_image_url}></ProfileImage>
+                                                    <ProfileTextWrapper>
+                                                        <ProfileName>{item.company_legal_name}</ProfileName>
+                                                        <ProfileTypeLable>Company</ProfileTypeLable>
+                                                    </ProfileTextWrapper>
+                                                </ResultBox>
+                                            )
+                                        }
                                     })
                                 }
                             </SearchArea>
@@ -375,28 +444,27 @@ class Chat extends Component {
                     }
                     <div id="chat-body" ref={(bodyElem) => this.bodyElem = bodyElem}>
                         <MessagesField>
-                        { this.props.messages &&
-                            this.props.messages.map(message => {
-                                if (message.sender_id == this.props.profile.id) {
-                                    return (
-                                        <YourMessageWrapper>
-                                            <YourMessageBox className="shadow">
-                                                {message.message}
-                                            </YourMessageBox>
-                                        </YourMessageWrapper>
-                                    )
-                                } else {
-
-                                }
-                                return (
-                                    <SomeoneElsesMessageWrapper>
-                                        <SomeoneElsesMessageBox className="shadow">
-                                            {message.message}
-                                        </SomeoneElsesMessageBox>
-                                    </SomeoneElsesMessageWrapper>
-                                )
-                            })
-                        }
+                            { this.props.messages &&
+                                this.props.messages.map(message => {
+                                    if (message.sender_id == this.props.profile.id) {
+                                        return (
+                                            <YourMessageWrapper key={message.id}>
+                                                <YourMessageBox className="shadow">
+                                                    {message.message}
+                                                </YourMessageBox>
+                                            </YourMessageWrapper>
+                                        )
+                                    } else {
+                                        return (
+                                            <SomeoneElsesMessageWrapper key={message.id}>
+                                                <SomeoneElsesMessageBox className="shadow">
+                                                    {message.message}
+                                                </SomeoneElsesMessageBox>
+                                            </SomeoneElsesMessageWrapper>
+                                        )
+                                    }
+                                })
+                            }
                         </MessagesField>
                         <div id="chat-bottom">
                             <input
@@ -405,7 +473,7 @@ class Chat extends Component {
                                 type="text"
                                 placeholder='Type a message'
                                 onChange={(e) => this.handleChange(e)}
-                                ref={(inputElem) => this.inputElem = inputElem}
+                                value={this.state.message}
                             />
                             <SendButton onClick={() => this.sendMessage()}>
                                 <SendArrow className="fas fa-arrow-right"></SendArrow>

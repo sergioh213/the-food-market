@@ -488,6 +488,7 @@ io.on('connection', function(socket) {
     });
 
     socket.on("newMessage", message => {
+        console.log("2- socket newChatMessage RECEIVE 2 with message text: ", message);
         console.log("event newMessage, width message: ", message);
         db.saveMessage(socket.request.session.user.id, message).then( data => {
             db.getProducerById(userId).then( companyInfo => {
@@ -499,6 +500,7 @@ io.on('connection', function(socket) {
                     company_legal_name: companyInfo.company_legal_name,
                     company_image_url: companyInfo.company_image_url || '/content/default_company_logo_picture.png'
                 }
+                console.log("3- socket newChatMessage EMIT 2 with message text: ", newMessage);
                 io.sockets.emit("newMessage", newMessage)
             })
         })

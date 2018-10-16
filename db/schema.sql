@@ -45,13 +45,13 @@
 --     uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 -- );
 --
--- CREATE TABLE general_messages (
---     id SERIAL PRIMARY KEY,
---     sender_id INT REFERENCES producers(id),
---     message VARCHAR(400),
---     -- chat_id INT NOT NULL REFERENCES chat_rooms(id),
---     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
--- );
+CREATE TABLE general_messages (
+    id SERIAL PRIMARY KEY,
+    sender_id INT REFERENCES producers(id),
+    message VARCHAR(400),
+    -- chat_id INT NOT NULL REFERENCES chat_rooms(id),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 --
 -- CREATE TABLE private_messages (
 --     id SERIAL PRIMARY KEY,

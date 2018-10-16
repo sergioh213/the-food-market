@@ -26,6 +26,7 @@ export function init(store) {
         })
 
         socket.on("newMessage", message => {
+            console.log("4- socket newChatMessage RECEIVE 2 with message text: ", message);
             store.dispatch(newMessage(message))
         })
 
@@ -38,6 +39,6 @@ export function init(store) {
 }
 
 export function newChatMessage(newMessage) {
-    console.log("socket newChatMessage with message text: ", newMessage);
+    console.log("1- socket newChatMessage EMIT 1 with message text: ", newMessage);
     socket.emit("newMessage", newMessage)
 }

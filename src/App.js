@@ -32,14 +32,12 @@ class App extends Component {
         this.handleChange = this.handleChange.bind(this)
         this.colapseSearchBar = this.colapseSearchBar.bind(this)
     }
-    componentDidMount() {
-        axios.get("/names.json").then(names => {
-            this.setState({names: names.data, mounted: true})
-        })
-        this.props.dispatch(getProfile());
-        this.props.dispatch(getFacilities());
-        this.props.dispatch(getAllCompanies());
-        this.props.dispatch(getAllUsers());
+    async componentDidMount() {
+        await this.setState({ mounted: true })
+        await this.props.dispatch(getProfile());
+        await this.props.dispatch(getFacilities());
+        await this.props.dispatch(getAllCompanies());
+        await this.props.dispatch(getAllUsers());
     }
     deploySearchBar(e) {
         if (this.searchBarElem.className == "icon") {

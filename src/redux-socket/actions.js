@@ -177,6 +177,7 @@ export function receiveMessages(messages) {
     }
 }
 export function newMessage(message) {
+    console.log("5- socket action receive with message text: ", message);
     return {
         type: 'NEW_MESSAGE',
         message
