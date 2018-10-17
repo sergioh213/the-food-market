@@ -65,6 +65,7 @@ class Chat extends Component {
         this.handleSearchChange = this.handleSearchChange.bind(this)
         this.expandChat = this.expandChat.bind(this)
         this.updateScroll = this.updateScroll.bind(this)
+        this.onKeyDown = this.onKeyDown.bind(this)
     }
     async componentDidMount() {
         await this.setState({ mounted: true })
@@ -77,8 +78,6 @@ class Chat extends Component {
         } else {
             this.lm.style.width = "29%"
         }
-        // this.messageFieldElem.scrollTop = this.messageFieldElem.scrollHeight;
-        // console.log("this.messageFieldElem: ", this.messageFieldElem);
         await this.updateScroll()
     }
     async componentDidUpdate() {
@@ -92,9 +91,8 @@ class Chat extends Component {
         } else {
             this.lm.style.width = "29%"
         }
-        // this.messageFieldElem.scrollTop = this.messageFieldElem.scrollHeight;
-        // console.log("this.messageFieldElem: ", this.messageFieldElem);
         await this.updateScroll()
+        await this.chatInpuElem.focus()
     }
     updateScroll(){
         console.log("updateScroll happening");
@@ -156,6 +154,11 @@ class Chat extends Component {
             await this.setState({ message: "" })
         }
     }
+    onKeyDown(e) {
+        if (e.keyCode === 13) {
+          this.sendMessage();
+        }
+    }
     selectUser(profile) {
         this.props.dispatch(setActiveChat(profile))
     }
@@ -199,7 +202,6 @@ class Chat extends Component {
             position: relative;
             height: 100%;
             `
-            // align-items: center;
         const ActiveChatName = styled.div`
             position: relative;
             top: 50%;
@@ -312,6 +314,7 @@ class Chat extends Component {
             border-radius: 4px;
             font-size: 14px;
             margin-bottom: 2px;
+            margin-left: 20px;
             `
         const SomeoneElsesMessageBox = styled.div`
             display: inline-block;
@@ -320,6 +323,7 @@ class Chat extends Component {
             border-radius: 4px;
             font-size: 14px;
             margin-bottom: 2px;
+            margin-right: 20px;
             `
         ///////////////// left menu //////////////
         const LeftMenu = styled.div`
@@ -526,6 +530,9 @@ class Chat extends Component {
                                 placeholder='Type a message'
                                 onChange={(e) => this.handleChange(e)}
                                 value={this.state.message}
+                                autofocus="true"
+                                ref={(chatInpuElem) => this.chatInpuElem = chatInpuElem}
+                                onKeyDown={(e) => this.onKeyDown(e)}
                             />
                             <SendButton onClick={() => this.sendMessage()}>
                                 <SendArrow className="fas fa-arrow-right"></SendArrow>
