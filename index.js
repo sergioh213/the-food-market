@@ -153,13 +153,15 @@ app.post("/login", (req, res) => {
             bcrypt.checkPassword(req.body.password, companyInfo.hashed_password)
                 .then(passwordsMatch => {
                     if(passwordsMatch) {
-                        req.session.user = {id: companyInfo.id, company_legal_name: companyInfo.company_legal_name, lastName: companyInfo.last_name, email: companyInfo.email, company_type: companyInfo.company_type}
+                        var companyImageUrl = companyInfo.company_image_url || '/content/default_company_logo_picture.png'
+                        req.session.user = {id: companyInfo.id, company_legal_name: companyInfo.company_legal_name, lastName: companyInfo.last_name, email: companyInfo.email, company_type: companyInfo.company_type, company_image_url: companyImageUrl}
                         res.json({
                             success: true,
                             id: companyInfo.id,
                             company_legal_name: companyInfo.company_legal_name,
                             email: companyInfo.email,
-                            company_type: companyInfo.company_type
+                            company_type: companyInfo.company_type,
+                            company_image_url: companyInfo.company_image_url || '/content/default_company_logo_picture.png'
                         })
                     } else {
                         res.json({
@@ -296,6 +298,7 @@ app.post("/save-production-facility.json", (req, res) => {
 app.post("/company-logo-upload.json", uploader.single('file'), s3.upload, (req, res) => {
     console.log("getting to /company-logo-upload.json");
     db.changeCompanyLogoImage(req.session.user.id, config.s3Url + req.file.filename).then(imgUrl => {
+        req.session.user = {company_image_url: imgUrl}
         console.log("imgUrl as returned from db: ", imgUrl);
         res.json({
             success: true,
@@ -487,23 +490,24 @@ io.on('connection', function(socket) {
         console.log(data);
     });
 
-    socket.on("newMessage", message => {
-        console.log("2- socket newChatMessage RECEIVE 2 with message text: ", message);
-        console.log("event newMessage, width message: ", message);
-        db.saveMessage(socket.request.session.user.id, message).then( data => {
-            db.getProducerById(userId).then( companyInfo => {
-                let newMessage = {
-                    message: data.message,
-                    sender_id: data.sender_id,
-                    id: data.id,
-                    created_at: data.created_at,
-                    company_legal_name: companyInfo.company_legal_name,
-                    company_image_url: companyInfo.company_image_url || '/content/default_company_logo_picture.png'
-                }
-                console.log("3- socket newChatMessage EMIT 2 with message text: ", newMessage);
-                io.sockets.emit("newMessage", newMessage)
-            })
+    socket.on("newMessage", async messages => {
+        console.log("2- socket newChatMessage RECEIVE 2 with message text: ", messages);
+        console.log("event newMessage, width message: ", messages);
+        var message = messages.splice(-1)[0]
+        var newMessage = {}
+        await db.saveMessage(userId, message).then(data => {
+            newMessage = {
+                message: data.message,
+                sender_id: data.sender_id,
+                id: data.id,
+                created_at: data.created_at,
+                company_legal_name: socket.request.session.user.company_legal_name,
+                company_image_url: socket.request.session.user.company_image_url || '/content/default_company_logo_picture.png'
+            }
         })
+        await messages.push(newMessage)
+        console.log("3- socket newChatMessage EMIT 2 with message text: ", messages);
+        await io.sockets.emit("newMessage", messages)
     })
 
     db.getMessages().then( messages => {

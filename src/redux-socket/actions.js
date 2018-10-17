@@ -176,10 +176,17 @@ export function receiveMessages(messages) {
         messages
     }
 }
-export function newMessage(message) {
-    console.log("5- socket action receive with message text: ", message);
+export function newMessage(messages) {
+    console.log("5- socket action receive with message text: ", messages);
     return {
         type: 'NEW_MESSAGE',
-        message
+        messages
+    }
+}
+export function setActiveChat(profile) {
+    console.log("setActiveChat action with profile: ", profile);
+    return {
+        type: 'SET_ACTIVE_CHAT',
+        profile
     }
 }

@@ -293,20 +293,27 @@ export default function(state = {}, action) {
         }
     }
     if (action.type == 'NEW_MESSAGE') {
-        console.log("NEW_MESSAGE reducer");
-        var previousArrayOfMessages = state.messages
-        console.log("previousArrayOfMessages: ", previousArrayOfMessages);
-        if (state.messages.length >= 16) {
-            console.log("slice happening");
-            previousArrayOfMessages.shift()
-        }
-        previousArrayOfMessages.push(action.message)
-        console.log("previousArrayOfMessages after push: ", previousArrayOfMessages);
+        console.log("NEW_MESSAGE reducer action: ", action);
+        // var previousArrayOfMessages = state.messages
+        // console.log("previousArrayOfMessages: ", previousArrayOfMessages);
+        // if (state.messages.length >= 16) {
+        //     console.log("slice happening");
+        //     previousArrayOfMessages.shift()
+        // }
+        // previousArrayOfMessages.push(action.message)
+        // console.log("previousArrayOfMessages after push: ", previousArrayOfMessages);
         state = {
             ...state,
-            messages: previousArrayOfMessages
+            messages: action.messages
         }
         console.log("have messages updated: state.messages after reducer state: ", state.messages);
+    }
+    if (action.type == 'SET_ACTIVE_CHAT') {
+        console.log("SET_ACTIVE_CHAT action.profile: ", action.profile);
+        state = {
+            ...state,
+            activeChat: action.profile
+        }
     }
     return state;
 }

@@ -66,19 +66,32 @@ class App extends Component {
     }
     handleChange(e) {
         var val = e.target.value
-        var matches = [];
-        const { otherCompanies } = this.props
+        var userMatches = [];
+        var CompanyMatches = [];
+        const { allProfiles, otherCompanies, otherUsers } = this.props
+        for (var i = 0; i < otherUsers.length; i++) {
+            if (
+                otherUsers[i].user_name.toLowerCase().startsWith(val.toLowerCase()) &&
+                val != ""
+            ) {
+                userMatches.push(otherUsers[i]);
+            }
+            if (userMatches.length >= 6) {
+                break;
+            }
+        }
         for (var i = 0; i < otherCompanies.length; i++) {
             if (
                 otherCompanies[i].company_legal_name.toLowerCase().startsWith(val.toLowerCase()) &&
                 val != ""
             ) {
-                matches.push(otherCompanies[i]);
+                CompanyMatches.push(otherCompanies[i]);
             }
-            if (matches.length >= 5) {
+            if (CompanyMatches.length >= 5) {
                 break;
             }
         }
+        var matches = [...userMatches, ...CompanyMatches]
         this.props.dispatch(setMatches(matches))
     }
     colapseSearchBar(e) {

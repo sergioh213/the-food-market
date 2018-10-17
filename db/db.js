@@ -331,8 +331,8 @@ exports.getMessages = function() {
         FROM general_messages
         JOIN producers
         ON general_messages.sender_id = producers.id
-        ORDER BY general_messages.id DESC LIMIT 9;
         `
+        // ORDER BY general_messages.id DESC LIMIT 9;
     return db.query(q)
         .then(results => {
             return results.rows.sort( (a, b) => {

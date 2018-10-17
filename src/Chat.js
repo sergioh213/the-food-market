@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import { connect } from 'react-redux';
 import { newChatMessage } from './redux-socket/socket'
-import { toggleShowChat, toggleExpandChat, setChatMatches } from './redux-socket/actions.js'
+import { toggleShowChat, toggleExpandChat, setChatMatches, setActiveChat } from './redux-socket/actions.js'
 import styled from 'styled-components'
 import axios from './axios'
 
@@ -14,7 +14,8 @@ const mapStateToProps = state => {
         otherCompanies: state.otherCompanies,
         chatSearchBarMatches: state.chatSearchBarMatches,
         otherUsers: state.otherUsers,
-        allProfiles: state.allProfiles
+        allProfiles: state.allProfiles,
+        activeChat: state.activeChat
     }
 }
 
@@ -63,9 +64,10 @@ class Chat extends Component {
         this.handleChange = this.handleChange.bind(this)
         this.handleSearchChange = this.handleSearchChange.bind(this)
         this.expandChat = this.expandChat.bind(this)
+        this.updateScroll = this.updateScroll.bind(this)
     }
-    componentDidMount() {
-        this.setState({ mounted: true })
+    async componentDidMount() {
+        await this.setState({ mounted: true })
         if (!this.props.showBottomMenu) {
             this.bodyElem.style.width = "60%"
             this.lm.style.width = "100%"
@@ -75,11 +77,11 @@ class Chat extends Component {
         } else {
             this.lm.style.width = "29%"
         }
+        // this.messageFieldElem.scrollTop = this.messageFieldElem.scrollHeight;
+        // console.log("this.messageFieldElem: ", this.messageFieldElem);
+        await this.updateScroll()
     }
-    forceUpdate() {
-        console.log("forceUpdate happening");
-    }
-    componentDidUpdate() {
+    async componentDidUpdate() {
         console.log("chat updated");
         if (!this.props.showBottomMenu) {
             this.bodyElem.style.width = "60%"
@@ -90,26 +92,46 @@ class Chat extends Component {
         } else {
             this.lm.style.width = "29%"
         }
+        // this.messageFieldElem.scrollTop = this.messageFieldElem.scrollHeight;
+        // console.log("this.messageFieldElem: ", this.messageFieldElem);
+        await this.updateScroll()
+    }
+    updateScroll(){
+        console.log("updateScroll happening");
+        this.messageFieldElem.scrollTop = this.messageFieldElem.scrollHeight;
     }
     handleSearchChange(e) {
         var val = e.target.value
-        var matches = [];
-        const { allProfiles } = this.props
-        for (var i = 0; i < allProfiles.length; i++) {
+        var userMatches = [];
+        var CompanyMatches = [];
+        const { allProfiles, otherCompanies, otherUsers } = this.props
+        for (var i = 0; i < otherUsers.length; i++) {
             if (
-                ((allProfiles[i].company_legal_name && allProfiles[i].company_legal_name.toLowerCase().startsWith(val.toLowerCase())) || (allProfiles[i].user_name && allProfiles[i].user_name.toLowerCase().startsWith(val.toLowerCase()))) &&
+                otherUsers[i].user_name.toLowerCase().startsWith(val.toLowerCase()) &&
                 val != ""
             ) {
-                matches.push(allProfiles[i]);
+                userMatches.push(otherUsers[i]);
             }
-            if (matches.length >= 11) {
+            if (userMatches.length >= 6) {
                 break;
             }
         }
+        for (var i = 0; i < otherCompanies.length; i++) {
+            if (
+                otherCompanies[i].company_legal_name.toLowerCase().startsWith(val.toLowerCase()) &&
+                val != ""
+            ) {
+                CompanyMatches.push(otherCompanies[i]);
+            }
+            if (CompanyMatches.length >= 5) {
+                break;
+            }
+        }
+        var matches = [...userMatches, ...CompanyMatches]
         this.props.dispatch(setChatMatches(matches))
     }
     toggleChat() {
-        console.log("turning chat off from bottom section");
+        // console.log("turning chat off from bottom section");
         this.props.dispatch(toggleShowChat());
     }
     expandChat() {
@@ -125,10 +147,17 @@ class Chat extends Component {
         console.log("this.state.message at send message: ", this.state.message);
         if (this.state.message && this.state.message != "" && this.state.message != null) {
             console.log("sendMessage happening");
-            await newChatMessage(this.state.message)
+            var previousArrayOfMessages = this.props.messages
+            // if (state.messages.length >= 16) {
+            //     previousArrayOfMessages.shift()
+            // }
+            await previousArrayOfMessages.push(this.state.message)
+            await newChatMessage(previousArrayOfMessages)
             await this.setState({ message: "" })
-            this.forceUpdate()
         }
+    }
+    selectUser(profile) {
+        this.props.dispatch(setActiveChat(profile))
     }
     render() {
         if (!this.state.mounted && !this.props.messages) {
@@ -164,6 +193,17 @@ class Chat extends Component {
             float: left;
             color: #5EB648;
             cursor: pointer;
+            `
+        const ActiveChatText = styled.div`
+            display: inline-block;
+            position: relative;
+            height: 100%;
+            `
+            // align-items: center;
+        const ActiveChatName = styled.div`
+            position: relative;
+            top: 50%;
+            transform: translateY(-50%);
             `
         const CloseX = styled.div`
             position: relative;
@@ -213,6 +253,7 @@ class Chat extends Component {
             background-color: rgba(228, 221, 214, 1);
             padding: 8px 12px 8px 12px;
             height: 100%;
+            overflow: scroll;
             `
             // max-height: 200px;
         const ChatBottom =  styled.div`
@@ -387,11 +428,22 @@ class Chat extends Component {
                         }
                         <ChatHeader>Chat</ChatHeader>
                     </LeftHeader>
-                    <ActiveChatBubbleBox>
-                        <ActiveChatBubble>
-                        </ActiveChatBubble>
-                    </ActiveChatBubbleBox>
+                    { (this.props.activeChat && this.props.activeChat.company_legal_name) &&
+                        <ActiveChatBubbleBox>
+                            <ActiveChatBubble src={this.props.activeChat.company_image_url}></ActiveChatBubble>
+                        </ActiveChatBubbleBox>
+                    }
+                    { (this.props.activeChat && this.props.activeChat.user_name) &&
+                        <ActiveChatBubbleBox>
+                        <ActiveChatBubble src={this.props.activeChat.profile_image_url}></ActiveChatBubble>
+                        </ActiveChatBubbleBox>
+                    }
                     <RightHeader>
+                        <ActiveChatText>
+                            { this.props.activeChat &&
+                                ((this.props.activeChat.user_name && <ActiveChatName>{`${this.props.activeChat.user_name} ${this.props.activeChat.user_lastname}`}</ActiveChatName> ) || <ActiveChatName>{this.props.activeChat.company_legal_name}</ActiveChatName>)
+                            }
+                        </ActiveChatText>
                         <CloseX onClick={this.toggleChat}>x</CloseX>
                     </RightHeader>
                 </SectionTitle>
@@ -415,7 +467,7 @@ class Chat extends Component {
                                     this.props.chatSearchBarMatches.map(item => {
                                         if (item.user_name) {
                                             return(
-                                                <ResultBox key={item.id}>
+                                                <ResultBox key={item.id} onClick={() => this.selectUser(item)}>
                                                     <ProfileImage src={item.profile_image_url}></ProfileImage>
                                                     <ProfileTextWrapper>
                                                         <ProfileName>{`${item.user_name} ${item.user_lastname}`}</ProfileName>
@@ -425,7 +477,7 @@ class Chat extends Component {
                                             )
                                         } else if (item.company_legal_name) {
                                             return(
-                                                <ResultBox key={item.id}>
+                                                <ResultBox key={item.id} onClick={() => this.selectUser(item)}>
                                                     <ProfileImage src={item.company_image_url}></ProfileImage>
                                                     <ProfileTextWrapper>
                                                         <ProfileName>{item.company_legal_name}</ProfileName>
@@ -443,7 +495,7 @@ class Chat extends Component {
                         <VerticalBar></VerticalBar>
                     }
                     <div id="chat-body" ref={(bodyElem) => this.bodyElem = bodyElem}>
-                        <MessagesField>
+                        <div id="messages-field" ref={(messageFieldElem) => this.messageFieldElem = messageFieldElem}>
                             { this.props.messages &&
                                 this.props.messages.map(message => {
                                     if (message.sender_id == this.props.profile.id) {
@@ -465,7 +517,7 @@ class Chat extends Component {
                                     }
                                 })
                             }
-                        </MessagesField>
+                        </div>
                         <div id="chat-bottom">
                             <input
                                 id="chat-input"
