@@ -45,13 +45,13 @@
 --     uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 -- );
 --
-CREATE TABLE general_messages (
-    id SERIAL PRIMARY KEY,
-    sender_id INT REFERENCES producers(id),
-    message VARCHAR(400),
-    -- chat_id INT NOT NULL REFERENCES chat_rooms(id),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
+-- CREATE TABLE general_messages (
+--     id SERIAL PRIMARY KEY,
+--     sender_id INT REFERENCES producers(id),
+--     message VARCHAR(400),
+--     -- chat_id INT NOT NULL REFERENCES chat_rooms(id),
+--     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+-- );
 --
 -- CREATE TABLE private_messages (
 --     id SERIAL PRIMARY KEY,
@@ -61,25 +61,25 @@ CREATE TABLE general_messages (
 --     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 -- );
 
-CREATE TABLE rolls (
-    id SERIAL PRIMARY KEY,
-    company INT REFERENCES producers(id),
-    roll_name VARCHAR(100),
-    roll_description VARCHAR(500),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE users (
-    id SERIAL PRIMARY KEY,
-    email VARCHAR(100) NOT NULL UNIQUE,
-    hashed_password VARCHAR(100) NOT NULL,
-    user_name VARCHAR(100) NOT NULL,
-    user_lastname VARCHAR(100),
-    profile_image_url VARCHAR(300),
-    user_bio VARCHAR(500),
-    user_roll INT REFERENCES rolls(id),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
+-- CREATE TABLE rolls (
+--     id SERIAL PRIMARY KEY,
+--     company INT REFERENCES producers(id),
+--     roll_name VARCHAR(100),
+--     roll_description VARCHAR(500),
+--     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+-- );
+--
+-- CREATE TABLE users (
+--     id SERIAL PRIMARY KEY,
+--     email VARCHAR(100) NOT NULL UNIQUE,
+--     hashed_password VARCHAR(100) NOT NULL,
+--     user_name VARCHAR(100) NOT NULL,
+--     user_lastname VARCHAR(100),
+--     profile_image_url VARCHAR(300),
+--     user_bio VARCHAR(500),
+--     user_roll INT REFERENCES rolls(id),
+--     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+-- );
 
 -- ALTER TABLE rolls ADD roll_name VARCHAR(100);
 -- ALTER TABLE producers DROP column_name, DROP column_name2;

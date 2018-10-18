@@ -47,22 +47,17 @@ export default function(state = {}, action) {
         }
     }
     if (action.type == 'GET_ALL_COMPANIES') {
-        console.log("GET_ALL_COMPANIES action: ", action);
         state = {
             ...state,
             otherCompanies: action.producers.filter(company => company.id != state.profile.id)
         }
-        console.log("state.otherCompanies after GET_ALL_COMPANIES: ", state.otherCompanies);
     }
     if (action.type == 'GET_ALL_USERS') {
-        console.log("GET_ALL_USERS action.users: ", action.users);
         state = {
             ...state,
             otherUsers: action.users,
             allProfiles: [...action.users, ...state.otherCompanies]
         }
-        console.log("state.otherUsers after GET_ALL_USERS: ", state.otherUsers);
-        console.log("state.allProfiles after GET_ALL_USERS: ", state.allProfiles);
     }
     if (action.type == 'TOGGLE_CHAT') {
         state = {
@@ -286,33 +281,59 @@ export default function(state = {}, action) {
         }
     }
     if (action.type == 'RECEIVE_MESSAGES') {
-        console.log("reducer RECEIVE_MESSAGES happening");
         state = {
             ...state,
             messages: action.messages
         }
     }
     if (action.type == 'NEW_MESSAGE') {
-        console.log("NEW_MESSAGE reducer action: ", action);
-        // var previousArrayOfMessages = state.messages
-        // console.log("previousArrayOfMessages: ", previousArrayOfMessages);
-        // if (state.messages.length >= 16) {
-        //     console.log("slice happening");
-        //     previousArrayOfMessages.shift()
-        // }
-        // previousArrayOfMessages.push(action.message)
-        // console.log("previousArrayOfMessages after push: ", previousArrayOfMessages);
         state = {
             ...state,
             messages: action.messages
         }
-        console.log("have messages updated: state.messages after reducer state: ", state.messages);
     }
-    if (action.type == 'SET_ACTIVE_CHAT') {
-        console.log("SET_ACTIVE_CHAT action.profile: ", action.profile);
+    if (action.type == 'NEW_PRIVATE_MESSAGE') {
+        console.log("NEW_PRIVATE_MESSAGE action.messages: ", action.messages);
+        var updatedActiveChats = []
+        if (state.activeChats) {
+            updatedActiveChats = state.activeChats
+        }
+        updatedActiveChats[0] = {
+            ...updatedActiveChats[0],
+            messages: action.messages.messages
+        }
+        console.log("updatedActiveChats before state: ", updatedActiveChats);
         state = {
             ...state,
-            activeChat: action.profile
+            activeChats: updatedActiveChats
+        }
+    }
+    // if (action.type == "NEW_PRIVATE_MESSAGE") {
+    //     return {
+    //         ...state,
+    //         privateMessages: [...state.privateMessages, action.message]
+    //     };
+    // }
+    if (action.type == 'SET_ACTIVE_CHAT') {
+        console.log("SET_ACTIVE_CHAT");
+        var updatedActiveChats = []
+        if (state.activeChats) {
+            updatedActiveChats = state.activeChats
+        }
+        for (var i = 0; i < updatedActiveChats.length; i++) {
+            if (updatedActiveChats[i].id === action.profile.id) {
+                console.log("you clicked on an active chat!");
+                updatedActiveChats.splice(i, 1)
+            }
+        }
+        var newChat = {
+            ...action.profile,
+            messages: action.messages
+        }
+        updatedActiveChats.unshift(newChat)
+        state = {
+            ...state,
+            activeChats: updatedActiveChats
         }
     }
     return state;

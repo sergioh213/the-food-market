@@ -129,7 +129,6 @@ class Profile extends Component {
         this.setState({ tab: !this.state.tab })
     }
     toggleFacility(facility) {
-        console.log("toggleFacility happening with facility: ", facility);
         this.props.dispatch(openFacility(facility))
     }
     render() {

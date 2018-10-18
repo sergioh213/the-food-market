@@ -340,6 +340,32 @@ exports.getMessages = function() {
             })
         })
 }
+exports.getPrivateConversation = function(sessionId, otherId) {
+    const params = [sessionId, otherId]
+    const q = `
+        SELECT * FROM private_messages
+        WHERE ((sender_id = $1 AND receiver_id = $2)
+        OR (sender_id = $2 AND receiver_id = $1))
+        `
+    return db.query(q, params)
+        .then(results => {
+            return results.rows.sort( (a, b) => {
+                return a.id - b.id
+            })
+        })
+}
+
+exports.savePrivateMessage = function(sender_id, receiver_id, message) {
+    const params = [sender_id, receiver_id, message]
+    const q = `
+            INSERT INTO private_messages (sender_id, receiver_id, message)
+            VALUES ($1, $2, $3)
+            RETURNING *;
+        `;
+    return db.query(q, params).then(results => {
+        return results.rows[0]
+    })
+}
 
 exports.saveMessage = function(userId, message) {
     const params = [userId, message]

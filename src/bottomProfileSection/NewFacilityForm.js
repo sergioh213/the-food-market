@@ -30,7 +30,6 @@ class NewFacilityForm extends Component {
         this.toggleShowBottom = this.toggleShowBottom.bind(this)
     }
     componentDidMount() {
-        console.log("container mounted");
         if (this.props.chat.showChat && !this.props.chat.expanded) {
             this.lm.style.width = "70%"
         } else if (this.props.chat.showChat && this.props.chat.expanded) {
@@ -88,7 +87,6 @@ class NewFacilityForm extends Component {
         this.props.dispatch(toggleShowBottomMenu())
     }
     componentDidUpdate() {
-        console.log("container updated");
         if (this.props.facilitySaveInProgress &&
             this.props.facilitySaveInProgress.facility_name &&
             this.props.facilitySaveInProgress.how_to_arrive_text

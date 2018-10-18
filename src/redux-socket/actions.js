@@ -48,7 +48,6 @@ export async function getAllCompanies() {
 export async function getAllUsers() {
     return axios.get("/all-users.json").then(
         ({data}) => {
-            console.log("getAllUsers action data: ", data);
             return {
                 type: 'GET_ALL_USERS',
                 users: data.users
@@ -177,16 +176,30 @@ export function receiveMessages(messages) {
     }
 }
 export function newMessage(messages) {
-    console.log("5- socket action receive with message text: ", messages);
     return {
         type: 'NEW_MESSAGE',
         messages
     }
 }
-export function setActiveChat(profile) {
-    console.log("setActiveChat action with profile: ", profile);
+export function newPrivateMessage(messages) {
+    console.log("ACTION newPrivateMessage happening with messages: ", messages);
+    return {
+        type: 'NEW_PRIVATE_MESSAGE',
+        messages
+    }
+}
+// export function newPrivateMessage(message) {
+//     return {
+//         type: "NEW_PRIVATE_MESSAGE",
+//         message
+//     };
+// }
+export async function setActiveChat(profile) {
+    var messages = await axios.post("/conversation", profile)
+    console.log("setActiveChat action messages.data.messages: ", messages.data.messages);
     return {
         type: 'SET_ACTIVE_CHAT',
-        profile
+        profile,
+        messages: messages.data.messages
     }
 }

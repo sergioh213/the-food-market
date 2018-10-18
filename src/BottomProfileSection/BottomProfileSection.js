@@ -27,7 +27,6 @@ class BottomProfileSection extends Component {
     }
     render() {
         if (!this.state.mounted || !this.props) {
-            console.log("bottom section stuck");
             return null
         }
         const Main = styled.div`

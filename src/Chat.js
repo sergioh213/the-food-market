@@ -1,6 +1,6 @@
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 import { connect } from 'react-redux';
-import { newChatMessage } from './redux-socket/socket'
+import { newChatMessage, emitPrivateMessage, init } from './redux-socket/socket'
 import { toggleShowChat, toggleExpandChat, setChatMatches, setActiveChat } from './redux-socket/actions.js'
 import styled from 'styled-components'
 import axios from './axios'
@@ -15,7 +15,7 @@ const mapStateToProps = state => {
         chatSearchBarMatches: state.chatSearchBarMatches,
         otherUsers: state.otherUsers,
         allProfiles: state.allProfiles,
-        activeChat: state.activeChat
+        activeChats: state.activeChats
     }
 }
 
@@ -59,6 +59,7 @@ class Chat extends Component {
             ]
         }
 
+        this.socket = init();
         this.toggleChat = this.toggleChat.bind(this)
         this.sendMessage = this.sendMessage.bind(this)
         this.handleChange = this.handleChange.bind(this)
@@ -81,7 +82,6 @@ class Chat extends Component {
         await this.updateScroll()
     }
     async componentDidUpdate() {
-        console.log("chat updated");
         if (!this.props.showBottomMenu) {
             this.bodyElem.style.width = "60%"
             this.lm.style.width = "100%"
@@ -95,7 +95,6 @@ class Chat extends Component {
         await this.chatInpuElem.focus()
     }
     updateScroll(){
-        console.log("updateScroll happening");
         this.messageFieldElem.scrollTop = this.messageFieldElem.scrollHeight;
     }
     handleSearchChange(e) {
@@ -129,11 +128,9 @@ class Chat extends Component {
         this.props.dispatch(setChatMatches(matches))
     }
     toggleChat() {
-        // console.log("turning chat off from bottom section");
         this.props.dispatch(toggleShowChat());
     }
     expandChat() {
-        console.log("expandChat happening");
         this.props.dispatch(toggleExpandChat())
     }
     handleChange(e) {
@@ -141,22 +138,33 @@ class Chat extends Component {
             [ e.target.name ] : e.target.value
         })
     }
-    async sendMessage() {
-        console.log("this.state.message at send message: ", this.state.message);
-        if (this.state.message && this.state.message != "" && this.state.message != null) {
-            console.log("sendMessage happening");
-            var previousArrayOfMessages = this.props.messages
-            // if (state.messages.length >= 16) {
-            //     previousArrayOfMessages.shift()
-            // }
-            await previousArrayOfMessages.push(this.state.message)
-            await newChatMessage(previousArrayOfMessages)
-            await this.setState({ message: "" })
+    async sendMessage(profile) {
+        if (profile) {
+            if (this.state.message && this.state.message != "" && this.state.message != null) {
+                // this.socket.emit(
+                //     "newPrivateMessage",
+                //     this.state.message,
+                //     profile
+                // );
+                var previousArrayOfMessages = this.props.activeChats[0].messages
+                console.log("this.props.activeChats[0].messages: ", this.props.activeChats[0].messages);
+                console.log("previousArrayOfMessages: ", previousArrayOfMessages);
+                previousArrayOfMessages.push(this.state.message)
+                await emitPrivateMessage(previousArrayOfMessages, profile)
+                await this.setState({ message: "" })
+            }
+        } else {
+            if (this.state.message && this.state.message != "" && this.state.message != null) {
+                var previousArrayOfMessages = this.props.messages
+                await previousArrayOfMessages.push(this.state.message)
+                await newChatMessage(previousArrayOfMessages)
+                await this.setState({ message: "" })
+            }
         }
     }
-    onKeyDown(e) {
+    onKeyDown(e, profile) {
         if (e.keyCode === 13) {
-          this.sendMessage();
+          this.sendMessage(profile);
         }
     }
     selectUser(profile) {
@@ -354,9 +362,14 @@ class Chat extends Component {
             border-top: 1px lightgrey solid;
             `
         const VerticalBar = styled.div`
+            position: relative;
             width: 42px;
             height: 100%;
             border-left: 1px lightgrey solid;
+            display: flex;
+            flex-direction: column;
+            justify-content: start;
+            align-items: center;
             `
         const ActiveChatBubbleBox = styled.div`
             width: 44px;
@@ -373,8 +386,27 @@ class Chat extends Component {
             border: 3px #5EB648 solid;
             background-color: lightgrey;
             border-radius: 100%;
+            object-fit: cover;
+            object-position: center;
             bottom: 3px;
             left: -1px;
+            `
+        const ChatBubble = styled.img`
+            position: relative;
+            width: 30px;
+            height: 30px;
+            background-color: lightgrey;
+            border-radius: 100%;
+            object-fit: cover;
+            object-position: center;
+            bottom: 3px;
+            left: -1px;
+            margin-top: 6px;
+            cursor: pointer;
+
+            &:hover{
+                transform: scale(1.1);
+            }
             `
         const ResultBox = styled.div`
             position: relative;
@@ -410,7 +442,6 @@ class Chat extends Component {
             font-size: 12px;
             display: inline-block;
             `
-        console.log("this.props.messages before render: ", this.props.messages);
         return (
             <div id="chat-main"
                 ref={(lm) => this.lm = lm}
@@ -432,20 +463,20 @@ class Chat extends Component {
                         }
                         <ChatHeader>Chat</ChatHeader>
                     </LeftHeader>
-                    { (this.props.activeChat && this.props.activeChat.company_legal_name) &&
+                    { (this.props.activeChats && this.props.activeChats[0].company_legal_name) &&
                         <ActiveChatBubbleBox>
-                            <ActiveChatBubble src={this.props.activeChat.company_image_url}></ActiveChatBubble>
+                            <ActiveChatBubble src={this.props.activeChats[0].company_image_url}></ActiveChatBubble>
                         </ActiveChatBubbleBox>
                     }
-                    { (this.props.activeChat && this.props.activeChat.user_name) &&
+                    { (this.props.activeChats && this.props.activeChats[0].user_name) &&
                         <ActiveChatBubbleBox>
-                        <ActiveChatBubble src={this.props.activeChat.profile_image_url}></ActiveChatBubble>
+                            <ActiveChatBubble src={this.props.activeChats[0].profile_image_url}></ActiveChatBubble>
                         </ActiveChatBubbleBox>
                     }
                     <RightHeader>
                         <ActiveChatText>
-                            { this.props.activeChat &&
-                                ((this.props.activeChat.user_name && <ActiveChatName>{`${this.props.activeChat.user_name} ${this.props.activeChat.user_lastname}`}</ActiveChatName> ) || <ActiveChatName>{this.props.activeChat.company_legal_name}</ActiveChatName>)
+                            { this.props.activeChats &&
+                                ((this.props.activeChats[0].user_name && <ActiveChatName>{`${this.props.activeChats[0].user_name} ${this.props.activeChats[0].user_lastname}`}</ActiveChatName> ) || <ActiveChatName>{this.props.activeChats[0].company_legal_name}</ActiveChatName>)
                             }
                         </ActiveChatText>
                         <CloseX onClick={this.toggleChat}>x</CloseX>
@@ -472,21 +503,21 @@ class Chat extends Component {
                                         if (item.user_name) {
                                             return(
                                                 <ResultBox key={item.id} onClick={() => this.selectUser(item)}>
-                                                    <ProfileImage src={item.profile_image_url}></ProfileImage>
-                                                    <ProfileTextWrapper>
-                                                        <ProfileName>{`${item.user_name} ${item.user_lastname}`}</ProfileName>
-                                                        <ProfileTypeLable>Person</ProfileTypeLable>
-                                                    </ProfileTextWrapper>
+                                                <ProfileImage src={item.profile_image_url}></ProfileImage>
+                                                <ProfileTextWrapper>
+                                                <ProfileName>{`${item.user_name} ${item.user_lastname}`}</ProfileName>
+                                                <ProfileTypeLable>Person</ProfileTypeLable>
+                                                </ProfileTextWrapper>
                                                 </ResultBox>
                                             )
                                         } else if (item.company_legal_name) {
                                             return(
                                                 <ResultBox key={item.id} onClick={() => this.selectUser(item)}>
-                                                    <ProfileImage src={item.company_image_url}></ProfileImage>
-                                                    <ProfileTextWrapper>
-                                                        <ProfileName>{item.company_legal_name}</ProfileName>
-                                                        <ProfileTypeLable>Company</ProfileTypeLable>
-                                                    </ProfileTextWrapper>
+                                                <ProfileImage src={item.company_image_url}></ProfileImage>
+                                                <ProfileTextWrapper>
+                                                <ProfileName>{item.company_legal_name}</ProfileName>
+                                                <ProfileTypeLable>Company</ProfileTypeLable>
+                                                </ProfileTextWrapper>
                                                 </ResultBox>
                                             )
                                         }
@@ -496,28 +527,85 @@ class Chat extends Component {
                         </div>
                     }
                     { (this.props.chat.expanded || !this.props.showBottomMenu) &&
-                        <VerticalBar></VerticalBar>
+                        <VerticalBar>
+                            { this.props.activeChats &&
+                                this.props.activeChats.map((chatBubble, i) => {
+                                    console.log("bubbles map index = ", i);
+                                    if (i === 0) {
+                                        console.log("bubbles map index if statement");
+                                        return null
+                                    } else {
+                                        if (chatBubble.user_name) {
+                                            return (
+                                                <ChatBubble
+                                                    src={chatBubble.profile_image_url}
+                                                    onClick={() => this.selectUser(chatBubble)}
+                                                >
+                                                </ChatBubble>
+                                            )
+                                        } else if (chatBubble.company_legal_name) {
+                                            return (
+                                                <ChatBubble
+                                                    src={chatBubble.company_image_url}
+                                                    onClick={() => this.selectUser(chatBubble)}
+                                                >
+                                                </ChatBubble>
+                                            )
+                                        }
+                                    }
+                                })
+                            }
+                        </VerticalBar>
                     }
                     <div id="chat-body" ref={(bodyElem) => this.bodyElem = bodyElem}>
                         <div id="messages-field" ref={(messageFieldElem) => this.messageFieldElem = messageFieldElem}>
-                            { this.props.messages &&
+                            { this.props.activeChats ? (
+                                this.props.activeChats[0].messages &&
+                                    this.props.activeChats[0].messages.map(message => {
+                                        if (!message.id) {
+                                            return null
+                                        } else {
+                                            if (message.sender_id == this.props.profile.id) {
+                                                return (
+                                                    <YourMessageWrapper key={message.id}>
+                                                    <YourMessageBox className="shadow">
+                                                    {message.message}
+                                                    </YourMessageBox>
+                                                    </YourMessageWrapper>
+                                                )
+                                            } else {
+                                                return (
+                                                    <SomeoneElsesMessageWrapper key={message.id}>
+                                                    <SomeoneElsesMessageBox className="shadow">
+                                                    {message.message}
+                                                    </SomeoneElsesMessageBox>
+                                                    </SomeoneElsesMessageWrapper>
+                                                )
+                                            }
+                                        }
+                                    })
+                            ) : this.props.messages &&
                                 this.props.messages.map(message => {
-                                    if (message.sender_id == this.props.profile.id) {
-                                        return (
-                                            <YourMessageWrapper key={message.id}>
-                                                <YourMessageBox className="shadow">
-                                                    {message.message}
-                                                </YourMessageBox>
-                                            </YourMessageWrapper>
-                                        )
+                                    if (!message.id) {
+                                        return null
                                     } else {
-                                        return (
-                                            <SomeoneElsesMessageWrapper key={message.id}>
-                                                <SomeoneElsesMessageBox className="shadow">
-                                                    {message.message}
-                                                </SomeoneElsesMessageBox>
-                                            </SomeoneElsesMessageWrapper>
-                                        )
+                                        if (message.sender_id == this.props.profile.id) {
+                                            return (
+                                                <YourMessageWrapper key={message.id}>
+                                                    <YourMessageBox className="shadow">
+                                                        {message.message}
+                                                    </YourMessageBox>
+                                                </YourMessageWrapper>
+                                            )
+                                        } else {
+                                            return (
+                                                <SomeoneElsesMessageWrapper key={message.id}>
+                                                    <SomeoneElsesMessageBox className="shadow">
+                                                        {message.message}
+                                                    </SomeoneElsesMessageBox>
+                                                </SomeoneElsesMessageWrapper>
+                                            )
+                                        }
                                     }
                                 })
                             }
@@ -530,11 +618,11 @@ class Chat extends Component {
                                 placeholder='Type a message'
                                 onChange={(e) => this.handleChange(e)}
                                 value={this.state.message}
-                                autofocus="true"
+                                autoFocus="true"
                                 ref={(chatInpuElem) => this.chatInpuElem = chatInpuElem}
-                                onKeyDown={(e) => this.onKeyDown(e)}
+                                onKeyDown={(e) => this.onKeyDown(e, (this.props.activeChats && this.props.activeChats[0]))}
                             />
-                            <SendButton onClick={() => this.sendMessage()}>
+                            <SendButton onClick={() => this.sendMessage((this.props.activeChats && this.props.activeChats[0]))}>
                                 <SendArrow className="fas fa-arrow-right"></SendArrow>
                             </SendButton>
                         </div>

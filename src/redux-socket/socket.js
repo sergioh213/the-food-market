@@ -1,5 +1,5 @@
 import * as io from 'socket.io-client';
-import { onlineUsers, userJoined, userLeft, receiveMessages, newMessage } from './actions';
+import { onlineUsers, userJoined, userLeft, receiveMessages, newMessage, newPrivateMessage } from './actions';
 
 let socket;
 
@@ -26,9 +26,17 @@ export function init(store) {
         })
 
         socket.on("newMessage", messages => {
-            console.log("4- socket newChatMessage RECEIVE 2 with message text: ", messages);
             store.dispatch(newMessage(messages))
         })
+
+        socket.on("privateMessage", messages => {
+            console.log("I have received I new message: ", messages);
+            store.dispatch(newPrivateMessage(messages))
+        })
+
+        // socket.on("newPrivateMessage", message => {
+        //     store.dispatch(newPrivateMessage(message));
+        // });
 
         // socket.on('welcome', function(data) {
         //     socket.emit('thanks', {
@@ -39,6 +47,9 @@ export function init(store) {
 }
 
 export function newChatMessage(newMessages) {
-    console.log("1- socket newChatMessage EMIT 1 with message text: ", newMessages);
     socket.emit("newMessage", newMessages)
+}
+export function emitPrivateMessage(newMessages, profile) {
+    console.log("socket newPrivateMessage newMessages: ", newMessages, " profile: ", profile);
+    socket.emit("privateMessage", {messages: newMessages, profile: profile})
 }

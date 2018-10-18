@@ -41,7 +41,6 @@ class App extends Component {
     }
     deploySearchBar(e) {
         if (this.searchBarElem.className == "icon") {
-            console.log("has class icon");
             this.searchBarElem.style.width = "500px";
             this.searchBarElem.classList.remove("icon")
             this.searchBarElem.style.justifyContent = "flex-end"
@@ -55,7 +54,6 @@ class App extends Component {
             this.props.dispatch(setMatches(matches))
         }
         this.searchBarElem.addEventListener("transitionend", () => {
-            console.log("transition ended");
             if (this.searchBarElem.className == "icon") {
                 this.inputElem.style.width = "0%"
                 this.searchBarElem.style.padding = "0"
@@ -95,7 +93,6 @@ class App extends Component {
         this.props.dispatch(setMatches(matches))
     }
     colapseSearchBar(e) {
-        console.log("colapseSearchBar happening");
         if (e.target.value == "") {
             this.searchBarElem.style.width = "35px";
             this.searchBarElem.classList.add("icon")
@@ -110,10 +107,6 @@ class App extends Component {
             !this.props.otherCompanies ||
             !this.props.otherUsers
         ) {
-            console.log("app stuck");
-            console.log("app this.props.otherCompanies: ", this.props.otherCompanies);
-            console.log("app this.props.otherUsers: ", this.props.otherUsers);
-            console.log("app this.props.productionFacilities: ", this.props.productionFacilities);
             return null
         }
         const Main = styled.div`

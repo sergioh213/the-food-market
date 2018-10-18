@@ -21,7 +21,6 @@ class SearchBarMatchesBox extends Component {
     componentDidMount() { this.setState({ mounted: true }) }
     render() {
         if (!this.state.mounted || !this.props.profile) {
-            console.log("matches stuck in null");
             return null
         }
         const Main = styled.div`
@@ -91,7 +90,6 @@ class SearchBarMatchesBox extends Component {
             font-size: 12px;
             display: inline-block;
             `
-        console.log("this.props.searchBarMatches: ", this.props.searchBarMatches);
         return (
             <div>
                 { (this.props.searchBarMatches && this.props.searchBarMatches.length>=1) &&
