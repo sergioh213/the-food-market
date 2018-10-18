@@ -36,7 +36,7 @@ const mapStateToProps = state => {
     }
 }
 
-class Profile extends Component {
+class CompanyProfile extends Component {
     constructor() {
         super()
 
@@ -581,4 +581,4 @@ class Profile extends Component {
     }
 }
 
-export default connect(mapStateToProps)(Profile)
+export default connect(mapStateToProps)(CompanyProfile)

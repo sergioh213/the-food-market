@@ -147,8 +147,6 @@ class Chat extends Component {
                 //     profile
                 // );
                 var previousArrayOfMessages = this.props.activeChats[0].messages
-                console.log("this.props.activeChats[0].messages: ", this.props.activeChats[0].messages);
-                console.log("previousArrayOfMessages: ", previousArrayOfMessages);
                 previousArrayOfMessages.push(this.state.message)
                 await emitPrivateMessage(previousArrayOfMessages, profile)
                 await this.setState({ message: "" })
@@ -442,6 +440,7 @@ class Chat extends Component {
             font-size: 12px;
             display: inline-block;
             `
+        console.log("before chat render this.props.activeChats: ", this.props.activeChats);
         return (
             <div id="chat-main"
                 ref={(lm) => this.lm = lm}
@@ -530,9 +529,7 @@ class Chat extends Component {
                         <VerticalBar>
                             { this.props.activeChats &&
                                 this.props.activeChats.map((chatBubble, i) => {
-                                    console.log("bubbles map index = ", i);
                                     if (i === 0) {
-                                        console.log("bubbles map index if statement");
                                         return null
                                     } else {
                                         if (chatBubble.user_name) {

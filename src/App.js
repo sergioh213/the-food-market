@@ -1,6 +1,8 @@
 import React, {Component} from 'react'
 import axios from './axios'
-import Profile from './Profile'
+import CompanyProfile from './CompanyProfile'
+import MarketPlace from './MarketPlace'
+import UserProfile from './UserProfile'
 import styled from 'styled-components'
 import Chat from './Chat'
 import SearchBarMatchesBox from './SearchBarMatchesBox'
@@ -25,7 +27,8 @@ class App extends Component {
 
         this.state = {
             showChat: false,
-            showSearchBar: false
+            showSearchBar: false,
+            multipleAccounts: true
         }
 
         this.deploySearchBar = this.deploySearchBar.bind(this)
@@ -141,6 +144,11 @@ class App extends Component {
             justify-content: flex-end;
             margin-top: 8px;
             margin-bottom: 8px;
+            ${() => {
+                if (this.state.multipleAccounts) {
+                    return "justify-content: space-between;"
+                }
+            }}
             `
         const SearchIconWrapper = styled.div`
             position: relative;
@@ -157,9 +165,35 @@ class App extends Component {
                 background-color: #6ACC58;
             }
             `
+        const SwitchAccountWrapper = styled.div`
+            height: 35px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            background-color: #5EB648;
+            border-radius: 17.5px;
+            padding: 0 5px 0 8px;
+            cursor: pointer;
+
+            &:hover{
+                transform: scale(1.1);
+            }
+            `
+        const SwitchAccountIcon = styled.i`
+            position: relative;
+            color: white;
+            margin-right: 3px;
+            `
         return (
             <Main id="app">
                 <TopStripe>
+                    { this.state.multipleAccounts &&
+                        <SwitchAccountWrapper>
+                            <SwitchAccountIcon className="fas fa-user-circle"></SwitchAccountIcon>
+                            <SwitchAccountIcon className="fas fa-arrows-alt-h"></SwitchAccountIcon>
+                            <SwitchAccountIcon className="fas fa-user-circle"></SwitchAccountIcon>
+                        </SwitchAccountWrapper>
+                    }
                     <BubblesWrapper>
                         <div>
                             <div
@@ -177,13 +211,17 @@ class App extends Component {
                             </div>
                             <SearchBarMatchesBox />
                         </div>
-                        <a href="/"><IconWrapper className="icon"><Icon className="fas fa-users"></Icon></IconWrapper></a>
+                        <a href="/profile"><IconWrapper className="icon"><Icon className="fas fa-user"></Icon></IconWrapper></a>
+                        <a href="/company"><IconWrapper className="icon"><Icon className="fas fa-building"></Icon></IconWrapper></a>
+                        <a href="/marketplace"><IconWrapper className="icon"><Icon className="fas fa-shopping-cart"></Icon></IconWrapper></a>
                         <a href="/logout"><IconWrapper className="icon"><Icon className="fas fa-sign-out-alt"></Icon></IconWrapper></a>
                     </BubblesWrapper>
                 </TopStripe>
                 <BrowserRouter>
                     <div>
-                        <Route exact path='/' component={Profile} />
+                        <Route exact path='/profile' component={UserProfile} />
+                        <Route exact path='/company' component={CompanyProfile} />
+                        <Route exact path='/marketplace' component={MarketPlace} />
                         <Route exact path='/user/:id' component={Opp} />
                     </div>
                 </BrowserRouter>
