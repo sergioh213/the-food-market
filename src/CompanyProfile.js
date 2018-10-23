@@ -7,6 +7,7 @@ import LogoUploader from './LogoUploader'
 import FacilityImagesUploader from './bottomProfileSection/FacilityImagesUploader'
 import FinishProfile from './FinishProfile'
 import CompanyName from './CompanyName'
+import TypeOfCompanyButton from './TypeOfCompanyButton'
 import CompanyDescriptionText from './CompanyDescriptionText'
 import CompanyAddress from './CompanyAddress'
 import GoogleMap from './GoogleMap'
@@ -474,6 +475,7 @@ class CompanyProfile extends Component {
                         <CompanyScore />
                     </LeftPanel>
                     <CentralPanel className="shadow">
+                        <TypeOfCompanyButton />
                         <CompanyLogo
                             className="shadow"
                             onClick={this.toggleShowLogoUploader}

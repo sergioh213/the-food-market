@@ -293,27 +293,16 @@ export default function(state = {}, action) {
         }
     }
     if (action.type == 'NEW_PRIVATE_MESSAGE') {
-        console.log("NEW_PRIVATE_MESSAGE action.messages: ", action.messages);
-        var updatedActiveChats = []
-        if (state.activeChats) {
-            updatedActiveChats = state.activeChats
-        }
-        updatedActiveChats[0] = {
-            ...updatedActiveChats[0],
-            messages: action.messages.messages
-        }
-        console.log("updatedActiveChats before state: ", updatedActiveChats);
+        console.log("NEW_PRIVATE_MESSAGE action.message: ", action.message);
+        var activeChatsClone = state.activeChats
+        activeChatsClone[0].messages.push(action.message)
+        console.log("activeChatsClone: ", activeChatsClone);
         state = {
             ...state,
-            activeChats: updatedActiveChats
+            activeChats: activeChatsClone,
+            currentChatMessages: activeChatsClone[0].messages
         }
     }
-    // if (action.type == "NEW_PRIVATE_MESSAGE") {
-    //     return {
-    //         ...state,
-    //         privateMessages: [...state.privateMessages, action.message]
-    //     };
-    // }
     if (action.type == 'SET_ACTIVE_CHAT') {
         console.log("SET_ACTIVE_CHAT");
         var updatedActiveChats = []
@@ -333,7 +322,8 @@ export default function(state = {}, action) {
         updatedActiveChats.unshift(newChat)
         state = {
             ...state,
-            activeChats: updatedActiveChats
+            activeChats: updatedActiveChats,
+            currentChatMessages: updatedActiveChats[0].messages
         }
     }
     return state;

@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux';
 import { newChatMessage, emitPrivateMessage, init } from './redux-socket/socket'
-import { toggleShowChat, toggleExpandChat, setChatMatches, setActiveChat } from './redux-socket/actions.js'
+import { toggleShowChat, toggleExpandChat, setChatMatches, setActiveChat, newPrivateMessage } from './redux-socket/actions.js'
 import styled from 'styled-components'
 import axios from './axios'
 
@@ -15,7 +15,8 @@ const mapStateToProps = state => {
         chatSearchBarMatches: state.chatSearchBarMatches,
         otherUsers: state.otherUsers,
         allProfiles: state.allProfiles,
-        activeChats: state.activeChats
+        activeChats: state.activeChats,
+        currentChatMessages: state.currentChatMessages
     }
 }
 
@@ -71,10 +72,10 @@ class Chat extends Component {
     async componentDidMount() {
         await this.setState({ mounted: true })
         if (!this.props.showBottomMenu) {
-            this.bodyElem.style.width = "60%"
+            // this.bodyElem.style.width = "60%"
             this.lm.style.width = "100%"
         } else if (this.props.showBottomMenu && this.props.chat.expanded) {
-            this.bodyElem.style.width = "60%"
+            // this.bodyElem.style.width = "60%"
             this.lm.style.width = "70%"
         } else {
             this.lm.style.width = "29%"
@@ -82,11 +83,12 @@ class Chat extends Component {
         await this.updateScroll()
     }
     async componentDidUpdate() {
+        console.log("CHAT UPDATED!");
         if (!this.props.showBottomMenu) {
-            this.bodyElem.style.width = "60%"
+            // this.bodyElem.style.width = "60%"
             this.lm.style.width = "100%"
         } else if (this.props.showBottomMenu && this.props.chat.expanded) {
-            this.bodyElem.style.width = "60%"
+            // this.bodyElem.style.width = "60%"
             this.lm.style.width = "70%"
         } else {
             this.lm.style.width = "29%"
@@ -141,14 +143,14 @@ class Chat extends Component {
     async sendMessage(profile) {
         if (profile) {
             if (this.state.message && this.state.message != "" && this.state.message != null) {
-                // this.socket.emit(
-                //     "newPrivateMessage",
-                //     this.state.message,
-                //     profile
-                // );
-                var previousArrayOfMessages = this.props.activeChats[0].messages
-                previousArrayOfMessages.push(this.state.message)
-                await emitPrivateMessage(previousArrayOfMessages, profile)
+                var message = {
+                    id: this.props.activeChats[0].messages[(this.props.activeChats[0].messages.length - 1)].id + 1,
+                    sender_id: this.props.profile.id,
+                    receiver_id: profile.id,
+                    message: this.state.message
+                }
+                await emitPrivateMessage(message)
+                await this.props.dispatch(newPrivateMessage(message))
                 await this.setState({ message: "" })
             }
         } else {
@@ -194,6 +196,7 @@ class Chat extends Component {
         const ChatHeader = styled.div`
             color: #5EB648;
             font-weight: 400;
+            margin-right: 12px;
             `
         const ExpandChatIcon = styled.i`
             position: relative;
@@ -231,17 +234,17 @@ class Chat extends Component {
             `
         const LeftHeader = styled.div`
             position: relative;
-            width: 40%;
+            width: 400px;
             height: 100%;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0px 12px 0px 12px;
             `
+            // padding: 0px 12px 0px 12px;
         const RightHeader = styled.div`
             position: relative;
             height: 100%;
-            width: 60%;
+            width: 100%;
             `
         const ChatBody = styled.div`
             width: ${() => {
@@ -335,7 +338,7 @@ class Chat extends Component {
         const LeftMenu = styled.div`
             display: flex;
             height: 100%;
-            width: 40%;
+            width: 200px;
             flex-direction: column;
             `
         const SearchBar = styled.div`
@@ -361,7 +364,7 @@ class Chat extends Component {
             `
         const VerticalBar = styled.div`
             position: relative;
-            width: 42px;
+            width: 66px;
             height: 100%;
             border-left: 1px lightgrey solid;
             display: flex;
@@ -370,7 +373,7 @@ class Chat extends Component {
             align-items: center;
             `
         const ActiveChatBubbleBox = styled.div`
-            width: 44px;
+            width: 66px;
             height: 100%;
             border-left: 1px lightgrey solid;
             display: flex;
@@ -441,13 +444,14 @@ class Chat extends Component {
             display: inline-block;
             `
         console.log("before chat render this.props.activeChats: ", this.props.activeChats);
+        console.log("before chat render this.props.currentChatMessages: ", this.props.currentChatMessages);
         return (
             <div id="chat-main"
                 ref={(lm) => this.lm = lm}
                 className="shadow"
                 >
                 <SectionTitle>
-                    <LeftHeader>
+                    <LeftHeader id="leff-header">
                         { this.props.showBottomMenu &&
                             ( this.props.chat.expanded ?
                                 <ExpandChatIcon
@@ -462,16 +466,14 @@ class Chat extends Component {
                         }
                         <ChatHeader>Chat</ChatHeader>
                     </LeftHeader>
-                    { (this.props.activeChats && this.props.activeChats[0].company_legal_name) &&
-                        <ActiveChatBubbleBox>
+                    <ActiveChatBubbleBox>
+                        { (this.props.activeChats && this.props.activeChats[0].company_legal_name) &&
                             <ActiveChatBubble src={this.props.activeChats[0].company_image_url}></ActiveChatBubble>
-                        </ActiveChatBubbleBox>
-                    }
-                    { (this.props.activeChats && this.props.activeChats[0].user_name) &&
-                        <ActiveChatBubbleBox>
+                        }
+                        { (this.props.activeChats && this.props.activeChats[0].user_name) &&
                             <ActiveChatBubble src={this.props.activeChats[0].profile_image_url}></ActiveChatBubble>
-                        </ActiveChatBubbleBox>
-                    }
+                        }
+                    </ActiveChatBubbleBox>
                     <RightHeader>
                         <ActiveChatText>
                             { this.props.activeChats &&
@@ -556,31 +558,30 @@ class Chat extends Component {
                     }
                     <div id="chat-body" ref={(bodyElem) => this.bodyElem = bodyElem}>
                         <div id="messages-field" ref={(messageFieldElem) => this.messageFieldElem = messageFieldElem}>
-                            { this.props.activeChats ? (
-                                this.props.activeChats[0].messages &&
-                                    this.props.activeChats[0].messages.map(message => {
-                                        if (!message.id) {
-                                            return null
+                            { this.props.currentChatMessages ? (
+                                this.props.currentChatMessages.map(message => {
+                                    if (!message.sender_id) {
+                                        return null
+                                    } else {
+                                        if (message.sender_id == this.props.profile.id) {
+                                            return (
+                                                <YourMessageWrapper key={message.id}>
+                                                <YourMessageBox className="shadow">
+                                                {message.message}
+                                                </YourMessageBox>
+                                                </YourMessageWrapper>
+                                            )
                                         } else {
-                                            if (message.sender_id == this.props.profile.id) {
-                                                return (
-                                                    <YourMessageWrapper key={message.id}>
-                                                    <YourMessageBox className="shadow">
-                                                    {message.message}
-                                                    </YourMessageBox>
-                                                    </YourMessageWrapper>
-                                                )
-                                            } else {
-                                                return (
-                                                    <SomeoneElsesMessageWrapper key={message.id}>
-                                                    <SomeoneElsesMessageBox className="shadow">
-                                                    {message.message}
-                                                    </SomeoneElsesMessageBox>
-                                                    </SomeoneElsesMessageWrapper>
-                                                )
-                                            }
+                                            return (
+                                                <SomeoneElsesMessageWrapper key={message.id}>
+                                                <SomeoneElsesMessageBox className="shadow">
+                                                {message.message}
+                                                </SomeoneElsesMessageBox>
+                                                </SomeoneElsesMessageWrapper>
+                                            )
                                         }
-                                    })
+                                    }
+                                })
                             ) : this.props.messages &&
                                 this.props.messages.map(message => {
                                     if (!message.id) {

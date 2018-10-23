@@ -181,11 +181,11 @@ export function newMessage(messages) {
         messages
     }
 }
-export function newPrivateMessage(messages) {
-    console.log("ACTION newPrivateMessage happening with messages: ", messages);
+export function newPrivateMessage(message) {
+    console.log("ACTION newPrivateMessage happening with messages: ", message);
     return {
         type: 'NEW_PRIVATE_MESSAGE',
-        messages
+        message
     }
 }
 // export function newPrivateMessage(message) {

@@ -356,6 +356,7 @@ exports.getPrivateConversation = function(sessionId, otherId) {
 }
 
 exports.savePrivateMessage = function(sender_id, receiver_id, message) {
+    console.log("params in db: ", sender_id, " ", receiver_id, " ", message);
     const params = [sender_id, receiver_id, message]
     const q = `
             INSERT INTO private_messages (sender_id, receiver_id, message)
@@ -363,6 +364,7 @@ exports.savePrivateMessage = function(sender_id, receiver_id, message) {
             RETURNING *;
         `;
     return db.query(q, params).then(results => {
+        console.log("results.rows[0]: ", results.rows[0]);
         return results.rows[0]
     })
 }

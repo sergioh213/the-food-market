@@ -29,9 +29,9 @@ export function init(store) {
             store.dispatch(newMessage(messages))
         })
 
-        socket.on("privateMessage", messages => {
-            console.log("I have received I new message: ", messages);
-            store.dispatch(newPrivateMessage(messages))
+        socket.on("privateMessage", message => {
+            console.log("I have received I new message: ", message);
+            store.dispatch(newPrivateMessage(message))
         })
 
         // socket.on("newPrivateMessage", message => {
@@ -49,7 +49,7 @@ export function init(store) {
 export function newChatMessage(newMessages) {
     socket.emit("newMessage", newMessages)
 }
-export function emitPrivateMessage(newMessages, profile) {
-    console.log("socket newPrivateMessage newMessages: ", newMessages, " profile: ", profile);
-    socket.emit("privateMessage", {messages: newMessages, profile: profile})
+export function emitPrivateMessage(message) {
+    console.log("socket newPrivateMessage message: ", message);
+    socket.emit("privateMessage", message)
 }

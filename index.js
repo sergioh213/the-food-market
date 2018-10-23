@@ -415,9 +415,7 @@ app.get("/user/:id.json", (req, res) => {
 })
 
 app.post("/conversation", (req, res) => {
-    // console.log("getting to conversation with req.body: ", req.body);
     db.getPrivateConversation(req.session.user.id, req.body.id).then(messages => {
-        console.log("messages of conversation: ", messages);
         res.json({
             messages: messages
         })
@@ -492,14 +490,15 @@ io.on('connection', function(socket) {
 
     ///// receiving from the client and the server fowards it to the other client ///////
 
-    socket.on("privateMessage", async data => {
-        console.log("privateMessage data: ", data);
-        console.log("HERE data.profile: ", data.profile);
-        var previousArrayOfMessages = data.messages
-        var newProfile = data.profile
-        var message = await previousArrayOfMessages.splice(-1)[0]
+    socket.on("privateMessage", async message => {
+        // console.log("privateMessage data: ", data);
+        // console.log("HERE data.profile: ", data.profile);
+        // var previousArrayOfMessages = data.messages
+        // var newProfile = data.profile
+        // var message = await previousArrayOfMessages.splice(-1)[0]
+        console.log("RECEIVED MESSAGE message: ", message, " message.receiver_id: ", message.receiver_id, " message.message: ", message.message);
         var newMessage = {}
-        await db.savePrivateMessage(userId, newProfile.id, message).then(returnedMessage => {
+        await db.savePrivateMessage(userId, message.receiver_id, message.message).then(returnedMessage => {
             console.log("returnedMessage after db: ", returnedMessage);
             newMessage = {
                 sender_id: returnedMessage.sender_id,
@@ -509,54 +508,25 @@ io.on('connection', function(socket) {
                 created_at: returnedMessage.created_at
             }
         })
-        console.log("after await savePrivateMessage: ", newMessage);
-        await previousArrayOfMessages.push(newMessage)
+        // console.log("after await savePrivateMessage: ", newMessage);
+        // await previousArrayOfMessages.push(newMessage)
         var userSocketIdToReceive
         for (var socketId in onlineUsers) {
-            if (onlineUsers[socketId] === newProfile.id) {
+            console.log("TTHINGS USED IN THE LOOP: \nsocketId: ", socketId, "\nonlineUsers: ", onlineUsers, "\nnewMessage.receiver_id: ", newMessage.receiver_id);
+            if (onlineUsers[socketId] === newMessage.receiver_id) {
                 console.log("ids match!!!!!!");
+                console.log();
                 userSocketIdToReceive = socketId
                 break
             }
         }
-         var newData = {
-             messages: previousArrayOfMessages,
-             profile: newProfile
-         }
-        io.sockets.sockets[userSocketIdToReceive].emit('privateMessage', newData)
+        // var newData = {
+        //     messages: previousArrayOfMessages,
+        //     profile: newProfile
+        //
+        console.log("HERE userSocketIdToReceive: ", userSocketIdToReceive);
+        io.sockets.sockets[userSocketIdToReceive].emit('privateMessage', newMessage)
     })
-    // socket.on("newPrivateMessage", function(message, profile) {
-    //     db.savePrivateMessage(userId, profile, message)
-    //     .then(returnedMessage => {
-    //         //     if (!rows[0].imgurl) {
-    //         //         rows[0].imgurl = "/img/default.jpg";
-    //         //     }
-    //         //     rows[0].user_id = rows[0].id;
-    //         //     rows[0].id = result.rows[0].id;
-    //         //     rows[0].message = result.rows[0].message;
-    //         //     rows[0].created_at = result.rows[0].created_at;
-    //             newMessage = {
-    //                 sender_id: returnedMessage.sender_id,
-    //                 receiver_id: returnedMessage.receiver_id,
-    //                 message: returnedMessage.message,
-    //                 id: returnedMessage.id,
-    //                 created_at: returnedMessage.created_at
-    //             }
-    //             socket.emit("newPrivateMessage", newMessage);
-    //             for (const socketId in onlineUsers) {
-    //                 if (onlineUsers[socketId] == profile) {
-    //                     io.sockets.sockets[socketId].emit(
-    //                         "newPrivateMessage",
-    //                         newMessage
-    //                     );
-    //                 }
-    //             }
-    //             io.to(profile).emit();
-    //     })
-    //     .catch(err =>
-    //         console.log("Error in socket.broadcast.emit userJoined ", err)
-    //     );
-    // });
 
     socket.on('thanks', function(data) {
         console.log(data);
