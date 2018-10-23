@@ -81,7 +81,7 @@ class HelpApp extends Component {
                     <BottomSection>
                         <LeftSide>
                             <a href="/help/what-we-do"><OptionDiv>What we do</OptionDiv></a>
-                            <a href="/help/company-type"><OptionDiv>Types of account</OptionDiv></a>
+                            <a href="/help/company-type"><OptionDiv>Types of accounts</OptionDiv></a>
                             <a href="/help/contacts"><OptionDiv>Designated contacts</OptionDiv></a>
                             <a href="/help/chat"><OptionDiv>Chat</OptionDiv></a>
                             <a href="/help/linking-accounts"><OptionDiv>Linking accounts</OptionDiv></a>

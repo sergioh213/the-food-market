@@ -96,7 +96,7 @@ class TypeOfCompanyButton extends Component {
         return (
             <Main>
                 <Wrapper className="bubbles-wrapper">
-                    <TextDiv href={`/company-type/${this.state.companyTypeName}`}
+                    <TextDiv href={`help/company-type/${this.state.companyTypeName}`}
                         onMouseEnter={() => {this.toggleShowLable()}}
                         onMouseLeave={() => {this.toggleHideLable()}}
                     >
